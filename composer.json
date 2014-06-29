@@ -1,0 +1,26 @@
+{
+    "name":         "tadcka/sitemap-bundle",
+    "homepage":     "https://github.com/tadcka/SitemapBundle",
+    "description":  "Sitemap bundle on Symfony2",
+    "keywords":     ["sitemap", "sitemap manager"],
+    "type":         "symfony-bundle",
+    "license":      "MIT",
+    "authors": [
+        {
+            "name":   "Tadas Gliaubicas",
+            "email":  "tadcka89@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/framework-bundle" : ">=2.3",
+        "tadcka/tree-bundle": "dev-master",
+        "nercury/translation-editor-bundle": "0.1.x-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tadcka\\Bundle\\SitemapBundle\\": ""
+        }
+    }
+}
