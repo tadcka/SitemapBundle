@@ -1,0 +1,4 @@
+SitemapBundle
+=============
+
+Sitemap.
