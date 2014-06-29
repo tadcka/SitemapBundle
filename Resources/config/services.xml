@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="tadcka_sitemap.loader.tree.class">Tadcka\Bundle\SitemapBundle\Tree\TreeLoader</parameter>
+        <parameter key="tadcka_sitemap.listener.edit_node.class">Tadcka\Bundle\SitemapBundle\EventListener\EditNodeListener</parameter>
+    </parameters>
+
+    <services>
+
+        <service id="tadcka_sitemap.loader.tree" class="%tadcka_sitemap.loader.tree.class%">
+            <tag name="tadcka_tree" />
+        </service>
+
+        <!--Edit node event listener-->
+        <service id="tadcka_sitemap.listener.edit_node" class="%tadcka_sitemap.listener.edit_node.class%">
+            <tag name="kernel.event_listener" event="tadcka_sitemap.tab.edit_node" method="onEditNode" />
+        </service>
+
+    </services>
+</container>

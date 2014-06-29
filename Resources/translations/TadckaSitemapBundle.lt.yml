@@ -1,0 +1,26 @@
+button:
+  edit_sitemap: Redaguoti svetainės medį
+
+sitemap:
+  page_header: Svetainės medis
+  publish: Publikuoti
+  unpublish: Nepublikuoti
+  add_subpage: Pridėti papildomą puslapį
+  preview: Peržiūrėti
+  delete: Pašalinti
+
+node:
+  content: Turinys
+  menu: Meniu
+  seo: Optimizavimas paieškos sistemoms
+
+form:
+  seo_translation:
+    meta_title: Meta pavadinimas
+    meta_description: Meta aprašymas
+    meta_keywords: Meta raktiniai žodžiai
+  button:
+    save: Išsaugoti
+
+success:
+  seo_save: Sėkmingai išsaugota medžio viršūnės optimizavimas paieškos sistemoms.

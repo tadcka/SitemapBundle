@@ -1,0 +1,7 @@
+{% for type, message in messages %}
+    <div class="alert alert-{{ type }}" role="alert">{{ message }}</div>
+{% endfor %}
+
+{{ form_start(form) }}
+    {{ form_rest(form) }}
+{{ form_end(form) }}

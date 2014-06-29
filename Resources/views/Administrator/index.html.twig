@@ -1,0 +1,19 @@
+{% extends 'TadckaSitemapBundle::layout.html.twig' %}
+
+
+{% trans_default_domain 'TadckaSitemapBundle' %}
+
+{% block content %}
+
+<div class="row admin-grid">
+    <div class="col-md-12">
+        <div class="col-md-3">
+            <div id="tadcka-sitemap-tree" data-root_id="{{ tree.rootId }}" class="tree-wrapper">
+            </div>
+        </div>
+        <div class="col-md-9" id="tadcka-sitemap-edit-content">
+            {#{% include 'TadckaSitemapBundle:Administrator:edit_content.html.twig' %}#}
+        </div>
+    </div>
+</div>
+{% endblock %}
