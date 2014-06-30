@@ -8,7 +8,7 @@
         {% if tree_node.parent is not empty %}
             <a class="btn btn-outline btn-primary">{{ 'sitemap.publish'|trans }}</a>
             <a class="btn btn-outline btn-primary">{{ 'sitemap.preview'|trans }}</a>
-            <a class="btn btn-outline btn-primary">{{ 'sitemap.delete'|trans }}</a>
+            <a id="tadcka-sitemap-node-delete" href="{{ url('tadcka_tree_delete_node', {id: tree_node.id}) }}" class="btn btn-outline btn-primary">{{ 'sitemap.delete'|trans }}</a>
         {% endif %}
     </div>
 </div>

@@ -30,6 +30,39 @@ $(document).ready(function () {
                 }
             }
         });
+
+    $('div#tadcka-sitemap-edit-content').on('click', 'a#tadcka-sitemap-node-add, a#tadcka-sitemap-node-delete', function (e) {
+        e.preventDefault();
+        var $content = $('div#tadcka-sitemap-edit-content');
+        var $button = $(this);
+
+        $.ajax({
+            url: $button.attr('href'),
+            type: 'GET',
+            success: function ($response) {
+                $content.html($response);
+            },
+            error: function ($request, $status, $error) {
+                $content.html($request.responseText);
+            }
+        });
+    });
+
+    $('div#tadcka-sitemap-edit-content').on('click', 'a#tadcka-tree-node-delete-confirm', function (e) {
+        e.preventDefault();
+        var $content = $('div#tadcka-sitemap-edit-content');
+        var $button = $(this);
+        $.ajax({
+            url: $button.attr('href'),
+            type: 'DELETE',
+            success: function ($response) {
+                $content.html($response);
+            },
+            error: function ($request, $status, $error) {
+                $content.html($request.responseText);
+            }
+        });
+    });
 });
 
 function tadckaSitemapNode() {
@@ -51,29 +84,7 @@ function tadckaSitemapNode() {
                 error: function ($request, $status, $error) {
                     $content.html($request.responseText);
                 }
-            });
+            });s
         }
     }
-
-    $('a#tadcka-sitemap-node-add').click(function (e) {
-        e.preventDefault();
-        var $content = $('div#tadcka-sitemap-edit-content');
-        var $button = $(this);
-
-        $.ajax({
-            url: $button.attr('href'),
-            type: 'GET',
-            success: function ($response) {
-                $content.html($response);
-                tadckaSitemapSubmitForm();
-            },
-            error: function ($request, $status, $error) {
-                $content.html($request.responseText);
-            }
-        });
-    });
-}
-
-function tadckaSitemapSubmitForm() {
-
 }

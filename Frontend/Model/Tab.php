@@ -34,17 +34,24 @@ class Tab
     private $url;
 
     /**
+     * @var int
+     */
+    private $priority;
+
+    /**
      * Constructor.
      *
      * @param string $name
      * @param string $slug
      * @param string $url
+     * @param int $priority
      */
-    public function __construct($name, $slug, $url)
+    public function __construct($name, $slug, $url, $priority = 0)
     {
         $this->name = $name;
         $this->slug = $slug;
         $this->url = $url;
+        $this->priority = $priority;
     }
 
     /**
@@ -75,5 +82,15 @@ class Tab
     public function getUrl()
     {
         return $this->url;
+    }
+
+    /**
+     * Get priority.
+     *
+     * @return int
+     */
+    public function getPriority()
+    {
+        return $this->priority;
     }
 }

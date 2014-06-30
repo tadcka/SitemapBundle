@@ -85,6 +85,8 @@ class EditNodeEvent extends Event
      */
     public function getTabs()
     {
+        $this->sort();
+
         return $this->tabs;
     }
 
@@ -106,5 +108,26 @@ class EditNodeEvent extends Event
     public function getTranslator()
     {
         return $this->translator;
+    }
+
+    /**
+     * Sort all tabs.
+     */
+    private function sort()
+    {
+        uasort(
+            $this->tabs,
+            function (Tab $first, Tab $second) {
+                if ($first->getPriority() < $second->getPriority()) {
+                    return 1;
+                }
+
+                if ($first->getPriority() > $second->getPriority()) {
+                    return -1;
+                }
+
+                return 0;
+            }
+        );
     }
 }
