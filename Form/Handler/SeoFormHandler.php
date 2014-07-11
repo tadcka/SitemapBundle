@@ -11,8 +11,12 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Form\Handler;
 
+use Symfony\Cmf\Component\Routing\RouteObjectInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
+use Tadcka\Bundle\SitemapBundle\Helper\RouteHelper;
+use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
@@ -27,16 +31,33 @@ class SeoFormHandler
     /**
      * @var NodeTranslationManagerInterface
      */
-    private $manager;
+    private $nodeTranslationManager;
+
+    /**
+     * @var RouteManagerInterface
+     */
+    private $routeManager;
+
+    /**
+     * @var RouterHelper
+     */
+    private $routeHelper;
 
     /**
      * Constructor.
      *
-     * @param NodeTranslationManagerInterface $manager
+     * @param NodeTranslationManagerInterface $nodeTranslationManager
+     * @param RouteManagerInterface $routeManager
+     * @param RouterHelper $routeHelper
      */
-    public function __construct(NodeTranslationManagerInterface $manager)
-    {
-        $this->manager = $manager;
+    public function __construct(
+        NodeTranslationManagerInterface $nodeTranslationManager,
+        RouteManagerInterface $routeManager,
+        RouterHelper $routeHelper
+    ) {
+        $this->nodeTranslationManager = $nodeTranslationManager;
+        $this->routeManager = $routeManager;
+        $this->routeHelper = $routeHelper;
     }
 
 
@@ -49,7 +70,26 @@ class SeoFormHandler
                 /** @var NodeTranslationInterface $translation */
                 foreach ($data['translations'] as $translation) {
                     $translation->setNode($node);
-                    $this->manager->add($translation);
+
+                    if ((null !== $translation->getRoute()) &&
+                        ($this->routeHelper->hasControllerByNodeType($node->getType()))
+                    ) {
+                        $translation->getRoute()->setDefault(
+                            RouteObjectInterface::CONTROLLER_NAME,
+                            $this->routeHelper->getControllerByNodeType($node->getType())
+                        );
+                        $translation->getRoute()
+                            ->setName($this->routeHelper->getRouteName($node->getId(), $translation->getLang()));
+
+                        $this->routeManager->add($translation->getRoute());
+                    } else {
+                        if (null !== $translation->getRoute()) {
+                            $this->routeManager->delete($translation->getRoute());
+                        }
+                        $translation->setRoute(null);
+                    }
+
+                    $this->nodeTranslationManager->add($translation);
                 }
 
                 return true;

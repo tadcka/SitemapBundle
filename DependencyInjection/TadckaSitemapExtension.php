@@ -31,8 +31,9 @@ class TadckaSitemapExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
+        $loader->load('helper.xml');
         $loader->load('form/seo.xml');
 
         if (!in_array(strtolower($config['db_driver']), array('mongodb', 'orm'))) {
@@ -40,8 +41,12 @@ class TadckaSitemapExtension extends Extension
         }
         $loader->load('driver/' . sprintf('%s.xml', $config['db_driver']));
 
-        $container->setParameter('tadcka_sitemap.model.node_translation.class', $config['class']['model']['node_translation']);
+        $container->setParameter(
+            'tadcka_sitemap.model.node_translation.class',
+            $config['class']['model']['node_translation']
+        );
 
         $container->setAlias('tadcka_sitemap.manager.node_translation', $config['node_translation_manager']);
+        $container->setParameter('tadcka_sitemap.controllers_by_node_type', $config['controllers_by_node_type']);
     }
 }

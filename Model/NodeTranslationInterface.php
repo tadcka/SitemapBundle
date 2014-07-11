@@ -10,6 +10,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Model;
 
+use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
 
 /**
@@ -19,6 +20,8 @@ use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
  */
 interface NodeTranslationInterface
 {
+    const OBJECT_TYPE = 'tadcka_sitemap.node_translation';
+
     /**
      * Get id.
      *
@@ -105,4 +108,20 @@ interface NodeTranslationInterface
      * @return string
      */
     public function getMetaKeywords();
+
+    /**
+     * Set route.
+     *
+     * @param RouteInterface $route
+     *
+     * @return NodeTranslationInterface
+     */
+    public function setRoute(RouteInterface $route);
+
+    /**
+     * Get route.
+     *
+     * @return RouteInterface
+     */
+    public function getRoute();
 }

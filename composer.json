@@ -15,7 +15,10 @@
     "require": {
         "php": ">=5.3.3",
         "symfony/framework-bundle" : ">=2.3",
+
         "tadcka/tree-bundle": "dev-master",
+        "tadcka/routing-bundle": "dev-master",
+
         "nercury/translation-editor-bundle": "0.1.x-dev"
     },
     "autoload": {

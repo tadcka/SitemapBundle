@@ -11,6 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Model;
 
+use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
 
 /**
@@ -24,11 +25,6 @@ abstract class NodeTranslation implements NodeTranslationInterface
      * @var int
      */
     protected $id;
-
-    /**
-     * @var NodeInterface
-     */
-    protected $node;
 
     /**
      * @var string
@@ -51,6 +47,16 @@ abstract class NodeTranslation implements NodeTranslationInterface
     protected $metaKeywords;
 
     /**
+     * @var NodeInterface
+     */
+    protected $node;
+
+    /**
+     * @var RouteInterface
+     */
+    protected $route;
+
+    /**
      * @param int $id
      */
     public function setId($id)
@@ -64,24 +70,6 @@ abstract class NodeTranslation implements NodeTranslationInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setNode(NodeInterface $node)
-    {
-        $this->node = $node;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getNode()
-    {
-        return $this->node;
     }
 
     /**
@@ -154,5 +142,41 @@ abstract class NodeTranslation implements NodeTranslationInterface
     public function getMetaKeywords()
     {
         return $this->metaKeywords;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setNode(NodeInterface $node)
+    {
+        $this->node = $node;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNode()
+    {
+        return $this->node;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRoute(RouteInterface $route)
+    {
+        $this->route = $route;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoute()
+    {
+        return $this->route;
     }
 }

@@ -56,13 +56,14 @@ class SeoFormFactory
      * Create seo form.
      *
      * @param array $data
+     * @param bool $hasControllerByType
      *
      * @return FormInterface
      */
-    public function create(array $data)
+    public function create(array $data, $hasControllerByType = false)
     {
         return $this->formFactory->create(
-            new SeoFormType(),
+            new SeoFormType($hasControllerByType),
             $data,
             array(
                 'translation_class' => $this->translationClass,

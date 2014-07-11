@@ -24,6 +24,21 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class SeoTranslationFormType extends AbstractType
 {
     /**
+     * @var bool
+     */
+    private $hasControllerByType;
+
+    /**
+     * Constructor.
+     *
+     * @param bool $hasControllerByType
+     */
+    public function __construct($hasControllerByType)
+    {
+        $this->hasControllerByType = $hasControllerByType;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -54,6 +69,10 @@ class SeoTranslationFormType extends AbstractType
                 'required' => false,
             )
         );
+
+        if ($this->hasControllerByType) {
+            $builder->add('route', 'tadcka_route', array('label' => false));
+        }
     }
 
     /**

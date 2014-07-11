@@ -23,6 +23,21 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class SeoFormType extends AbstractType
 {
     /**
+     * @var bool
+     */
+    private $hasControllerByType;
+
+    /**
+     * Constructor.
+     *
+     * @param bool $hasControllerByType
+     */
+    public function __construct($hasControllerByType = false)
+    {
+        $this->hasControllerByType = $hasControllerByType;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -31,7 +46,7 @@ class SeoFormType extends AbstractType
             'translations',
             'translations',
             array(
-                'type' => new SeoTranslationFormType(),
+                'type' => new SeoTranslationFormType($this->hasControllerByType),
                 'options' => array(
                     'data_class' => $options['translation_class'],
                 ),

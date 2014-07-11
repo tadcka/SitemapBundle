@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="tadcka_sitemap.helper.router.class">Tadcka\Bundle\SitemapBundle\Helper\RouterHelper</parameter>
+    </parameters>
+
+    <services>
+
+        <!--Sitemap route helper-->
+        <service id="tadcka_sitemap.helper.router" class="%tadcka_sitemap.helper.router.class%">
+            <argument>%tadcka_sitemap.controllers_by_node_type%</argument>
+        </service>
+
+    </services>
+</container>
