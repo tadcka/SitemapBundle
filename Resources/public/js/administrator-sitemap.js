@@ -19,16 +19,16 @@ $(document).ready(function () {
         }
     });
 
-    $('div#tadcka-sitemap-edit-content').on('click', 'button#tadcka_node_submit, button#tadcka_sitemap_seo_submit', function (e) {
+    $('div#tadcka-sitemap-edit-content').on('click', 'form > button', function (e) {
         e.preventDefault();
-        var $content = $('div#tadcka-sitemap-edit-content');
         var $form = $(this).closest('form');
+        var $content = $(this).closest('div.sitemap-tab-content');
         $.ajax({
             url: $form.attr('action'),
             type: 'POST',
             data: $form.serialize(),
             success: function ($response) {
-                $form.replaceWith($response);
+                $content.html($response);
             },
             error: function ($request, $status, $error) {
                 $content.html($request.responseText);

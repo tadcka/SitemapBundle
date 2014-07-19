@@ -18,13 +18,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 use Tadcka\Bundle\SitemapBundle\Form\Factory\SeoFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\SeoFormHandler;
+use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\TreeBundle\ModelManager\NodeManagerInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 14.6.29 20.57
+ * @since  14.6.29 20.57
  */
 class SeoController extends ContainerAware
 {
@@ -35,14 +36,16 @@ class SeoController extends ContainerAware
             throw new NotFoundHttpException();
         }
 
-        $messages = array();
+        $messages = new Messages();
         $form = $this->getFormFactory()->create(
             array('translations' => $this->getNodeTranslationManager()->findManyByNodeId($nodeId)),
             $this->container->get('tadcka_sitemap.helper.router')->hasControllerByNodeType($node->getType())
         );
         if ($this->getFormHandler()->process($request, $form, $node)) {
             $this->getNodeManager()->save();
-            $messages['success'] = $this->getTranslator()->trans('success.seo_save', array(), 'TadckaSitemapBundle');
+            $messages->addSuccess(
+                $this->getTranslator()->trans('success.seo_save', array(), 'TadckaSitemapBundle')
+            );
         }
 
         return $this->getTemplating()->renderResponse(

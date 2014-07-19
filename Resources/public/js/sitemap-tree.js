@@ -84,7 +84,7 @@ function tadckaSitemapNode() {
                 error: function ($request, $status, $error) {
                     $content.html($request.responseText);
                 }
-            });s
+            });
         }
     }
 }

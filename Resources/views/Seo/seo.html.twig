@@ -1,7 +1,7 @@
-{% for type, message in messages %}
-    <div class="alert alert-{{ type }}" role="alert">{{ message }}</div>
-{% endfor %}
+{% extends 'TadckaSitemapBundle:Tab:tab.html.twig' %}
 
-{{ form_start(form) }}
-    {{ form_rest(form) }}
-{{ form_end(form) }}
+{% block content %}
+    {{ form_start(form) }}
+        {{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock %}
