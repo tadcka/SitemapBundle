@@ -18,6 +18,7 @@
         <!--Edit node event listener-->
         <service id="tadcka_sitemap.listener.edit_node" class="%tadcka_sitemap.listener.edit_node.class%">
             <tag name="kernel.event_listener" event="tadcka_sitemap.tab.edit_node" method="onEditNode" />
+            <argument type="service" id="tadcka_sitemap.helper.router" />
         </service>
 
     </services>
