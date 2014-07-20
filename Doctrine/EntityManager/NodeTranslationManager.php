@@ -13,6 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManager as BaseNodeTranslationManager;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 
@@ -65,6 +66,14 @@ class NodeTranslationManager extends BaseNodeTranslationManager
     public function findManyByNodeId($nodeId)
     {
         return $this->repository->findBy(array('node' => $nodeId));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findByRoute(RouteInterface $route)
+    {
+       return $this->repository->findOneBy(array('route' => $route));
     }
 
     /**

@@ -11,6 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Model\Manager;
 
+use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 
 /**
@@ -38,6 +39,15 @@ interface NodeTranslationManagerInterface
      * @return array|NodeTranslationInterface[]
      */
     public function findManyByNodeId($nodeId);
+
+    /**
+     * Find node translation by route.
+     *
+     * @param RouteInterface $route
+     *
+     * @return null|NodeTranslationInterface
+     */
+    public function findByRoute(RouteInterface $route);
 
     /**
      * Create node translation.
