@@ -57,14 +57,6 @@ abstract class NodeTranslation implements NodeTranslationInterface
     protected $route;
 
     /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getId()

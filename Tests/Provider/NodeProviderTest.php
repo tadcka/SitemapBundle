@@ -12,8 +12,11 @@
 namespace Tadcka\Bundle\SitemapBundle\Tests\Provider;
 
 use Symfony\Component\HttpFoundation\Request;
+use Tadcka\Bundle\RoutingBundle\Tests\Mock\Model\MockRoute;
 use Tadcka\Bundle\SitemapBundle\Provider\NodeProvider;
 use Tadcka\Bundle\SitemapBundle\Tests\Mock\Model\Manager\MockNodeTranslationManager;
+use Tadcka\Bundle\SitemapBundle\Tests\Mock\Model\MockNodeTranslation;
+use Tadcka\Bundle\TreeBundle\Tests\Mock\Model\MockNode;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -27,16 +30,43 @@ class NodeProviderTest extends \PHPUnit_Framework_TestCase
         $manager = new MockNodeTranslationManager();
         $provider = new NodeProvider($manager);
 
-        $node = $provider->getNodeFromRequest(new Request());
-
-        $this->assertEmpty($node);
+        $this->assertEmpty($provider->getNodeFromRequest(new Request()));
     }
 
     public function testGetNodeFromRequest()
     {
+        $manager = new MockNodeTranslationManager();
+        $mockTranslation = new MockNodeTranslation();
+        $manager->add($mockTranslation);
+        $provider = new NodeProvider($manager);
+
+        $request = new Request();
+        $mockRoute = new MockRoute();
+        $mockRoute->setId(1);
+        $request->query->replace(array('_route_params' => array('_route_object' => $mockRoute)));
+        $mockTranslation->setRoute($mockRoute);
+
+        $this->assertEmpty($provider->getNodeFromRequest($request));
+
+        $mockNode = new MockNode();
+        $mockTranslation->setNode($mockNode);
+
+        $this->assertEquals($mockNode, $provider->getNodeFromRequest($request));
     }
 
     public function testGetNodeTranslationFromRequest()
     {
+        $manager = new MockNodeTranslationManager();
+        $mockTranslation = new MockNodeTranslation();
+        $manager->add($mockTranslation);
+        $provider = new NodeProvider($manager);
+
+        $request = new Request();
+        $mockRoute = new MockRoute();
+        $mockRoute->setId(1);
+        $request->query->replace(array('_route_params' => array('_route_object' => $mockRoute)));
+        $mockTranslation->setRoute($mockRoute);
+
+        $this->assertEquals($mockTranslation, $provider->getNodeTranslationFromRequest($request));
     }
 }

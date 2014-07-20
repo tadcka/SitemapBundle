@@ -22,6 +22,10 @@ use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
  */
 class MockNodeTranslationManager extends NodeTranslationManager
 {
+    /**
+     * @var array|NodeTranslationInterface[]
+     */
+    private $translations = array();
 
     /**
      * {@inheritdoc}
@@ -44,7 +48,13 @@ class MockNodeTranslationManager extends NodeTranslationManager
      */
     public function findByRoute(RouteInterface $route)
     {
-        // TODO: Implement findByRoute() method.
+        foreach ($this->translations as $translation) {
+            if ((null !== $translation->getRoute()) && ($route->getId() === $translation->getRoute()->getId())) {
+                return $translation;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -52,7 +62,7 @@ class MockNodeTranslationManager extends NodeTranslationManager
      */
     public function add(NodeTranslationInterface $translation, $save = false)
     {
-        // TODO: Implement add() method.
+        $this->translations[] = $translation;
     }
 
     /**
