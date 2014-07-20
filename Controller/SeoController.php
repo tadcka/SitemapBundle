@@ -11,10 +11,11 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Tadcka\Bundle\SitemapBundle\Form\Factory\SeoFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\SeoFormHandler;
@@ -48,11 +49,13 @@ class SeoController extends ContainerAware
             );
         }
 
-        return $this->getTemplating()->renderResponse(
-            'TadckaSitemapBundle:Seo:seo.html.twig',
-            array(
-                'form' => $form->createView(),
-                'messages' => $messages,
+        return new Response(
+            $this->getTemplating()->render(
+                'TadckaSitemapBundle:Seo:seo.html.twig',
+                array(
+                    'form' => $form->createView(),
+                    'messages' => $messages,
+                )
             )
         );
     }

@@ -2,15 +2,15 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Tadcka\Bundle\SitemapBundle\Event\EditNodeEvent;
-use Tadcka\Bundle\TreeBundle\ModelManager\NodeManagerInterface as TreeNodeManagerInterface;
+use Tadcka\Bundle\TreeBundle\ModelManager\NodeManagerInterface;
 use Tadcka\Bundle\TreeBundle\Services\TreeService;
 
 class AdministratorController extends ContainerAware
@@ -48,7 +48,7 @@ class AdministratorController extends ContainerAware
     }
 
     /**
-     * @return TreeNodeManagerInterface
+     * @return NodeManagerInterface
      */
     private function getTreeNodeManager()
     {
@@ -59,11 +59,14 @@ class AdministratorController extends ContainerAware
     {
         $tree = $this->getTree()->getTree('tadcka_sitemap_tree', $request->getLocale(), true);
 
-        return $this->getTemplating()->renderResponse(
-            'TadckaSitemapBundle:Administrator:index.html.twig',
-            array(
-                'tree' => $tree,
-                'page_header' => $this->getTranslator()->trans('sitemap.page_header', array(), 'TadckaSitemapBundle'),
+        return new Response(
+            $this->getTemplating()->render(
+                'TadckaSitemapBundle:Administrator:index.html.twig',
+                array(
+                    'tree' => $tree,
+                    'page_header' => $this->getTranslator()
+                            ->trans('sitemap.page_header', array(), 'TadckaSitemapBundle'),
+                )
             )
         );
     }
@@ -80,11 +83,13 @@ class AdministratorController extends ContainerAware
         $this->container->get('event_dispatcher')->dispatch('tadcka_sitemap.tab.edit_node', $event);
         $tabs = $event->getTabs();
 
-        return $this->getTemplating()->renderResponse(
-            'TadckaSitemapBundle:Administrator:edit_content.html.twig',
-            array(
-                'tree_node' => $treeNode,
-                'tabs' => $tabs,
+        return new Response(
+            $this->getTemplating()->render(
+                'TadckaSitemapBundle:Administrator:edit_content.html.twig',
+                array(
+                    'tree_node' => $treeNode,
+                    'tabs' => $tabs,
+                )
             )
         );
     }
