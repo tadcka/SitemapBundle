@@ -22,6 +22,8 @@ use Tadcka\Bundle\TreeBundle\Registry\TreeRegistryInterface;
  */
 class TreeLoader implements TreeLoaderInterface
 {
+    const CONFIG_NAME = 'tadcka_sitemap_tree';
+
     /**
      * Load tree config and register it.
      *
@@ -30,7 +32,7 @@ class TreeLoader implements TreeLoaderInterface
     public function register(TreeRegistryInterface $registry)
     {
         $config = new TreeConfig(
-            'tadcka_sitemap_tree',
+            self::CONFIG_NAME,
             new ContextMenuFactory(),
             '/bundles/tadckasitemap/images/icon/sitemap.png'
         );
