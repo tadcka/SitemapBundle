@@ -12,6 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -21,7 +22,9 @@ use Tadcka\Bundle\SitemapBundle\Form\Factory\SeoFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\SeoFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
+use Tadcka\Bundle\TreeBundle\Event\NodeEvent;
 use Tadcka\Bundle\TreeBundle\ModelManager\NodeManagerInterface;
+use Tadcka\Bundle\TreeBundle\TadckaTreeEvents;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -47,6 +50,8 @@ class SeoController extends ContainerAware
             $messages->addSuccess(
                 $this->getTranslator()->trans('success.seo_save', array(), 'TadckaSitemapBundle')
             );
+
+            $this->getEventDispacher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new NodeEvent($node));
         }
 
         return new Response(
@@ -106,5 +111,13 @@ class SeoController extends ContainerAware
     private function getNodeTranslationManager()
     {
         return $this->container->get('tadcka_sitemap.manager.node_translation');
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getEventDispacher()
+    {
+        return $this->container->get('event_dispatcher');
     }
 }
