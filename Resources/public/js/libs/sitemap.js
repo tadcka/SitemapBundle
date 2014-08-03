@@ -26,12 +26,18 @@ $.fn.sitemap = function () {
             }
         });
 
+    /**
+     * Load current toolbar content.
+     */
     $content.getContent().on('click', 'div.tadcka-sitemap-toolbar a', function ($event) {
         $event.preventDefault();
         $toolbar.load($(this));
 
     });
 
+    /**
+     * Load current tab content.
+     */
     $content.getContent().on('click', 'ul.nav-tabs a', function (e) {
         e.preventDefault();
         var $target = $(e.target).attr('href');
@@ -40,18 +46,34 @@ $.fn.sitemap = function () {
         $tab.load($(this).data('href'), $tabContent);
     });
 
-
-    $content.getContent().on('click', 'form > button', function ($event) {
+    /**
+     * Submit tab content form.
+     */
+    $content.getContent().on('click', 'div.tab-content > form > button', function ($event) {
         $event.preventDefault();
         var $form = $(this).closest('form');
-        $content.submit($form.attr('action'), 'POST', $form.serialize(), $(this).closest('div.tab-content'), function () {
+        $tab.submit($form.attr('action'), $form.serialize(), function () {
             $tree.refresh();
         });
     });
 
+    /**
+     * Submit toolbar content form.
+     */
+    $content.getContent().on('click', 'div.toolbar-content > form > button', function ($event) {
+        $event.preventDefault();
+        var $form = $(this).closest('form');
+        $toolbar.submit($form.attr('action'), $form.serialize(), 'POST', function () {
+            $tree.refresh();
+        });
+    });
+
+    /**
+     * Send delete method for node.
+     */
     $content.getContent().on('click', 'a#tadcka-tree-node-delete-confirm', function ($event) {
         $event.preventDefault();
-        $content.submit($(this).attr('href'), 'DELETE', null, $content, function () {
+        $toolbar.submit($(this).attr('href'), 'DELETE', null, function () {
             $tree.refresh();
         });
     });

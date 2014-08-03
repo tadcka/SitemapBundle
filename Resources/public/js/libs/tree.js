@@ -23,10 +23,18 @@ function SitemapTree() {
             }
         });
 
+    /**
+     * Get jsTree.
+     *
+     * @returns {jsTree}
+     */
     this.getJsTree = function () {
         return $jsTree;
     };
 
+    /**
+     * Refresh tree.
+     */
     this.refresh = function () {
         $tree.jstree().refresh();
     };
