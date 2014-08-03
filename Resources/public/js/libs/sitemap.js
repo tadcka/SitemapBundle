@@ -32,7 +32,6 @@ $.fn.sitemap = function () {
     $content.getContent().on('click', 'div.tadcka-sitemap-toolbar a', function ($event) {
         $event.preventDefault();
         $toolbar.load($(this));
-
     });
 
     /**

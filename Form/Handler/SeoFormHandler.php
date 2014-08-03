@@ -70,22 +70,17 @@ class SeoFormHandler
                 /** @var NodeTranslationInterface $translation */
                 foreach ($data['translations'] as $translation) {
                     $translation->setNode($node);
+                    $route = $translation->getRoute();
 
-                    if ((null !== $translation->getRoute()) &&
-                        ($this->routeHelper->hasControllerByNodeType($node->getType()))
-                    ) {
-                        $translation->getRoute()->setDefault(
-                            RouteObjectInterface::CONTROLLER_NAME,
-                            $this->routeHelper->getControllerByNodeType($node->getType())
-                        );
-                        $translation->getRoute()
-                            ->setName($this->routeHelper->getRouteName($node->getId(), $translation->getLang()));
-
-                        $this->routeManager->add($translation->getRoute());
-                    } else {
-                        if (null !== $translation->getRoute()) {
+                    if (null !== $route) {
+                        if ($this->routeHelper->hasControllerByNodeType($node->getType())) {
+                            $this->routeHelper
+                                ->fillRoute($route, $node, $route->getRoutePattern(), $translation->getLang());
+                            $this->routeManager->add($translation->getRoute());
+                        } else {
                             $this->routeManager->delete($translation->getRoute());
                         }
+                    } else {
                         $translation->setRoute(null);
                     }
 

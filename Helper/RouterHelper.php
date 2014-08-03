@@ -11,25 +11,39 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Helper;
 
+use Symfony\Cmf\Component\Routing\RouteObjectInterface;
+use Tadcka\Bundle\RoutingBundle\Generator\RouteGenerator;
+use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Exception\ResourceNotFoundException;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 7/11/14 11:30 PM
+ * @since  7/11/14 11:30 PM
  */
 class RouterHelper
 {
+    /**
+     * @var array
+     */
     private $controllerByNodeType = array();
+
+    /**
+     * @var RouteGenerator
+     */
+    private $routeGenerator;
 
     /**
      * Constructor.
      *
+     * @param RouteGenerator $routeGenerator
      * @param array $controllerByNodeType
      */
-    public function __construct(array $controllerByNodeType)
+    public function __construct(RouteGenerator $routeGenerator, array $controllerByNodeType)
     {
+        $this->routeGenerator = $routeGenerator;
         $this->controllerByNodeType = $controllerByNodeType;
     }
 
@@ -73,11 +87,26 @@ class RouterHelper
      */
     public function getRouteName($nodeId, $locale = null)
     {
-        $name = NodeTranslationInterface::OBJECT_TYPE  . '_' . $nodeId;
+        $name = NodeTranslationInterface::OBJECT_TYPE . '_' . $nodeId;
         if (null !== $locale) {
             $name .= '_' . $locale;
         }
 
         return $name;
+    }
+
+    /**
+     * Fill route.
+     *
+     * @param RouteInterface $route
+     * @param NodeInterface $node
+     * @param string $text
+     * @param string $locale
+     */
+    public function fillRoute(RouteInterface $route, NodeInterface $node, $text, $locale)
+    {
+        $route->setDefault(RouteObjectInterface::CONTROLLER_NAME, $this->getControllerByNodeType($node->getType()));
+        $route ->setName($this->getRouteName($node->getId(), $locale));
+        $route->setRoutePattern($this->routeGenerator->generateUniqueRouteFromText($text));
     }
 }

@@ -8,6 +8,7 @@
         <parameter key="tadcka_sitemap.loader.tree.class">Tadcka\Bundle\SitemapBundle\Tree\TreeLoader</parameter>
         <parameter key="tadcka_sitemap.listener.edit_node.class">Tadcka\Bundle\SitemapBundle\EventListener\EditNodeListener</parameter>
         <parameter key="tadcka_sitemap.provider.node.class">Tadcka\Bundle\SitemapBundle\Provider\NodeProvider</parameter>
+        <parameter key="tadcka_sitemap.listener.tree_node.class">Tadcka\Bundle\SitemapBundle\EventListener\TreeNodeListener</parameter>
     </parameters>
 
     <services>
@@ -25,6 +26,14 @@
 
         <!--Sitemap node provider-->
         <service id="tadcka_sitemap.provider.node" class="%tadcka_sitemap.provider.node.class%">
+            <argument type="service" id="tadcka_sitemap.manager.node_translation" />
+        </service>
+
+        <!--Tree node event listener-->
+        <service id="tadcka_sitemap.listener.tree_node" class="%tadcka_sitemap.listener.tree_node.class%">
+            <tag name="kernel.event_listener" event="tadcka_tree.node.create.success" method="onCreateNode" />
+            <argument type="service" id="tadcka_sitemap.helper.router" />
+            <argument type="service" id="tadcka_routing.manager.route" />
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
         </service>
 

@@ -12,6 +12,7 @@
 
         <!--Sitemap route helper-->
         <service id="tadcka_sitemap.helper.router" class="%tadcka_sitemap.helper.router.class%">
+            <argument type="service" id="tadcka_routing.generator.route" />
             <argument>%tadcka_sitemap.controllers_by_node_type%</argument>
         </service>
 
