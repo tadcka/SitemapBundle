@@ -80,8 +80,6 @@ class SeoFormHandler
                         } else {
                             $this->routeManager->delete($translation->getRoute());
                         }
-                    } else {
-                        $translation->setRoute(null);
                     }
 
                     $this->nodeTranslationManager->add($translation);
