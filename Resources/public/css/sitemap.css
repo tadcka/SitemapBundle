@@ -2,14 +2,14 @@
     border: 1px solid #DDDDDD;
     min-height: 300px;
     max-height: 600px;
-    padding: 5px;
+    padding: 10px;
     overflow: auto;
 }
 
-.tabs-button-group {
-    margin-bottom: 8px;
+#tadcka-sitemap-content .tadcka-sitemap-toolbar {
+    margin-bottom: 10px;
 }
 
-.sitemap-tab-content {
-    margin-top: 10px;
+#tadcka-sitemap-content .tab-content {
+    padding-top: 10px;
 }

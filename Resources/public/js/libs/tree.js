@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-function SitemapTree () {
+function SitemapTree() {
     var $tree = $('div#tadcka-sitemap-tree');
 
     var $jsTree = $tree
@@ -23,7 +23,11 @@ function SitemapTree () {
             }
         });
 
-    this.getJsTree = function() {
+    this.getJsTree = function () {
         return $jsTree;
+    };
+
+    this.refresh = function () {
+        $tree.jstree().refresh();
     };
 }

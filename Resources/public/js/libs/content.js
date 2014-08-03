@@ -10,32 +10,11 @@
 function SitemapContent() {
     var $content = $('div#tadcka-sitemap-content');
 
-    $content.on('click', 'form > button', function ($event) {
-        $event.preventDefault();
-
-        fadeOn();
-        var $form = $(this).closest('form');
-
-        $.ajax({
-            url: $form.attr('action'),
-            type: 'POST',
-            data: $form.serialize(),
-            success: function ($response) {
-                $content.html($response);
-                fadeOff();
-            },
-            error: function ($request, $status, $error) {
-                $content.html($request.responseText);
-                fadeOff();
-            }
-        });
-    });
-
     this.load = function ($nodeId, $callback) {
         fadeOn();
 
         $.ajax({
-            url: Routing.generate('tadcka_sitemap_administrator_edit_content', {treeNodeId: $nodeId}),
+            url: Routing.generate('tadcka_sitemap_content', {nodeId: $nodeId}),
             type: 'GET',
             success: function ($response) {
                 $content.html($response);
@@ -49,8 +28,35 @@ function SitemapContent() {
         });
     };
 
+    this.submit = function ($url, $type, $data, $currentContent, $callback) {
+        fadeOn();
+
+        $.ajax({
+            url: $url,
+            type: $type,
+            data: $data,
+            success: function ($response) {
+                $currentContent.html($response);
+                fadeOff();
+                $callback();
+            },
+            error: function ($request, $status, $error) {
+                $currentContent.html($request.responseText);
+                fadeOff();
+            }
+        });
+    };
+
     this.createTab = function () {
         return new Tab();
+    };
+
+    this.createToolbar = function () {
+        return new Toolbar();
+    };
+
+    this.getContent = function () {
+        return $content;
     };
 
     /**
@@ -68,46 +74,53 @@ function SitemapContent() {
     };
 
     function Tab() {
-        $content.on('click', 'a#sitemap-edit-tab-header', function (e) {
-            e.preventDefault();
-            var $target = $(e.target).attr('href');
-            var $tabContent = $($target);
-
+        this.load = function ($url, $tabContent) {
             if ($tabContent.is(':empty')) {
-                load($(this).data('href'), $tabContent);
+                fadeOn();
+
+                $.ajax({
+                    url: $url,
+                    type: 'GET',
+                    success: function ($response) {
+                        $tabContent.html($response);
+                        fadeOff();
+                    },
+                    error: function ($request, $status, $error) {
+                        $tabContent.html($request.responseText);
+                        fadeOff();
+                    }
+                });
             }
-        });
+        };
 
         this.loadFirst = function () {
             var $tabButton = getActive().find('a:first');
             var $tabContent = $($tabButton.attr('href'));
 
-            if ($tabContent.is(':empty')) {
-                load($tabButton.data('href'), $tabContent);
-            }
-        };
-
-        var load = function ($url, $tabContent) {
-            fadeOn();
-
-            $.ajax({
-                url: $url,
-                type: 'GET',
-                success: function ($response) {
-                    $tabContent.html($response);
-                    fadeOff();
-                },
-                error: function ($request, $status, $error) {
-                    $tabContent.html($request.responseText);
-                    fadeOff();
-                }
-            });
+            this.load($tabButton.data('href'), $tabContent);
         };
 
         var getActive = function () {
             return $content.find('li.active:first')
         };
     }
+
+    function Toolbar() {
+        this.load = function ($button) {
+            fadeOn();
+
+            $.ajax({
+                url: $button.attr('href'),
+                type: 'GET',
+                success: function ($response) {
+                    $content.html($response);
+                    fadeOff();
+                },
+                error: function ($request, $status, $error) {
+                    $content.html($request.responseText);
+                    fadeOff();
+                }
+            });
+        };
+    }
 }
-
-

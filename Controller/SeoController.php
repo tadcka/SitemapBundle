@@ -51,7 +51,7 @@ class SeoController extends ContainerAware
                 $this->getTranslator()->trans('success.seo_save', array(), 'TadckaSitemapBundle')
             );
 
-            $this->getEventDispacher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new NodeEvent($node));
+            $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new NodeEvent($node));
         }
 
         return new Response(
@@ -116,7 +116,7 @@ class SeoController extends ContainerAware
     /**
      * @return EventDispatcherInterface
      */
-    private function getEventDispacher()
+    private function getEventDispatcher()
     {
         return $this->container->get('event_dispatcher');
     }
