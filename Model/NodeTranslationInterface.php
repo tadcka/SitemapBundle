@@ -110,6 +110,22 @@ interface NodeTranslationInterface
     public function getMetaKeywords();
 
     /**
+     * Set online.
+     *
+     * @param bool $online
+     *
+     * @return NodeTranslationInterface
+     */
+    public function setOnline($online);
+
+    /**
+     * Is online.
+     *
+     * @return bool
+     */
+    public function isOnline();
+
+    /**
      * Set route.
      *
      * @param RouteInterface $route

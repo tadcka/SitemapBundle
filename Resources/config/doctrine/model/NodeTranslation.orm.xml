@@ -28,6 +28,8 @@
 
         <field name="metaKeywords" column="meta_keywords" type="text" nullable="true" />
 
+        <field name="online" column="online" type="boolean" nullable="false" />
+
     </mapped-superclass>
 
 </doctrine-mapping>

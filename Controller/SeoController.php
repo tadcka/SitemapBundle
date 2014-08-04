@@ -24,6 +24,7 @@ use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\TreeBundle\Event\NodeEvent;
 use Tadcka\Bundle\TreeBundle\ModelManager\NodeManagerInterface;
+use Tadcka\Bundle\TreeBundle\ModelManager\TreeManagerInterface;
 use Tadcka\Bundle\TreeBundle\TadckaTreeEvents;
 
 /**
@@ -46,12 +47,14 @@ class SeoController extends ContainerAware
             $this->container->get('tadcka_sitemap.helper.router')->hasControllerByNodeType($node->getType())
         );
         if ($this->getFormHandler()->process($request, $form, $node)) {
+            $this->getEventDispatcher()->dispatch(
+                TadckaTreeEvents::NODE_EDIT_SUCCESS,
+                new NodeEvent($node, $this->getTreeManager()->findTreeByRootId($node->getRoot()))
+            );
             $this->getNodeManager()->save();
             $messages->addSuccess(
                 $this->getTranslator()->trans('success.seo_save', array(), 'TadckaSitemapBundle')
             );
-
-            $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new NodeEvent($node));
         }
 
         return new Response(
@@ -63,6 +66,25 @@ class SeoController extends ContainerAware
                 )
             )
         );
+    }
+
+    public function onlineAction(Request $request, $nodeId)
+    {
+        $translation = $this->getNodeTranslationManager()->findByNodeId($nodeId, $request->getLocale());
+        if (null === $translation) {
+            throw new NotFoundHttpException('Not found node translation!');
+        }
+
+        $translation->setOnline(!$translation->isOnline());
+        if ($translation->isOnline()) {
+            $text = $this->getTranslator()->trans('sitemap.unpublish', array(), 'TadckaSitemapBundle');
+        } else {
+            $text = $this->getTranslator()->trans('sitemap.publish', array(), 'TadckaSitemapBundle');
+        }
+
+        $this->getNodeTranslationManager()->save();
+
+        return new Response($text);
     }
 
     /**
@@ -119,5 +141,13 @@ class SeoController extends ContainerAware
     private function getEventDispatcher()
     {
         return $this->container->get('event_dispatcher');
+    }
+
+    /**
+     * @return TreeManagerInterface
+     */
+    private function getTreeManager()
+    {
+        return $this->container->get('tadcka_tree.manager.tree');
     }
 }

@@ -1,7 +1,7 @@
 {% trans_default_domain 'TadckaSitemapBundle' %}
 
 <div class="pull-right">
-    {% include 'TadckaSitemapBundle:Sitemap:toolbar.html.twig' %}
+    {% include 'TadckaSitemapBundle:Sitemap:toolbar.html.twig' with {has_controller: has_controller, node: node, node_route: node_route, is_online: is_online} %}
 </div>
 
 <div class="clearfix"><!-- --></div>

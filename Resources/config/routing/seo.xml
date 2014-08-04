@@ -8,4 +8,8 @@
         <default key="_controller">TadckaSitemapBundle:Seo:index</default>
     </route>
 
+    <route id="tadcka_sitemap_seo_online" pattern="/sitemap/node-online/{nodeId}">
+        <default key="_controller">TadckaSitemapBundle:Seo:online</default>
+    </route>
+
 </routes>

@@ -47,6 +47,11 @@ abstract class NodeTranslation implements NodeTranslationInterface
     protected $metaKeywords;
 
     /**
+     * @var bool
+     */
+    protected $online = false;
+
+    /**
      * @var NodeInterface
      */
     protected $node;
@@ -135,6 +140,25 @@ abstract class NodeTranslation implements NodeTranslationInterface
     {
         return $this->metaKeywords;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOnline($online)
+    {
+        $this->online = $online;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isOnline()
+    {
+        return $this->online;
+    }
+
 
     /**
      * {@inheritdoc}

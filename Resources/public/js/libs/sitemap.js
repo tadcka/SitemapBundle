@@ -30,8 +30,10 @@ $.fn.sitemap = function () {
      * Load current toolbar content.
      */
     $content.getContent().on('click', 'div.tadcka-sitemap-toolbar a', function ($event) {
-        $event.preventDefault();
-        $toolbar.load($(this));
+        if (false === $(this).hasClass('sitemap-preview')) {
+            $event.preventDefault();
+            $toolbar.load($(this));
+        }
     });
 
     /**

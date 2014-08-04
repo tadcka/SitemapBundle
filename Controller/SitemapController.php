@@ -19,6 +19,8 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Tadcka\Bundle\SitemapBundle\Event\EditNodeEvent;
+use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
+use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\TreeBundle\ModelManager\NodeManagerInterface;
 use Tadcka\Bundle\TreeBundle\Services\TreeService;
 
@@ -39,13 +41,13 @@ class SitemapController extends ContainerAware
                 array(
                     'tree' => $tree,
                     'page_header' => $this->getTranslator()
-                        ->trans('sitemap.page_header', array(), 'TadckaSitemapBundle'),
+                            ->trans('sitemap.page_header', array(), 'TadckaSitemapBundle'),
                 )
             )
         );
     }
 
-    public function contentAction($nodeId)
+    public function contentAction(Request $request, $nodeId)
     {
         $node = $this->getNodeManager()->findNode($nodeId);
 
@@ -57,12 +59,17 @@ class SitemapController extends ContainerAware
         $this->container->get('event_dispatcher')->dispatch('tadcka_sitemap.tab.edit_node', $event);
         $tabs = $event->getTabs();
 
+        $translation = $this->getNodeTranslationManager()->findByNodeId($nodeId, $request->getLocale());
+
         return new Response(
             $this->getTemplating()->render(
                 'TadckaSitemapBundle:Sitemap:content.html.twig',
                 array(
                     'node' => $node,
                     'tabs' => $tabs,
+                    'has_controller' => $this->getRouterHelper()->hasControllerByNodeType($node->getType()),
+                    'node_route' => $translation ? $translation->getRoute() : null,
+                    'is_online' => $translation ? $translation->isOnline() : false,
                 )
             )
         );
@@ -106,5 +113,21 @@ class SitemapController extends ContainerAware
     private function getNodeManager()
     {
         return $this->container->get('tadcka_tree.manager.node');
+    }
+
+    /**
+     * @return RouterHelper
+     */
+    private function getRouterHelper()
+    {
+        return $this->container->get('tadcka_sitemap.helper.router');
+    }
+
+    /**
+     * @return NodeTranslationManagerInterface
+     */
+    private function getNodeTranslationManager()
+    {
+        return $this->container->get('tadcka_sitemap.manager.node_translation');
     }
 }
