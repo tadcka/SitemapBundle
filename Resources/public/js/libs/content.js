@@ -165,16 +165,69 @@ function SitemapContent() {
          * @param {HTMLElement} $button
          */
         this.load = function ($button) {
-            fadeOn();
+            get($button.attr('href'), function ($response) {
+                var $subContent = $content.find('div.sub-content:first');
 
-            $.ajax({
-                url: $button.attr('href'),
-                type: 'GET',
-                success: function ($response) {
-                    var $subContent = $content.find('div.sub-content:first');
-                    $subContent.addClass('toolbar-content');
+                $subContent.addClass('toolbar-content');
+                if ($response.content) {
+                    $subContent.html($response.content);
+                } else {
                     $subContent.html($response);
+                }
+            });
+        };
+
+        /**
+         * Button toggle.
+         *
+         * @param {HTMLElement} $button
+         */
+        this.toggle = function ($button) {
+            get($button.attr('href'), function ($response) {
+                $button.html($response);
+            });
+        };
+
+        /**
+         * Save node.
+         *
+         * @param {String} $url
+         * @param {Array} $data
+         * @param {Function} $callback
+         */
+        this.create = function ($url, $data, $callback) {
+            $.ajax({
+                url: $url,
+                type: 'POST',
+                data: $data,
+                success: function ($response) {
+                    if (!$response.node_id) {
+                        $content.find('div.sub-content:first').html($response.content);
+                    }
                     fadeOff();
+                    $callback($response);
+                },
+                error: function ($request, $status, $error) {
+                    $content.html($request.responseText);
+                    fadeOff();
+                }
+            });
+        };
+
+        /**
+         * Delete node.
+         *
+         * @param {String} $url
+         * @param {Function} $callback
+         */
+        this.delete = function ($url, $callback) {
+            $.ajax({
+                url: $url,
+                type: 'DELETE',
+                success: function ($response) {
+                    $content.html($response);
+                    fadeOff();
+                    $callback();
                 },
                 error: function ($request, $status, $error) {
                     $content.html($request.responseText);
@@ -202,6 +255,29 @@ function SitemapContent() {
                     $content.find('div.sub-content:first').html($response);
                     fadeOff();
                     $callback();
+                },
+                error: function ($request, $status, $error) {
+                    $content.html($request.responseText);
+                    fadeOff();
+                }
+            });
+        };
+
+        /**
+         * Get resource.
+         *
+         * @param {String} $url
+         * @param {Function} $callback
+         */
+        var get = function ($url, $callback) {
+            fadeOn();
+
+            $.ajax({
+                url: $url,
+                type: 'GET',
+                success: function ($response) {
+                    $callback($response);
+                    fadeOff();
                 },
                 error: function ($request, $status, $error) {
                     $content.html($request.responseText);

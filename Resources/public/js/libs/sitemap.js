@@ -29,11 +29,17 @@ $.fn.sitemap = function () {
     /**
      * Load current toolbar content.
      */
-    $content.getContent().on('click', 'div.tadcka-sitemap-toolbar a', function ($event) {
-        if (false === $(this).hasClass('sitemap-preview')) {
-            $event.preventDefault();
-            $toolbar.load($(this));
-        }
+    $content.getContent().on('click', 'div.tadcka-sitemap-toolbar a.load', function ($event) {
+        $event.preventDefault();
+        $toolbar.load($(this));
+    });
+
+    /**
+     * Toggle toolbar.
+     */
+    $content.getContent().on('click', 'div.tadcka-sitemap-toolbar a.toggle', function ($event) {
+        $event.preventDefault();
+        $toolbar.toggle($(this));
     });
 
     /**
@@ -59,22 +65,28 @@ $.fn.sitemap = function () {
     });
 
     /**
-     * Submit toolbar content form.
+     * Create node.
      */
     $content.getContent().on('click', 'div.toolbar-content > form > button', function ($event) {
         $event.preventDefault();
         var $form = $(this).closest('form');
-        $toolbar.submit($form.attr('action'), $form.serialize(), 'POST', function () {
-            $tree.refresh();
+        $toolbar.create($form.attr('action'), $form.serialize(), function ($response) {
+            if ($response.node_id) {
+                $tree.refresh();
+                $content.load($response.node_id, function () {
+                    $tab.loadFirst();
+                    $content.getContent().find('.sub-content:first').prepend($response.content);
+                });
+            }
         });
     });
 
     /**
-     * Send delete method for node.
+     * Delete node.
      */
     $content.getContent().on('click', 'a#tadcka-tree-node-delete-confirm', function ($event) {
         $event.preventDefault();
-        $toolbar.submit($(this).attr('href'), 'DELETE', null, function () {
+        $toolbar.delete($(this).attr('href'), function () {
             $tree.refresh();
         });
     });

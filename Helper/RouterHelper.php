@@ -107,6 +107,7 @@ class RouterHelper
     {
         $route->setDefault(RouteObjectInterface::CONTROLLER_NAME, $this->getControllerByNodeType($node->getType()));
         $route ->setName($this->getRouteName($node->getId(), $locale));
-        $route->setRoutePattern($this->routeGenerator->generateUniqueRouteFromText($text));
+        $route->setRoutePattern($this->routeGenerator->generateRouteFromText($text));
+        $this->routeGenerator->generateUniqueRoute($route);
     }
 }

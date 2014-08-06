@@ -1,21 +1,21 @@
 {% trans_default_domain 'TadckaSitemapBundle' %}
 
 <div class="btn-group tadcka-sitemap-toolbar">
-    <a href="{{ url('tadcka_tree_create_node', {id: node.id}) }}" class="btn btn-outline btn-primary">
+    <a href="{{ url('tadcka_tree_create_node', {id: node.id}) }}" class="btn btn-outline btn-primary load">
         {{ 'sitemap.add_subpage'|trans }}
     </a>
     {% if node.parent is not empty %}
         {% if has_controller %}
             {% if node_route is not empty %}
-                <a href="{{ url('tadcka_sitemap_seo_online', {nodeId: node.id}) }} ) }}" class="btn btn-outline btn-primary">
+                <a href="{{ url('tadcka_sitemap_seo_online', {nodeId: node.id}) }} ) }}" class="btn btn-outline btn-primary toggle">
                     {{ is_online ? 'sitemap.unpublish'|trans : 'sitemap.publish'|trans }}
                 </a>
-                <a href="{{ url('tadcka_sitemap_preview', {slug: node_route.routePattern|trim('/')}) }}" target="_blank" class="btn btn-outline btn-primary sitemap-preview">
+                <a href="{{ url('tadcka_sitemap_preview', {slug: node_route.routePattern|trim('/')}) }}" target="_blank" class="btn btn-outline btn-primary">
                     {{ 'sitemap.preview'|trans }}
                 </a>
             {% endif %}
         {% endif %}
-        <a href="{{ url('tadcka_tree_delete_node', {id: node.id}) }}" class="btn btn-outline btn-primary">
+        <a href="{{ url('tadcka_tree_delete_node', {id: node.id}) }}" class="btn btn-outline btn-primary load">
             {{ 'sitemap.delete'|trans }}
         </a>
     {% endif %}
