@@ -94,6 +94,6 @@ class MockNodeTranslationManager extends NodeTranslationManager
      */
     public function getClass()
     {
-        // TODO: Implement getClass() method.
+        return  'Tadcka\Bundle\SitemapBundle\Tests\Mock\Model\MockNodeTranslation';
     }
 }

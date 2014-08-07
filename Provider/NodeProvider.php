@@ -54,7 +54,9 @@ class NodeProvider implements NodeProviderInterface
      */
     public function getNodeTranslationFromRequest(Request $request)
     {
-        if (null !== $route = $this->getRoute($request)) {
+        $route = $this->getRoute($request);
+
+        if (null !== $route) {
             return $this->nodeTranslationManager->findByRoute($route);
         }
 
@@ -71,6 +73,7 @@ class NodeProvider implements NodeProviderInterface
     private function getRoute(Request $request)
     {
         $routeParams = $request->get('_route_params');
+
         if (isset($routeParams['_route_object']) && ($routeParams['_route_object'] instanceof RouteInterface)) {
             return $routeParams['_route_object'];
         }

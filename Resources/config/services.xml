@@ -9,6 +9,8 @@
         <parameter key="tadcka_sitemap.listener.edit_node.class">Tadcka\Bundle\SitemapBundle\EventListener\EditNodeListener</parameter>
         <parameter key="tadcka_sitemap.provider.node.class">Tadcka\Bundle\SitemapBundle\Provider\NodeProvider</parameter>
         <parameter key="tadcka_sitemap.listener.tree_node.class">Tadcka\Bundle\SitemapBundle\EventListener\TreeNodeListener</parameter>
+        <parameter key="tadcka_sitemap.security_manager.page.class">Tadcka\Bundle\SitemapBundle\Security\PageSecurityManager</parameter>
+        <parameter key="tadcka_sitemap.provider.page.class">Tadcka\Bundle\SitemapBundle\Provider\PageProvider</parameter>
     </parameters>
 
     <services>
@@ -35,6 +37,17 @@
             <argument type="service" id="tadcka_sitemap.helper.router" />
             <argument type="service" id="tadcka_routing.manager.route" />
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
+        </service>
+
+        <!--Sitemap page security manager-->
+        <service id="tadcka_sitemap.security_manager.page" class="%tadcka_sitemap.security_manager.page.class%">
+            <argument type="service" id="security.context" />
+        </service>
+
+        <!--Sitemap page provider-->
+        <service id="tadcka_sitemap.provider.page" class="%tadcka_sitemap.provider.page.class%">
+            <argument type="service" id="tadcka_sitemap.provider.node" />
+            <argument type="service" id="tadcka_sitemap.security_manager.page" />
         </service>
 
     </services>
