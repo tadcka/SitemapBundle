@@ -24,7 +24,7 @@ use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
 interface PageProviderInterface
 {
     /**
-     * Get page node or 404.
+     * Get page node or 404 response code.
      *
      * @param Request $request
      *
@@ -35,7 +35,7 @@ interface PageProviderInterface
     public function getPageNodeOr404(Request $request);
 
     /**
-     * Get page node translation or 404t.
+     * Get page node translation or 404 response code.
      *
      * @param Request $request
      *
