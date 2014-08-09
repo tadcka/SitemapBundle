@@ -72,6 +72,23 @@ class TreeNodeListener
     }
 
     /**
+     * On delete node.
+     *
+     * @param NodeEvent $event
+     */
+    public function onDeleteNode(NodeEvent $event)
+    {
+        $translations = $this->translationManager->findManyByNodeId($event->getNode()->getId());
+        if (0 < count($translations)) {
+            foreach ($translations as $translation) {
+                if (null !== $route = $translation->getRoute()) {
+                    $this->routeManager->delete($route);
+                }
+            }
+        }
+    }
+
+    /**
      * Create seo.
      *
      * @param NodeInterface $node

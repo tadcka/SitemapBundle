@@ -45,19 +45,21 @@ class EditNodeListener
      */
     public function onEditNode(EditNodeEvent $event)
     {
+        $node = $event->getNode();
+
         $menu = new Tab(
             $event->getTranslator()->trans('node.menu', array(), 'TadckaSitemapBundle'),
             'node_menu',
-            $event->getRouter()->generate('tadcka_tree_edit_node', array('id' => $event->getNode()->getId())),
+            $event->getRouter()->generate('tadcka_tree_edit_node', array('id' => $node->getId())),
             255
         );
         $event->addTab($menu);
 
-        if ((null !== $event->getNode()->getParent()) && $this->routerHelper->hasControllerByNodeType($event->getNode()->getType())) {
+        if ((null !== $node->getParent()) && $this->routerHelper->hasControllerByNodeType($node->getType())) {
             $seo = new Tab(
                 $event->getTranslator()->trans('node.seo', array(), 'TadckaSitemapBundle'),
                 'node_content',
-                $event->getRouter()->generate('tadcka_sitemap_seo', array('nodeId' => $event->getNode()->getId())),
+                $event->getRouter()->generate('tadcka_sitemap_seo', array('nodeId' => $node->getId())),
                 200
             );
 
