@@ -3,8 +3,8 @@
 <phpunit bootstrap="./vendor/autoload.php">
 
     <testsuites>
-        <testsuite name="Test Suite">
-            <directory suffix="Test.php">./Tests</directory>
+        <testsuite name="Tadcka SitemapBundle Test Suite">
+            <directory>./Tests</directory>
         </testsuite>
     </testsuites>
 
