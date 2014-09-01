@@ -82,7 +82,7 @@ class TreeNodeListener
         if (0 < count($translations)) {
             foreach ($translations as $translation) {
                 if (null !== $route = $translation->getRoute()) {
-                    $this->routeManager->delete($route);
+                    $this->routeManager->remove($route);
                 }
             }
         }

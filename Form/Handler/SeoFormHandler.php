@@ -78,7 +78,7 @@ class SeoFormHandler
                                 ->fillRoute($route, $node, $route->getRoutePattern(), $translation->getLang());
                             $this->routeManager->add($translation->getRoute());
                         } else {
-                            $this->routeManager->delete($translation->getRoute());
+                            $this->routeManager->remove($translation->getRoute());
                         }
                     }
 
