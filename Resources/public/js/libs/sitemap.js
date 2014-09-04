@@ -56,7 +56,7 @@ $.fn.sitemap = function () {
     /**
      * Submit tab content form.
      */
-    $content.getContent().on('click', 'div.tab-content > form > button', function ($event) {
+    $content.getContent().on('submit', 'div.tab-content > form', function ($event) {
         $event.preventDefault();
         var $form = $(this).closest('form');
         $tab.submit($form.attr('action'), $form.serialize(), function () {
@@ -67,7 +67,7 @@ $.fn.sitemap = function () {
     /**
      * Create node.
      */
-    $content.getContent().on('click', 'div.toolbar-content > form > button', function ($event) {
+    $content.getContent().on('submit', 'div.toolbar-content > form', function ($event) {
         $event.preventDefault();
         var $form = $(this).closest('form');
         $toolbar.create($form.attr('action'), $form.serialize(), function ($response) {
