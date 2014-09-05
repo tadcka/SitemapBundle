@@ -70,13 +70,18 @@ class SeoController extends ContainerAware
 
     public function onlineAction(Request $request, $nodeId)
     {
-        $translation = $this->getNodeTranslationManager()->findByNodeId($nodeId, $request->getLocale());
-        if (null === $translation) {
-            throw new NotFoundHttpException('Not found node translation!');
+        $translations = $this->getNodeTranslationManager()->findManyByNodeId($nodeId);
+        if (0 === count($translations)) {
+            throw new NotFoundHttpException('Not found node translations!');
         }
 
-        $translation->setOnline(!$translation->isOnline());
-        if ($translation->isOnline()) {
+        $isOnline = false;
+        foreach ($translations as $translation) {
+            $isOnline = !$translation->isOnline();
+            $translation->setOnline($isOnline);
+        }
+
+        if ($isOnline) {
             $text = $this->getTranslator()->trans('sitemap.unpublish', array(), 'TadckaSitemapBundle');
         } else {
             $text = $this->getTranslator()->trans('sitemap.publish', array(), 'TadckaSitemapBundle');

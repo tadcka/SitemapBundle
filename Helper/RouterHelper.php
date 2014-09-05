@@ -106,6 +106,7 @@ class RouterHelper
     public function fillRoute(RouteInterface $route, NodeInterface $node, $text, $locale)
     {
         $route->setDefault(RouteObjectInterface::CONTROLLER_NAME, $this->getControllerByNodeType($node->getType()));
+        $route->addLocale($locale, array($locale));
         $route ->setName($this->getRouteName($node->getId(), $locale));
         $route->setRoutePattern($this->routeGenerator->generateRouteFromText($text));
         $this->routeGenerator->generateUniqueRoute($route);
