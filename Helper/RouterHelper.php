@@ -16,7 +16,7 @@ use Tadcka\Bundle\RoutingBundle\Generator\RouteGenerator;
 use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Exception\ResourceNotFoundException;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
-use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

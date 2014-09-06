@@ -31,19 +31,17 @@ class NodeFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if (false === $options['is_root']) {
-            if (0 < count($options['node_types'])) {
-                $builder->add(
-                    'type',
-                    'choice',
-                    array(
-                        'choices' => $options['node_types'],
-                        'empty_value' => 'form.select',
-                        'empty_data' => null,
-                        'constraints' => array(new NotBlank()),
-                        'label' => 'form.node.type',
-                    )
-                );
-            }
+            $builder->add(
+                'type',
+                'choice',
+                array(
+                    'choices' => $options['node_types'],
+                    'empty_value' => 'form.select',
+                    'empty_data' => null,
+                    'constraints' => array(new NotBlank()),
+                    'label' => 'form.node.type',
+                )
+            );
 
             $builder->add(
                 'priority',

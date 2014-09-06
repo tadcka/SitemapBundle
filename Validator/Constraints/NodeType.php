@@ -27,6 +27,6 @@ class NodeType extends Constraint
      */
     public function validatedBy()
     {
-        return 'tadcka_tree.node_type';
+        return 'tadcka_sitemap.node_type';
     }
 }
