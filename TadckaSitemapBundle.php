@@ -30,6 +30,7 @@ class TadckaSitemapBundle extends Bundle
         parent::build($container);
 
         $this->addRegisterMappingsPass($container);
+        $this->enabledTreeExtension($container);
     }
 
     /**
@@ -47,5 +48,21 @@ class TadckaSitemapBundle extends Bundle
         if (class_exists($ormCompilerClass)) {
             $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
         }
+    }
+
+    /**
+     * Enabled tree extension.
+     *
+     * @param ContainerBuilder $container
+     */
+    private function enabledTreeExtension(ContainerBuilder $container)
+    {
+        $container->prependExtensionConfig(
+            'stof_doctrine_extensions',
+            array(
+                'default_locale' => '%locale%',
+                'orm' => array('default' => array('tree' => true)),
+            )
+        );
     }
 }

@@ -11,26 +11,16 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Model;
 
+use Tadcka\Component\Tree\Model\NodeTranslation as BaseNodeTranslation;
 use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
-use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since 2/25/14 11:40 PM
  */
-abstract class NodeTranslation implements NodeTranslationInterface
+abstract class NodeTranslation extends BaseNodeTranslation implements NodeTranslationInterface
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $lang;
-
     /**
      * @var string
      */
@@ -52,40 +42,9 @@ abstract class NodeTranslation implements NodeTranslationInterface
     protected $online = false;
 
     /**
-     * @var NodeInterface
-     */
-    protected $node;
-
-    /**
      * @var RouteInterface
      */
     protected $route;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLang($lang)
-    {
-        $this->lang = $lang;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLang()
-    {
-        return $this->lang;
-    }
 
     /**
      * {@inheritdoc}
@@ -157,25 +116,6 @@ abstract class NodeTranslation implements NodeTranslationInterface
     public function isOnline()
     {
         return $this->online;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setNode(NodeInterface $node)
-    {
-        $this->node = $node;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getNode()
-    {
-        return $this->node;
     }
 
     /**
