@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="tadcka_sitemap.tree.registry.class">Tadcka\Component\Tree\Registry\Tree\TreeRegistry</parameter>
+        <parameter key="tadcka_sitemap.tree.config.class">Tadcka\Component\Tree\Registry\Tree\TreeConfig</parameter>
+
+        <parameter key="tadcka_sitemap.tree.provider.class">Tadcka\Component\Tree\Provider\TreeProvider</parameter>
+    </parameters>
+
+    <services>
+
+        <!--Tree registry-->
+        <service id="tadcka_sitemap.tree.registry" class="%tadcka_sitemap.tree.registry.class%" public="false" />
+
+        <!--Register sitemap tree-->
+        <service class="%tadcka_sitemap.tree.config.class%" public="false">
+            <tag name="tadcka_sitemap.tree" />
+            <argument>tadcka_sitemap</argument>
+            <argument>tadcka_sitemap</argument>
+            <argument>/bundles/tadckasitemap/images/icon/sitemap.png</argument>
+        </service>
+
+        <!--Tree provider-->
+        <service id="tadcka_sitemap.tree.provider" class="%tadcka_sitemap.tree.provider.class%" public="true">
+            <argument type="service" id="tadcka_sitemap.manager.tree" />
+            <argument type="service" id="tadcka_sitemap.tree.registry" />
+        </service>
+
+    </services>
+</container>

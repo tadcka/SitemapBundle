@@ -21,6 +21,13 @@ use Tadcka\Component\Tree\Model\NodeInterface as BaseNodeInterface;
 interface NodeInterface extends BaseNodeInterface
 {
     /**
+     * Get id.
+     *
+     * @return int
+     */
+    public function getId();
+
+    /**
      * Set root.
      *
      * @param int $root

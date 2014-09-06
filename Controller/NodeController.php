@@ -17,26 +17,51 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Translation\TranslatorInterface;
-use Tadcka\Bundle\TreeBundle\Event\NodeEvent;
-use Tadcka\Bundle\TreeBundle\Form\Factory\NodeFormFactory;
-use Tadcka\Bundle\TreeBundle\Form\Handler\NodeFormHandler;
-use Tadcka\Bundle\TreeBundle\Helper\FrontendHelper;
-use Tadcka\Bundle\TreeBundle\Helper\JsonResponseHelper;
-use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
-use Tadcka\Bundle\TreeBundle\ModelManager\NodeManagerInterface;
-use Tadcka\Bundle\TreeBundle\ModelManager\TreeManagerInterface;
-use Tadcka\Bundle\TreeBundle\Registry\TreeRegistry;
-use Tadcka\Bundle\TreeBundle\TadckaTreeEvents;
+use Tadcka\Bundle\SitemapBundle\Helper\FrontendHelper;
+use Tadcka\Component\Tree\Event\TreeNodeEvent;
+use Tadcka\Component\Tree\TadckaTreeEvents;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since  4/2/14 11:11 PM
  */
-class NodeController extends Controller
+class NodeController extends AbstractController
 {
+    public function getRootAction(Request $request)
+    {
+        $tree = $this->getTreeProvider()->getTree('tadcka_sitemap');
+        if (null === $tree) {
+            throw new NotFoundHttpException();
+        }
+
+        $rootNode = $this->getNodeManager()->findRootNode($tree);
+        if (null === $rootNode) {
+            $rootNode = $this->getNodeManager()->create();
+            $rootNode->setTree($tree);
+            $this->getNodeManager()->add($rootNode, true);
+        }
+
+        $iconPath = null;
+        if (null !== $config = $this->getTreeProvider()->getTreeConfig('tadcka_sitemap')) {
+            $iconPath = $config->getIconPath();
+        }
+        $response = $this->getJsonResponse(
+            array($this->getFrontendHelper()->getRoot($rootNode, $request->getLocale(), $iconPath))
+        );
+
+        return $response;
+    }
+
+    public function getNodeAction(Request $request, $id)
+    {
+        $node = $this->getNodeOr404($id);
+
+        return $this->getJsonResponseHelper()->getResponse(
+            $this->getFrontendHelper()->getNodeChildren($node, $request->getLocale())
+        );
+    }
+
     public function createAction(Request $request, $id)
     {
         $parent = $this->getNodeOr404($id);
@@ -94,7 +119,7 @@ class NodeController extends Controller
         if ($this->getFormHandler()->process($request, $form)) {
             $this->getEventDispatcher()->dispatch(
                 TadckaTreeEvents::NODE_EDIT_SUCCESS,
-                new NodeEvent($node, $this->getTreeManager()->findTreeByRootId($node->getRoot()))
+                new TreeNodeEvent($node)
             );
             $this->getManager()->save();
             $messages['success'] = $this->getTranslator()->trans('success.edit_node', array(), 'TadckaTreeBundle');
@@ -134,52 +159,6 @@ class NodeController extends Controller
         throw new NotFoundHttpException("Don't delete the tree root!");
     }
 
-
-    public function getRootAction(Request $request, $rootId)
-    {
-        $root = $this->getManager()->findRoot($rootId);
-        if (null !== $root) {
-            $tree = $this->getTreeManager()->findTreeByRootId($rootId);
-            $iconPath = null;
-            $config = $this->getTreeRegistry()->getConfigs()->get($tree->getSlug());
-            if ((null !== $tree) && (null !== $config)) {
-                $iconPath = $config->getIconPath();
-            }
-            $response = $this->getJsonResponseHelper()->getResponse(
-                array($this->getFrontendHelper()->getRoot($root, $request->getLocale(), $iconPath))
-            );
-
-            return $response;
-        }
-
-        throw new NotFoundHttpException();
-    }
-
-    public function getNodeAction(Request $request, $id)
-    {
-        $node = $this->getNodeOr404($id);
-
-        return $this->getJsonResponseHelper()->getResponse(
-            $this->getFrontendHelper()->getNodeChildren($node, $request->getLocale())
-        );
-    }
-
-    /**
-     * @return RouterInterface
-     */
-    private function getRouter()
-    {
-        return $this->container->get('router');
-    }
-
-    /**
-     * @return TranslatorInterface
-     */
-    private function getTranslator()
-    {
-        return $this->container->get('translator');
-    }
-
     /**
      * @return NodeManagerInterface
      */
@@ -209,7 +188,7 @@ class NodeController extends Controller
      */
     private function getFrontendHelper()
     {
-        return $this->container->get('tadcka_tree.frontend.helper.frontend');
+        return $this->container->get('tadcka_sitemap.helper.frontend');
     }
 
     /**
@@ -226,42 +205,5 @@ class NodeController extends Controller
     private function getFormHandler()
     {
         return $this->container->get('tadcka_tree.form_handler.node');
-    }
-
-    /**
-     * Get tree registry.
-     *
-     * @return TreeRegistry
-     */
-    private function getTreeRegistry()
-    {
-        return $this->container->get('tadcka_tree.registry.tree');
-    }
-
-    /**
-     * @return EventDispatcherInterface
-     */
-    private function getEventDispatcher()
-    {
-        return $this->container->get('event_dispatcher');
-    }
-
-    /**
-     * Get node or 404.
-     *
-     * @param int $id
-     *
-     * @return null|NodeInterface
-     *
-     * @throws NotFoundHttpException
-     */
-    private function getNodeOr404($id)
-    {
-        $node = $this->getManager()->findNode($id);
-        if (null === $node) {
-            throw new NotFoundHttpException('Not found node!');
-        }
-
-        return $node;
     }
 }

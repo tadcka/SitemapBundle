@@ -6,6 +6,7 @@
 
     <parameters>
         <parameter key="tadcka_sitemap.helper.router.class">Tadcka\Bundle\SitemapBundle\Helper\RouterHelper</parameter>
+        <parameter key="tadcka_sitemap.helper.frontend.class">Tadcka\Bundle\SitemapBundle\Helper\FrontendHelper</parameter>
     </parameters>
 
     <services>
@@ -14,6 +15,12 @@
         <service id="tadcka_sitemap.helper.router" class="%tadcka_sitemap.helper.router.class%">
             <argument type="service" id="tadcka_routing.generator.route" />
             <argument>%tadcka_sitemap.controllers_by_node_type%</argument>
+        </service>
+
+        <!--Sitemap frontend helper-->
+        <service id="tadcka_sitemap.helper.frontend" class="%tadcka_sitemap.helper.frontend.class%">
+            <argument type="service" id="tadcka_sitemap.node.provider" />
+            <argument type="service" id="translator" />
         </service>
 
     </services>

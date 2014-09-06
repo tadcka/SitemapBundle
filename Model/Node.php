@@ -18,7 +18,7 @@ use Tadcka\Component\Tree\Model\Node as BaseNode;
  *
  * @since 9/6/14 10:46 AM
  */
-class Node extends BaseNode implements NodeInterface
+abstract class Node extends BaseNode implements NodeInterface
 {
     /**
      * @var int

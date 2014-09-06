@@ -14,6 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Tadcka\Component\Tree\DependencyInjection\AddTreeConfigPass;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -28,6 +29,8 @@ class TadckaSitemapBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
+
+        $container->addCompilerPass(new AddTreeConfigPass('tadcka_sitemap.tree.registry', 'tadcka_sitemap.tree'));
 
         $this->addRegisterMappingsPass($container);
         $this->enabledTreeExtension($container);

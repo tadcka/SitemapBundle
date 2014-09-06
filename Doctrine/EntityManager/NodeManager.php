@@ -16,13 +16,14 @@ use Doctrine\ORM\EntityRepository;
 use Tadcka\Component\Tree\Model\Manager\NodeManager as BaseNodeManager;
 use Tadcka\Component\Tree\Model\NodeInterface;
 use Tadcka\Component\Tree\Model\TreeInterface;
+use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since 9/6/14 11:07 AM
  */
-class NodeManager extends BaseNodeManager
+class NodeManager extends BaseNodeManager implements NodeManagerInterface
 {
     /**
      * @var EntityManager
@@ -50,6 +51,14 @@ class NodeManager extends BaseNodeManager
         $this->em = $em;
         $this->repository = $em->getRepository($class);
         $this->class = $em->getClassMetadata($class)->name;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findNodeById($id)
+    {
+        return $this->repository->find($id);
     }
 
     /**

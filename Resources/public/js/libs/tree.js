@@ -16,8 +16,8 @@ function SitemapTree() {
                 'data': {
                     'url': function ($node) {
                         return $node.id === '#'
-                            ? Routing.generate('tadcka_tree_node_root', {rootId: $tree.data('root_id')})
-                            : Routing.generate('tadcka_tree_node', {id: $node.id });
+                            ? Routing.generate('tadcka_sitemap_tree_node_root')
+                            : Routing.generate('tadcka_sitemap_tree_node', {id: $node.id });
                     }
                 }
             }
