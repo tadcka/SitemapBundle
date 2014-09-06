@@ -92,18 +92,6 @@ class NodeFormFactory
      */
     public function create(NodeInterface $node)
     {
-        $nodeTypes = array();
-        if (null !== $node->getParent()) {
-            foreach ($this->nodeProvider->getActiveNodeTypes($node) as $nodeType) {
-                $nodeTypeConfig = $this->nodeProvider->getNodeTypeConfig($nodeType);
-                $name = $nodeTypeConfig->getName();
-                if ($nodeTypeConfig->getTranslationDomain()) {
-                    $name = $this->translator->trans($nodeTypeConfig->getName(), array(), $nodeTypeConfig->getTranslationDomain());
-                }
-                $nodeTypes[$nodeType] = $name;
-            }
-        }
-
         return $this->formFactory->create(
             new NodeFormType(),
             $node,
@@ -111,9 +99,34 @@ class NodeFormFactory
                 'action' => $this->router->getContext()->getPathInfo(),
                 'data_class' => $this->nodeClass,
                 'translation_class' => $this->translationClass,
-                'node_types' => $nodeTypes,
+                'node_types' => $this->getNodeTypes($node),
                 'is_root' => (null === $node->getParent())
             )
         );
+    }
+
+    /**
+     * Get node types.
+     *
+     * @param NodeInterface $node
+     *
+     * @return array
+     */
+    private function getNodeTypes(NodeInterface $node)
+    {
+        $nodeTypes = array();
+        if (null !== $node->getParent()) {
+            foreach ($this->nodeProvider->getActiveNodeTypes($node) as $nodeType) {
+                $nodeTypeConfig = $this->nodeProvider->getNodeTypeConfig($nodeType);
+                $name = $nodeTypeConfig->getName();
+                if ($nodeTypeConfig->getTranslationDomain()) {
+                    $name = $this->translator
+                        ->trans($nodeTypeConfig->getName(), array(), $nodeTypeConfig->getTranslationDomain());
+                }
+                $nodeTypes[$nodeType] = $name;
+            }
+        }
+
+        return $nodeTypes;
     }
 }

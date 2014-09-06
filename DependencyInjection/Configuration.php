@@ -59,6 +59,20 @@ class Configuration implements ConfigurationInterface
                     ->prototype('scalar')->end()
                 ->end()
 
+                ->arrayNode('multi_language')->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
+                        ->arrayNode('locales')
+                            ->beforeNormalization()
+                                ->ifString()
+                                ->then(function($value) { return preg_split('/\s*,\s*/', $value); })
+                            ->end()
+                            ->requiresAtLeastOneElement()->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
+
+
             ->end();
 
         return $treeBuilder;

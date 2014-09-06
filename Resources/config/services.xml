@@ -6,10 +6,9 @@
 
     <parameters>
         <parameter key="tadcka_sitemap.listener.sitemap_node.class">Tadcka\Bundle\SitemapBundle\EventListener\SitemapNodeListener</parameter>
-        <parameter key="tadcka_sitemap.provider.node.class">Tadcka\Bundle\SitemapBundle\Provider\NodeProvider</parameter>
         <parameter key="tadcka_sitemap.listener.tree_node.class">Tadcka\Bundle\SitemapBundle\EventListener\TreeNodeListener</parameter>
         <parameter key="tadcka_sitemap.security_manager.page.class">Tadcka\Bundle\SitemapBundle\Security\PageSecurityManager</parameter>
-        <parameter key="tadcka_sitemap.provider.page.class">Tadcka\Bundle\SitemapBundle\Provider\PageProvider</parameter>
+        <parameter key="tadcka_sitemap.provider.page_node.class">Tadcka\Bundle\SitemapBundle\Provider\PageNodeProvider</parameter>
     </parameters>
 
     <services>
@@ -17,11 +16,6 @@
         <service id="tadcka_sitemap.listener.sitemap_node" class="%tadcka_sitemap.listener.sitemap_node.class%">
             <tag name="kernel.event_listener" event="tadcka_sitemap.node_edit" method="onSitemapNodeEdit" />
             <argument type="service" id="tadcka_sitemap.helper.router" />
-        </service>
-
-        <!--Sitemap node provider-->
-        <service id="tadcka_sitemap.provider.node" class="%tadcka_sitemap.provider.node.class%">
-            <argument type="service" id="tadcka_sitemap.manager.node_translation" />
         </service>
 
         <!--Tree node create success event listener-->
@@ -39,9 +33,9 @@
             <argument type="service" id="security.context" />
         </service>
 
-        <!--Sitemap page provider-->
-        <service id="tadcka_sitemap.provider.page" class="%tadcka_sitemap.provider.page.class%">
-            <argument type="service" id="tadcka_sitemap.provider.node" />
+        <!--Sitemap page node provider-->
+        <service id="tadcka_sitemap.provider.page_node" class="%tadcka_sitemap.provider.page_node.class%">
+            <argument type="service" id="tadcka_sitemap.manager.node_translation" />
             <argument type="service" id="tadcka_sitemap.security_manager.page" />
         </service>
 
