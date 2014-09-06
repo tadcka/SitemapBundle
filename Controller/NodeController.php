@@ -14,14 +14,14 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Tadcka\Component\Tree\Event\TreeNodeEvent;
+use Tadcka\Component\Tree\TadckaTreeEvents;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tadcka\Bundle\SitemapBundle\Form\Factory\NodeFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\NodeFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Helper\FrontendHelper;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
-use Tadcka\Component\Tree\Event\TreeNodeEvent;
-use Tadcka\Component\Tree\TadckaTreeEvents;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -41,6 +41,19 @@ class NodeController extends AbstractController
         if (null === $rootNode) {
             $rootNode = $this->getNodeManager()->create();
             $rootNode->setTree($tree);
+
+            $translation = $this->getNodeTranslationManager()->create();
+            $translation->setLang($request->getLocale());
+            $translation->setNode($rootNode);
+            $treeConfig = $this->getTreeProvider()->getTreeConfig(TadckaSitemapBundle::SITEMAP_TREE);
+            $title = $treeConfig->getName();
+            if ($treeConfig->getTranslationDomain()) {
+                $title = $this->getTranslator()->trans($treeConfig->getName(), array(), $treeConfig->getTranslationDomain());
+            }
+            $translation->setTitle($title);
+            $this->getNodeTranslationManager()->add($translation);
+
+            $rootNode->addTranslation($translation);
             $this->getNodeManager()->add($rootNode, true);
         }
 
@@ -144,7 +157,10 @@ class NodeController extends AbstractController
                 $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_DELETE_SUCCESS, $treeNodeEvent);
                 $this->getNodeManager()->save();
 
-                $messages['success'] = $this->getTranslator()->trans('success.delete_node', array(), 'TadckaSitemapBundle');
+                $messages = new Messages();
+                $messages->addSuccess(
+                    $this->getTranslator()->trans('success.delete_node', array(), 'TadckaSitemapBundle')
+                );
 
                 return $this->renderResponse('TadckaSitemapBundle::messages.html.twig', array('messages' => $messages));
             }

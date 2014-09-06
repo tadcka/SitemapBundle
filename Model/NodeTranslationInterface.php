@@ -20,7 +20,7 @@ use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
  */
 interface NodeTranslationInterface extends BaseNodeTranslationInterface
 {
-    const OBJECT_TYPE = 'TADCKA_SITEMAP_NODE_TRANSLATION';
+    const OBJECT_TYPE = 'tadcka_sitemap_node_translation';
 
     /**
      * Set metaTitle.

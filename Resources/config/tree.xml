@@ -22,6 +22,9 @@
             <argument>tadcka_sitemap</argument>
             <argument>tadcka_sitemap</argument>
             <argument>/bundles/tadckasitemap/images/icon/sitemap.png</argument>
+            <call method="setTranslationDomain">
+                <argument>TadckaSitemapBundle</argument>
+            </call>
         </service>
 
         <!--Tree provider-->

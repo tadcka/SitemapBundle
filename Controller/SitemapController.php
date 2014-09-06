@@ -14,7 +14,6 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEvent;
 use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapEvents;
 
 /**
@@ -63,13 +62,5 @@ class SitemapController extends AbstractController
     private function getRouterHelper()
     {
         return $this->container->get('tadcka_sitemap.helper.router');
-    }
-
-    /**
-     * @return NodeTranslationManagerInterface
-     */
-    private function getNodeTranslationManager()
-    {
-        return $this->container->get('tadcka_sitemap.manager.node_translation');
     }
 }

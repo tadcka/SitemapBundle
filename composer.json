@@ -2,7 +2,7 @@
     "name":         "tadcka/sitemap-bundle",
     "homepage":     "https://github.com/tadcka/SitemapBundle",
     "description":  "Sitemap bundle on Symfony2",
-    "keywords":     ["sitemap", "sitemap manager"],
+    "keywords":     ["sitemap", "content management system"],
     "type":         "symfony-bundle",
     "license":      "MIT",
     "authors": [
@@ -14,18 +14,22 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.3",
+
         "symfony/framework-bundle" : ">=2.3",
-
         "friendsofsymfony/jsrouting-bundle": "~1.5",
+        "nercury/translation-editor-bundle": "0.1.x-dev",
+        "jms/serializer-bundle": "~0.13",
 
-        "tadcka/tree-bundle": "dev-master",
-        "tadcka/routing-bundle": "dev-master",
-
-        "nercury/translation-editor-bundle": "0.1.x-dev"
+        "tadcka/tree": "dev-master",
+        "tadcka/jstree-bundle": "dev-master",
+        "tadcka/routing-bundle": "dev-master"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.2",
-        "doctrine/doctrine-bundle": "dev-master"
+        "phpunit/phpunit": "~4.2"
+    },
+    "suggest": {
+        "doctrine/doctrine-bundle": "For doctrine mapping.",
+        "stof/doctrine-extensions-bundle": "For doctrine mapping."
     },
     "autoload": {
         "psr-4": {

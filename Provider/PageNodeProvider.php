@@ -11,16 +11,18 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Provider;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Tadcka\Bundle\SitemapBundle\Security\PageSecurityManagerInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 14.7.19 17.13
+ * @since 8/7/14 8:32 PM
  */
-class NodeProvider implements NodeProviderInterface
+class PageNodeProvider implements PageNodeProviderInterface
 {
     /**
      * @var NodeTranslationManagerInterface
@@ -28,39 +30,49 @@ class NodeProvider implements NodeProviderInterface
     private $nodeTranslationManager;
 
     /**
+     * @var PageSecurityManagerInterface
+     */
+    private $pageSecurityManager;
+
+    /**
      * Constructor.
      *
      * @param NodeTranslationManagerInterface $nodeTranslationManager
+     * @param PageSecurityManagerInterface $pageSecurityManager
      */
-    public function __construct(NodeTranslationManagerInterface $nodeTranslationManager)
-    {
+    public function __construct(
+        NodeTranslationManagerInterface $nodeTranslationManager,
+        PageSecurityManagerInterface $pageSecurityManager
+    ) {
         $this->nodeTranslationManager = $nodeTranslationManager;
+        $this->pageSecurityManager = $pageSecurityManager;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodeFromRequest(Request $request)
+    public function getNodeOr404(Request $request)
     {
-        if (null !== $nodeTranslation = $this->getNodeTranslationFromRequest($request)) {
-            return $nodeTranslation->getNode();
+        if (null !== $node = $this->getNodeTranslationOr404($request)->getNode()) {
+            return $node;
         }
 
-        return null;
+        throw new NotFoundHttpException('Not found node!');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodeTranslationFromRequest(Request $request)
+    public function getNodeTranslationOr404(Request $request)
     {
-        $route = $this->getRoute($request);
-
-        if (null !== $route) {
-            return $this->nodeTranslationManager->findByRoute($route);
+        if (null !== $route = $this->getRoute($request)) {
+            $translation = $this->nodeTranslationManager->findTranslationByRoute($route);
+            if ((null !== $translation) && $this->pageSecurityManager->canView($translation)) {
+                return $translation;
+            }
         }
 
-        return null;
+        throw new NotFoundHttpException('Not found node translation!');
     }
 
     /**

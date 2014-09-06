@@ -51,6 +51,6 @@ class PreviewController extends ContainerAware
      */
     private function getRouteManager()
     {
-        return $this->container->get('tadcka_routing.manager.route');
+        return $this->container->get('tadcka_routing.manager.route.in_memory');
     }
 }

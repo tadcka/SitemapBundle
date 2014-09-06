@@ -11,9 +11,8 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Tests\Security;
 
+use Symfony\Component\Security\Core\SecurityContextInterface;
 use Tadcka\Bundle\SitemapBundle\Security\PageSecurityManager;
-use Tadcka\Bundle\SitemapBundle\Tests\Mock\Model\MockNodeTranslation;
-use Tadcka\Bundle\SitemapBundle\Tests\Mock\Security\MockSecurityContext;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -23,26 +22,43 @@ use Tadcka\Bundle\SitemapBundle\Tests\Mock\Security\MockSecurityContext;
 class PageSecurityManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Test can view method.
+     * @var SecurityContextInterface
      */
-    public function testCanView()
+    private $securityContext;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
     {
-        $context = new MockSecurityContext();
-        $securityManager = new PageSecurityManager($context);
+        $this->securityContext = $this->getMock('Symfony\\Component\\Security\\Core\\SecurityContextInterface');
+        $this->securityContext
+            ->expects($this->any())
+            ->method('isGranted')
+            ->will($this->onConsecutiveCalls(false, true, true, false));
+    }
 
-        $translation = new MockNodeTranslation();
+    public function testCanViewWithNodeNotOnline()
+    {
+        $securityManager = new PageSecurityManager($this->securityContext);
+        $translation = $this->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\NodeTranslation');
+        $translation->expects($this->any())->method('isOnline')->willReturn(false);
+
         $this->assertFalse($securityManager->canView($translation));
-
-        $context->setRole('ROLE_ADMIN');
         $this->assertTrue($securityManager->canView($translation));
-
-        $context->setRole('ROLE_SUPER_ADMIN');
         $this->assertTrue($securityManager->canView($translation));
-
-        $context->setRole('ROLE_USER');
         $this->assertFalse($securityManager->canView($translation));
+    }
 
-        $translation->setOnline(true);
+    public function testCanViewWithNodeOnline()
+    {
+        $securityManager = new PageSecurityManager($this->securityContext);
+        $translation = $this->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\NodeTranslation');
+        $translation->expects($this->any())->method('isOnline')->willReturn(true);
+
+        $this->assertTrue($securityManager->canView($translation));
+        $this->assertTrue($securityManager->canView($translation));
+        $this->assertTrue($securityManager->canView($translation));
         $this->assertTrue($securityManager->canView($translation));
     }
 }

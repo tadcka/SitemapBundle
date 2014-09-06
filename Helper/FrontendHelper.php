@@ -93,7 +93,7 @@ class FrontendHelper
      */
     private function getNodeTitle(NodeInterface $node, $locale)
     {
-        $title = $this->translator->trans('not_found_title', array(), 'TadckaTreeBundle');
+        $title = $this->translator->trans('not_found_title', array(), 'TadckaSitemapBundle');
 
         $translation = $node->getTranslation($locale);
         if (null !== $translation && trim($translation->getTitle())) {

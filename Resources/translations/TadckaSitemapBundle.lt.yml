@@ -1,6 +1,3 @@
-button:
-  edit_sitemap: Redaguoti svetainės medį
-
 sitemap:
   page_header: Svetainės medis
   publish: Publikuoti
@@ -10,7 +7,6 @@ sitemap:
   delete: Pašalinti
 
 node:
-  content: Turinys
   menu: Meniu
   seo: Optimizavimas paieškos sistemoms
 
@@ -34,3 +30,10 @@ success:
   edit_node: Sėkmingai redaguota medžio viršūnė.
   delete_node: Sėkmingai pašalinta medžio viršūnė.
   seo_save: Sėkmingai išsaugota medžio viršūnės optimizavimas paieškos sistemoms.
+
+not_found_title: Pavadinimas nerastas
+delete_confirm: Ar tikrai norite trinti medžio viršūnę?
+yes: Taip
+no: Ne
+
+tadcka_sitemap: Tadcka svetainės medis

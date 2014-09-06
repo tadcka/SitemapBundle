@@ -96,18 +96,13 @@ class TreeNodeListener
     private function createSeo(NodeInterface $node)
     {
         foreach ($node->getTranslations() as $translation) {
-            $seo = $this->translationManager->create();
-
-            $seo->setNode($node);
-            $seo->setLang($translation->getLang());
-            $seo->setMetaTitle($translation->getTitle());
+            $translation->setMetaTitle($translation->getTitle());
 
             $route = $this->routeManager->create();
             $this->routerHelper->fillRoute($route, $node, $translation->getTitle(), $translation->getLang());
             $this->routeManager->add($route);
 
-            $seo->setRoute($route);
-            $this->translationManager->add($seo);
+            $translation->setRoute($route);
         }
     }
 }

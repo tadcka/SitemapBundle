@@ -12,7 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\Tests\Helper;
 
 use Tadcka\Bundle\RoutingBundle\Generator\RouteGenerator;
-use Tadcka\Bundle\RoutingBundle\Tests\Mock\Model\Manager\MockRouteManager;
+use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 
 /**
@@ -23,11 +23,24 @@ use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 class RouterHelperTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @var RouteManagerInterface
+     */
+    private $routeManager;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        $this->routeManager = $this->getMock('Tadcka\\Bundle\\RoutingBundle\\Model\\Manager\\RouteManagerInterface');
+    }
+
+    /**
      * @expectedException \Tadcka\Bundle\SitemapBundle\Exception\ResourceNotFoundException
      */
     public function testEmptyRouterHelper()
     {
-        $helper = new RouterHelper(new RouteGenerator(new MockRouteManager()), array());
+        $helper = new RouterHelper(new RouteGenerator($this->routeManager), array());
 
         $this->assertFalse($helper->hasControllerByNodeType('test'));
 
@@ -36,7 +49,7 @@ class RouterHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testRouterHelper()
     {
-        $helper = new RouterHelper(new RouteGenerator(new MockRouteManager()), array('test' => 'TestController'));
+        $helper = new RouterHelper(new RouteGenerator($this->routeManager), array('test' => 'TestController'));
 
         $this->assertFalse($helper->hasControllerByNodeType('test1'));
         $this->assertTrue($helper->hasControllerByNodeType('test'));
@@ -46,8 +59,8 @@ class RouterHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRouteName()
     {
-        $helper = new RouterHelper(new RouteGenerator(new MockRouteManager()), array());
+        $helper = new RouterHelper(new RouteGenerator($this->routeManager), array());
 
-        $this->assertEquals('tadcka_sitemap.node_translation_1_en', $helper->getRouteName(1, 'en'));
+        $this->assertEquals('tadcka_sitemap_node_translation_1_en', $helper->getRouteName(1, 'en'));
     }
 }

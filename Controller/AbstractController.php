@@ -18,9 +18,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Component\Tree\Provider\TreeProviderInterface;
+use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
+use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -77,6 +78,16 @@ abstract class AbstractController extends ContainerAware
     protected function getNodeManager()
     {
         return $this->container->get('tadcka_sitemap.manager.node');
+    }
+
+    /**
+     * Get node translation manager.
+     *
+     * @return NodeTranslationManagerInterface
+     */
+    protected function getNodeTranslationManager()
+    {
+        return $this->container->get('tadcka_sitemap.manager.node_translation');
     }
 
     /**

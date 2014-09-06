@@ -14,6 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle\Form\Factory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 use Tadcka\Component\Tree\Provider\NodeProviderInterface;
 use Tadcka\Bundle\SitemapBundle\Form\Type\NodeFormType;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
@@ -36,6 +37,11 @@ class NodeFormFactory
     private $router;
 
     /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
      * @var NodeProviderInterface
      */
     private $nodeProvider;
@@ -55,6 +61,7 @@ class NodeFormFactory
      *
      * @param FormFactoryInterface $formFactory
      * @param RouterInterface $router
+     * @param TranslatorInterface $translator
      * @param NodeProviderInterface $nodeProvider
      * @param string $nodeClass
      * @param string $translationClass
@@ -62,12 +69,14 @@ class NodeFormFactory
     public function __construct(
         FormFactoryInterface $formFactory,
         RouterInterface $router,
+        TranslatorInterface $translator,
         NodeProviderInterface $nodeProvider,
         $nodeClass,
         $translationClass
     ) {
         $this->formFactory = $formFactory;
         $this->router = $router;
+        $this->translator = $translator;
         $this->nodeProvider = $nodeProvider;
         $this->nodeClass = $nodeClass;
         $this->translationClass = $translationClass;
@@ -85,7 +94,14 @@ class NodeFormFactory
     {
         $nodeTypes = array();
         if (null !== $node->getParent()) {
-            $nodeTypes = $this->nodeProvider->getActiveNodeTypes($node);
+            foreach ($this->nodeProvider->getActiveNodeTypes($node) as $nodeType) {
+                $nodeTypeConfig = $this->nodeProvider->getNodeTypeConfig($nodeType);
+                $name = $nodeTypeConfig->getName();
+                if ($nodeTypeConfig->getTranslationDomain()) {
+                    $name = $this->translator->trans($nodeTypeConfig->getName(), array(), $nodeTypeConfig->getTranslationDomain());
+                }
+                $nodeTypes[$nodeType] = $name;
+            }
         }
 
         return $this->formFactory->create(
