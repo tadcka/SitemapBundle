@@ -27,8 +27,8 @@
         <!--Tree node create success event listener-->
         <!--Tree node pre delete event listener-->
         <service id="tadcka_sitemap.listener.tree_node" class="%tadcka_sitemap.listener.tree_node.class%">
-            <tag name="kernel.event_listener" event="tadcka_tree.node.create.success" method="onCreateNode" />
-            <tag name="kernel.event_listener" event="tadcka_tree.node.pre_delete" method="onDeleteNode" />
+            <tag name="kernel.event_listener" event="tadcka_tree.node.create.success" method="onSitemapNodeCreate" />
+            <tag name="kernel.event_listener" event="tadcka_tree.node.pre_delete" method="onSitemapNodeDelete" />
             <argument type="service" id="tadcka_sitemap.helper.router" />
             <argument type="service" id="tadcka_routing.manager.route" />
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />

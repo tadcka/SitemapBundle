@@ -96,6 +96,7 @@ class NodeFormFactory
                 'data_class' => $this->nodeClass,
                 'translation_class' => $this->translationClass,
                 'node_types' => $nodeTypes,
+                'is_root' => (null === $node->getParent())
             )
         );
     }

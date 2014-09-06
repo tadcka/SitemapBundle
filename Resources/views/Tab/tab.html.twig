@@ -1,8 +1,4 @@
-{% for type, messages in messages.messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ type }}" role="alert">{{ message }}</div>
-    {% endfor %}
-{% endfor %}
+{% include 'TadckaSitemapBundle::messages.html.twig' with {messages: messages} %}
 
 {% block content %}
 

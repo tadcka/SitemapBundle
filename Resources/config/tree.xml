@@ -18,7 +18,7 @@
 
         <!--Register sitemap tree-->
         <service class="%tadcka_sitemap.tree.config.class%" public="false">
-            <tag name="tadcka_sitemap.tree" />
+            <tag name="tadcka_sitemap.tree.config" />
             <argument>tadcka_sitemap</argument>
             <argument>tadcka_sitemap</argument>
             <argument>/bundles/tadckasitemap/images/icon/sitemap.png</argument>

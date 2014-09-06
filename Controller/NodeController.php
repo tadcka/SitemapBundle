@@ -19,6 +19,7 @@ use Tadcka\Bundle\SitemapBundle\Form\Factory\NodeFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\NodeFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Helper\FrontendHelper;
+use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\TadckaTreeEvents;
 
@@ -31,7 +32,7 @@ class NodeController extends AbstractController
 {
     public function getRootAction(Request $request)
     {
-        $tree = $this->getTreeProvider()->getTree('tadcka_sitemap');
+        $tree = $this->getTreeProvider()->getTree(TadckaSitemapBundle::SITEMAP_TREE);
         if (null === $tree) {
             throw new NotFoundHttpException();
         }
@@ -67,6 +68,8 @@ class NodeController extends AbstractController
 
         $node = $this->getNodeManager()->create();
         $node->setParent($parent);
+        $node->setTree($parent->getTree());
+
         $form = $this->getFormFactory()->create($node);
 
         $messages = new Messages();
@@ -77,10 +80,10 @@ class NodeController extends AbstractController
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_CREATE_SUCCESS, $treeNodeEvent);
             $this->getNodeManager()->save();
 
-            $messages->addSuccess($this->getTranslator()->trans('success.create_node', array(), 'TadckaTreeBundle'));
+            $messages->addSuccess($this->getTranslator()->trans('success.create_node', array(), 'TadckaSitemapBundle'));
 
             $content = $this->getTemplating()->render(
-                'TadckaTreeBundle::messages.html.twig',
+                'TadckaSitemapBundle::messages.html.twig',
                 array('messages' => $messages)
             );
 
@@ -116,7 +119,7 @@ class NodeController extends AbstractController
         if ($this->getFormHandler()->process($request, $form)) {
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
             $this->getNodeManager()->save();
-            $messages->addSuccess($this->getTranslator()->trans('success.edit_node', array(), 'TadckaTreeBundle'));
+            $messages->addSuccess($this->getTranslator()->trans('success.edit_node', array(), 'TadckaSitemapBundle'));
         }
 
 
@@ -141,7 +144,7 @@ class NodeController extends AbstractController
                 $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_DELETE_SUCCESS, $treeNodeEvent);
                 $this->getNodeManager()->save();
 
-                $messages['success'] = $this->getTranslator()->trans('success.delete_node', array(), 'TadckaTreeBundle');
+                $messages['success'] = $this->getTranslator()->trans('success.delete_node', array(), 'TadckaSitemapBundle');
 
                 return $this->renderResponse('TadckaSitemapBundle::messages.html.twig', array('messages' => $messages));
             }

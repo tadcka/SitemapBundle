@@ -19,8 +19,18 @@ form:
     meta_title: Meta pavadinimas
     meta_description: Meta aprašymas
     meta_keywords: Meta raktiniai žodžiai
+  node_translation:
+    title: Pavadinimas
+    description: Aprašymas
+  node:
+    type: Tipas
+    priority: Prioritetas
+  select: Pasirinkite
   button:
     save: Išsaugoti
 
 success:
+  create_node: Sėkmingai sukurta nauja medžio viršūnė.
+  edit_node: Sėkmingai redaguota medžio viršūnė.
+  delete_node: Sėkmingai pašalinta medžio viršūnė.
   seo_save: Sėkmingai išsaugota medžio viršūnės optimizavimas paieškos sistemoms.

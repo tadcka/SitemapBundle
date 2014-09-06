@@ -30,28 +30,30 @@ class NodeFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (0 < count($options['node_types']) && (null !== $builder->getData()->getParent())) {
+        if (false === $options['is_root']) {
+            if (0 < count($options['node_types'])) {
+                $builder->add(
+                    'type',
+                    'choice',
+                    array(
+                        'choices' => $options['node_types'],
+                        'empty_value' => 'form.select',
+                        'empty_data' => null,
+                        'constraints' => array(new NotBlank()),
+                        'label' => 'form.node.type',
+                    )
+                );
+            }
+
             $builder->add(
-                'type',
-                'choice',
+                'priority',
+                'integer',
                 array(
-                    'choices' => $options['node_types'],
-                    'empty_value' => 'form.select',
-                    'empty_data' => null,
-                    'constraints' => array(new NotBlank()),
-                    'label' => 'form.node.type',
+                    'required' => false,
+                    'label' => 'form.node.priority',
                 )
             );
         }
-
-        $builder->add(
-            'priority',
-            'integer',
-            array(
-                'required' => false,
-                'label' => 'form.node.priority',
-            )
-        );
 
         $builder->add(
             'translations',
@@ -65,7 +67,7 @@ class NodeFormType extends AbstractType
             )
         );
 
-        $builder->add('submit', 'submit', array('label' => 'button.save'));
+        $builder->add('submit', 'submit', array('label' => 'form.button.save'));
     }
 
     /**
@@ -73,19 +75,19 @@ class NodeFormType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setOptional(array('translation_class', 'node_types'));
+        $resolver->setOptional(array('translation_class', 'node_types', 'is_root'));
 
         $resolver->setDefaults(
             array(
                 'translation_domain' => 'TadckaSitemapBundle',
                 'attr' => array('class' => 'tadcka_node'),
                 'constraints' => function (Options $options) {
-                    if (0 < count($options['node_types'])) {
-                        return array(new NodeType());
-                    }
+                        if (0 < count($options['node_types'])) {
+                            return array(new NodeType());
+                        }
 
-                    return array();
-                },
+                        return array();
+                    },
             )
         );
     }
