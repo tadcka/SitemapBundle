@@ -83,6 +83,11 @@ class NodeFormFactory
      */
     public function create(NodeInterface $node)
     {
+        $nodeTypes = array();
+        if (null !== $node->getParent()) {
+            $nodeTypes = $this->nodeProvider->getActiveNodeTypes($node);
+        }
+
         return $this->formFactory->create(
             new NodeFormType(),
             $node,
@@ -90,7 +95,7 @@ class NodeFormFactory
                 'action' => $this->router->getContext()->getPathInfo(),
                 'data_class' => $this->nodeClass,
                 'translation_class' => $this->translationClass,
-                'node_types' => $this->nodeProvider->getActiveNodeTypes($node),
+                'node_types' => $nodeTypes,
             )
         );
     }

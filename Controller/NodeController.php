@@ -11,12 +11,13 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tadcka\Bundle\SitemapBundle\Form\Factory\NodeFormFactory;
+use Tadcka\Bundle\SitemapBundle\Form\Handler\NodeFormHandler;
+use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Helper\FrontendHelper;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\TadckaTreeEvents;
@@ -46,9 +47,9 @@ class NodeController extends AbstractController
         if (null !== $config = $this->getTreeProvider()->getTreeConfig('tadcka_sitemap')) {
             $iconPath = $config->getIconPath();
         }
-        $response = $this->getJsonResponse(
-            array($this->getFrontendHelper()->getRoot($rootNode, $request->getLocale(), $iconPath))
-        );
+
+        $root = $this->getFrontendHelper()->getRoot($rootNode, $request->getLocale(), $iconPath);
+        $response = $this->getJsonResponse(array($root));
 
         return $response;
     }
@@ -57,45 +58,41 @@ class NodeController extends AbstractController
     {
         $node = $this->getNodeOr404($id);
 
-        return $this->getJsonResponseHelper()->getResponse(
-            $this->getFrontendHelper()->getNodeChildren($node, $request->getLocale())
-        );
+        return $this->getJsonResponse($this->getFrontendHelper()->getNodeChildren($node, $request->getLocale()));
     }
 
     public function createAction(Request $request, $id)
     {
         $parent = $this->getNodeOr404($id);
 
-        $node = $this->getManager()->create();
+        $node = $this->getNodeManager()->create();
         $node->setParent($parent);
         $form = $this->getFormFactory()->create($node);
 
-        $messages = array();
+        $messages = new Messages();
         if ($this->getFormHandler()->process($request, $form)) {
-            $nodeEvent = new NodeEvent($node, $this->getTreeManager()->findTreeByRootId($parent->getRoot()));
+            $treeNodeEvent = new TreeNodeEvent($node);
+            $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_PRE_CREATE, $treeNodeEvent);
+            $this->getNodeManager()->save();
+            $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_CREATE_SUCCESS, $treeNodeEvent);
+            $this->getNodeManager()->save();
 
-            $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_PRE_CREATE, $nodeEvent);
-            $this->getManager()->save();
+            $messages->addSuccess($this->getTranslator()->trans('success.create_node', array(), 'TadckaTreeBundle'));
 
-            $messages['success'] = $this->getTranslator()->trans('success.create_node', array(), 'TadckaTreeBundle');
-
-            $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_CREATE_SUCCESS, $nodeEvent);
-            $this->getManager()->save();
+            $content = $this->getTemplating()->render(
+                'TadckaTreeBundle::messages.html.twig',
+                array('messages' => $messages)
+            );
 
             if ($request->isXmlHttpRequest()) {
-                $content = $this->getTemplating()->render(
-                    'TadckaTreeBundle::messages.html.twig',
-                    array('messages' => $messages)
-                );
-
                 return new JsonResponse(array('content' => $content, 'node_id' => $node->getId()));
             }
 
-            return new RedirectResponse($this->getRouter()->generate('tadcka_list_tree'));
+            return new Response($content);
         }
 
         $content = $this->getTemplating()->render(
-            'TadckaTreeBundle:Node:form.html.twig',
+            'TadckaSitemapBundle:Node:form.html.twig',
             array(
                 'form' => $form->createView(),
                 'messages' => $messages,
@@ -115,19 +112,16 @@ class NodeController extends AbstractController
 
         $form = $this->getFormFactory()->create($node);
 
-        $messages = array();
+        $messages = new Messages();
         if ($this->getFormHandler()->process($request, $form)) {
-            $this->getEventDispatcher()->dispatch(
-                TadckaTreeEvents::NODE_EDIT_SUCCESS,
-                new TreeNodeEvent($node)
-            );
-            $this->getManager()->save();
-            $messages['success'] = $this->getTranslator()->trans('success.edit_node', array(), 'TadckaTreeBundle');
+            $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
+            $this->getNodeManager()->save();
+            $messages->addSuccess($this->getTranslator()->trans('success.edit_node', array(), 'TadckaTreeBundle'));
         }
 
 
         return $this->renderResponse(
-            'TadckaTreeBundle:Node:form.html.twig',
+            'TadckaSitemapBundle:Node:form.html.twig',
             array(
                 'form' => $form->createView(),
                 'messages' => $messages,
@@ -141,46 +135,21 @@ class NodeController extends AbstractController
 
         if (null !== $node->getParent()) {
             if ($request->isMethod('DELETE')) {
-                $tree = $this->getTreeManager()->findTreeByRootId($node->getRoot());
-                $nodeEvent = new NodeEvent($node, $tree);
-                $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_PRE_DELETE, $nodeEvent);
-                $this->getManager()->delete($node, true);
-                $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_DELETE_SUCCESS, $nodeEvent);
-                $this->getManager()->save();
+                $treeNodeEvent = new TreeNodeEvent($node);
+                $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_PRE_DELETE, $treeNodeEvent);
+                $this->getNodeManager()->remove($node, true);
+                $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_DELETE_SUCCESS, $treeNodeEvent);
+                $this->getNodeManager()->save();
 
                 $messages['success'] = $this->getTranslator()->trans('success.delete_node', array(), 'TadckaTreeBundle');
 
-                return $this->renderResponse('TadckaTreeBundle::messages.html.twig', array('messages' => $messages));
+                return $this->renderResponse('TadckaSitemapBundle::messages.html.twig', array('messages' => $messages));
             }
 
-            return $this->renderResponse('TadckaTreeBundle:Node:delete.html.twig', array('node_id' => $id));
+            return $this->renderResponse('TadckaSitemapBundle:Node:delete.html.twig', array('node_id' => $id));
         }
 
         throw new NotFoundHttpException("Don't delete the tree root!");
-    }
-
-    /**
-     * @return NodeManagerInterface
-     */
-    private function getManager()
-    {
-        return $this->container->get('tadcka_tree.manager.node');
-    }
-
-    /**
-     * @return TreeManagerInterface
-     */
-    private function getTreeManager()
-    {
-        return $this->container->get('tadcka_tree.manager.tree');
-    }
-
-    /**
-     * @return JsonResponseHelper
-     */
-    private function getJsonResponseHelper()
-    {
-        return $this->container->get('tadcka_tree.helper.json_response');
     }
 
     /**
@@ -196,7 +165,7 @@ class NodeController extends AbstractController
      */
     private function getFormFactory()
     {
-        return $this->container->get('tadcka_tree.form_factory.node');
+        return $this->container->get('tadcka_sitemap.form_factory.node');
     }
 
     /**
@@ -204,6 +173,6 @@ class NodeController extends AbstractController
      */
     private function getFormHandler()
     {
-        return $this->container->get('tadcka_tree.form_handler.node');
+        return $this->container->get('tadcka_sitemap.form_handler.node');
     }
 }
