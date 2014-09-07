@@ -16,6 +16,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Tadcka\Component\Tree\Provider\NodeProviderInterface;
+use Tadcka\Component\Tree\Registry\NodeType\NodeTypeConfig;
 use Tadcka\Bundle\SitemapBundle\Form\Type\NodeFormType;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 
@@ -117,16 +118,27 @@ class NodeFormFactory
         $nodeTypes = array();
         if (null !== $node->getParent()) {
             foreach ($this->nodeProvider->getActiveNodeTypes($node) as $nodeType) {
-                $nodeTypeConfig = $this->nodeProvider->getNodeTypeConfig($nodeType);
-                $name = $nodeTypeConfig->getName();
-                if ($nodeTypeConfig->getTranslationDomain()) {
-                    $name = $this->translator
-                        ->trans($nodeTypeConfig->getName(), array(), $nodeTypeConfig->getTranslationDomain());
-                }
-                $nodeTypes[$nodeType] = $name;
+                $nodeTypes[$nodeType] = $this->getNodeTypeName($this->nodeProvider->getNodeTypeConfig($nodeType));
             }
         }
 
         return $nodeTypes;
+    }
+
+    /**
+     * Get node type name.
+     *
+     * @param NodeTypeConfig $config
+     *
+     * @return string
+     */
+    private function getNodeTypeName(NodeTypeConfig $config)
+    {
+        $name = $config->getName();
+        if ($config->getTranslationDomain()) {
+            $name = $this->translator->trans($config->getName(), array(), $config->getTranslationDomain());
+        }
+
+        return $name;
     }
 }
