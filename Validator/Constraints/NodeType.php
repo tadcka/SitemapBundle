@@ -9,23 +9,24 @@
  * file that was distributed with this source code.
  */
 
-namespace Tadcka\Bundle\SitemapBundle\Tree;
+namespace Tadcka\Bundle\SitemapBundle\Validator\Constraints;
 
-use Tadcka\Bundle\TreeBundle\ContextMenu\ContextMenuFactoryInterface;
-use Tadcka\JsTreeBundle\Model\ContextMenu;
+use Symfony\Component\Validator\Constraint;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 5/30/14 12:09 AM
+ * @since 6/26/14 10:26 PM
  */
-class ContextMenuFactory implements ContextMenuFactoryInterface
+class NodeType extends Constraint
 {
+    public $message = 'tadcka_sitemap.node_type_invalid';
+
     /**
      * {@inheritdoc}
      */
-    public function create()
+    public function validatedBy()
     {
-        return new ContextMenu();
+        return 'tadcka_sitemap.node_type';
     }
 }

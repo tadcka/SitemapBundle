@@ -13,17 +13,15 @@ namespace Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManager as BaseNodeTranslationManager;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\Manager\TreeManager as BaseTreeManager;
+use Tadcka\Component\Tree\Model\TreeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 14.6.29 20.49
+ * @since 9/6/14 11:02 AM
  */
-class NodeTranslationManager extends BaseNodeTranslationManager
+class TreeManager extends BaseTreeManager
 {
     /**
      * @var EntityManager
@@ -56,33 +54,25 @@ class NodeTranslationManager extends BaseNodeTranslationManager
     /**
      * {@inheritdoc}
      */
-    public function findTranslationByNodeAndLang(NodeInterface $node, $lang)
+    public function findTreeBySlug($slug)
     {
-        return $this->repository->findOneBy(array('node' => $node, 'lang' => $lang));
+        return $this->repository->findOneBy(array('slug' => $slug));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findManyTranslationsByNode(NodeInterface $node)
+    public function findManyTreeBySlugs(array $slugs)
     {
-        return $this->repository->findBy(array('node' => $node));
+        return $this->repository->findBy(array('slug' => $slugs));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findTranslationByRoute(RouteInterface $route)
+    public function add(TreeInterface $tree, $save = false)
     {
-        return $this->repository->findOneBy(array('route' => $route));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function add(NodeTranslationInterface $translation, $save = false)
-    {
-        $this->em->persist($translation);
+        $this->em->persist($tree);
         if (true === $save) {
             $this->save();
         }
@@ -91,9 +81,9 @@ class NodeTranslationManager extends BaseNodeTranslationManager
     /**
      * {@inheritdoc}
      */
-    public function delete(NodeTranslationInterface $translation, $save = false)
+    public function remove(TreeInterface $tree, $save = false)
     {
-        $this->em->remove($translation);
+        $this->em->remove($tree);
         if (true === $save) {
             $this->save();
         }
@@ -112,7 +102,7 @@ class NodeTranslationManager extends BaseNodeTranslationManager
      */
     public function clear()
     {
-        $this->em->remove($this->getClass());
+        return $this->em->clear($this->getClass());
     }
 
     /**

@@ -13,18 +13,18 @@ namespace Tadcka\Bundle\SitemapBundle\Provider;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
-use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since 8/7/14 8:40 PM
  */
-interface PageProviderInterface
+interface PageNodeProviderInterface
 {
     /**
-     * Get page node or 404 response code.
+     * Get page node or 404 response status code.
      *
      * @param Request $request
      *
@@ -32,10 +32,10 @@ interface PageProviderInterface
      *
      * @throws NotFoundHttpException
      */
-    public function getPageNodeOr404(Request $request);
+    public function getNodeOr404(Request $request);
 
     /**
-     * Get page node translation or 404 response code.
+     * Get page node translation or 404 response status code.
      *
      * @param Request $request
      *
@@ -43,5 +43,5 @@ interface PageProviderInterface
      *
      * @throws NotFoundHttpException
      */
-    public function getPageNodeTranslationOr404(Request $request);
+    public function getNodeTranslationOr404(Request $request);
 }

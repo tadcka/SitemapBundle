@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="tadcka_sitemap.node_type.registry.class">Tadcka\Component\Tree\Registry\NodeType\NodeTypeRegistry</parameter>
+        <parameter key="tadcka_sitemap.node_type.config.class">Tadcka\Component\Tree\Registry\NodeType\NodeTypeConfig</parameter>
+
+        <parameter key="tadcka_sitemap.node.provider.class">Tadcka\Component\Tree\Provider\NodeProvider</parameter>
+        <parameter key="tadcka_sitemap.node.validator.class">Tadcka\Component\Tree\Validator\NodeValidator</parameter>
+        <parameter key="tadcka_sitemap.validator.node_type.class">Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeTypeValidator</parameter>
+    </parameters>
+
+    <services>
+
+        <!--Sitemap node type registry-->
+        <service id="tadcka_sitemap.node_type.registry" class="%tadcka_sitemap.node_type.registry.class%" public="false" />
+
+        <!--Sitemap node provider-->
+        <service id="tadcka_sitemap.node.provider" class="%tadcka_sitemap.node.provider.class%" public="true">
+            <argument type="service" id="tadcka_sitemap.manager.node" />
+            <argument type="service" id="tadcka_sitemap.node_type.registry" />
+            <argument type="service" id="tadcka_sitemap.node.validator" />
+        </service>
+
+        <!--Sitemap node validator-->
+        <service id="tadcka_sitemap.node.validator" class="%tadcka_sitemap.node.validator.class%" public="false">
+            <argument type="service" id="tadcka_sitemap.manager.node" />
+            <argument type="service" id="tadcka_sitemap.node_type.registry" />
+        </service>
+
+        <!--Sitemap node type validator-->
+        <service id="tadcka_sitemap.validator.node_type" class="%tadcka_sitemap.validator.node_type.class%">
+            <tag name="validator.constraint_validator" alias="tadcka_sitemap.node_type" />
+            <argument type="service" id="tadcka_sitemap.node.provider" />
+        </service>
+
+    </services>
+</container>

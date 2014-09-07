@@ -15,14 +15,14 @@ use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Tadcka\Bundle\SitemapBundle\Frontend\Model\Tab;
-use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since 6/24/14 11:42 AM
  */
-class EditNodeEvent extends Event
+class SitemapNodeEvent extends Event
 {
     /**
      * @var NodeInterface

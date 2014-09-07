@@ -14,9 +14,9 @@ namespace Tadcka\Bundle\SitemapBundle\EventListener;
 use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Tree\TreeLoader;
-use Tadcka\Bundle\TreeBundle\Event\NodeEvent;
-use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
+use Tadcka\Component\Tree\Event\TreeNodeEvent;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -58,13 +58,13 @@ class TreeNodeListener
     }
 
     /**
-     * On create node.
+     * On sitemap node create.
      *
-     * @param NodeEvent $event
+     * @param TreeNodeEvent $event
      */
-    public function onCreateNode(NodeEvent $event)
+    public function onSitemapNodeCreate(TreeNodeEvent $event)
     {
-        if (TreeLoader::CONFIG_NAME === $event->getTree()->getSlug()) {
+        if (TadckaSitemapBundle::SITEMAP_TREE === $event->getNode()->getTree()->getSlug()) {
             if ($this->routerHelper->hasControllerByNodeType($event->getNode()->getType())) {
                 $this->createSeo($event->getNode());
             }
@@ -74,11 +74,11 @@ class TreeNodeListener
     /**
      * On delete node.
      *
-     * @param NodeEvent $event
+     * @param TreeNodeEvent $event
      */
-    public function onDeleteNode(NodeEvent $event)
+    public function onSitemapNodeDelete(TreeNodeEvent $event)
     {
-        $translations = $this->translationManager->findManyByNodeId($event->getNode()->getId());
+        $translations = $this->translationManager->findManyTranslationsByNode($event->getNode());
         if (0 < count($translations)) {
             foreach ($translations as $translation) {
                 if (null !== $route = $translation->getRoute()) {
@@ -96,18 +96,13 @@ class TreeNodeListener
     private function createSeo(NodeInterface $node)
     {
         foreach ($node->getTranslations() as $translation) {
-            $seo = $this->translationManager->create();
-
-            $seo->setNode($node);
-            $seo->setLang($translation->getLang());
-            $seo->setMetaTitle($translation->getTitle());
+            $translation->setMetaTitle($translation->getTitle());
 
             $route = $this->routeManager->create();
             $this->routerHelper->fillRoute($route, $node, $translation->getTitle(), $translation->getLang());
             $this->routeManager->add($route);
 
-            $seo->setRoute($route);
-            $this->translationManager->add($seo);
+            $translation->setRoute($route);
         }
     }
 }

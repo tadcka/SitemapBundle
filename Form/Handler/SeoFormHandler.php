@@ -11,15 +11,13 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Form\Handler;
 
-use Symfony\Cmf\Component\Routing\RouteObjectInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Helper\RouteHelper;
 use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
-use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

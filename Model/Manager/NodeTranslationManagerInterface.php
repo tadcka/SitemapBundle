@@ -12,6 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\Model\Manager;
 
 use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 
 /**
@@ -22,23 +23,23 @@ use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 interface NodeTranslationManagerInterface
 {
     /**
-     * Find by tree node id and lang.
+     * Find node translation by node and language.
      *
-     * @param int $nodeId
+     * @param NodeInterface $node
      * @param string $lang
      *
      * @return null|NodeTranslationInterface
      */
-    public function findByNodeId($nodeId, $lang);
+    public function findTranslationByNodeAndLang(NodeInterface $node, $lang);
 
     /**
-     * Find many by tree node id.
+     * Find many node translations by node.
      *
-     * @param int $nodeId
+     * @param NodeInterface $node
      *
      * @return array|NodeTranslationInterface[]
      */
-    public function findManyByNodeId($nodeId);
+    public function findManyTranslationsByNode(NodeInterface $node);
 
     /**
      * Find node translation by route.
@@ -47,10 +48,10 @@ interface NodeTranslationManagerInterface
      *
      * @return null|NodeTranslationInterface
      */
-    public function findByRoute(RouteInterface $route);
+    public function findTranslationByRoute(RouteInterface $route);
 
     /**
-     * Create node translation.
+     * Create new node translation.
      *
      * @return NodeTranslationInterface
      */
@@ -65,7 +66,7 @@ interface NodeTranslationManagerInterface
     public function add(NodeTranslationInterface $translation, $save = false);
 
     /**
-     * Delete node translation to persistent layer.
+     * Delete node translation from persistent layer.
      *
      * @param NodeTranslationInterface $translation
      * @param bool $save

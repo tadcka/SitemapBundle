@@ -16,7 +16,7 @@ use Tadcka\Bundle\RoutingBundle\Generator\RouteGenerator;
 use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Exception\ResourceNotFoundException;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
-use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -36,15 +36,22 @@ class RouterHelper
     private $routeGenerator;
 
     /**
+     * @var bool
+     */
+    private $multiLanguageEnabled;
+
+    /**
      * Constructor.
      *
      * @param RouteGenerator $routeGenerator
      * @param array $controllerByNodeType
+     * @param bool $multiLanguageEnabled
      */
-    public function __construct(RouteGenerator $routeGenerator, array $controllerByNodeType)
+    public function __construct(RouteGenerator $routeGenerator, array $controllerByNodeType, $multiLanguageEnabled)
     {
         $this->routeGenerator = $routeGenerator;
         $this->controllerByNodeType = $controllerByNodeType;
+        $this->multiLanguageEnabled = $multiLanguageEnabled;
     }
 
     /**
@@ -106,7 +113,9 @@ class RouterHelper
     public function fillRoute(RouteInterface $route, NodeInterface $node, $text, $locale)
     {
         $route->setDefault(RouteObjectInterface::CONTROLLER_NAME, $this->getControllerByNodeType($node->getType()));
-        $route->addLocale($locale, array($locale));
+        if ($this->multiLanguageEnabled) {
+            $route->addLocale($locale, array($locale));
+        }
         $route ->setName($this->getRouteName($node->getId(), $locale));
         $route->setRoutePattern($this->routeGenerator->generateRouteFromText($text));
         $this->routeGenerator->generateUniqueRoute($route);

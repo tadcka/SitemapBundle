@@ -11,7 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\EventListener;
 
-use Tadcka\Bundle\SitemapBundle\Event\EditNodeEvent;
+use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEvent;
 use Tadcka\Bundle\SitemapBundle\Frontend\Model\Tab;
 use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 
@@ -20,7 +20,7 @@ use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
  *
  * @since  6/24/14 12:19 PM
  */
-class EditNodeListener
+class SitemapNodeListener
 {
     /**
      * @var RouterHelper
@@ -39,18 +39,18 @@ class EditNodeListener
 
 
     /**
-     * On edit node.
+     * On sitemap node edit.
      *
-     * @param EditNodeEvent $event
+     * @param SitemapNodeEvent $event
      */
-    public function onEditNode(EditNodeEvent $event)
+    public function onSitemapNodeEdit(SitemapNodeEvent $event)
     {
         $node = $event->getNode();
 
         $menu = new Tab(
             $event->getTranslator()->trans('node.menu', array(), 'TadckaSitemapBundle'),
             'node_menu',
-            $event->getRouter()->generate('tadcka_tree_edit_node', array('id' => $node->getId())),
+            $event->getRouter()->generate('tadcka_sitemap_tree_edit_node', array('id' => $node->getId())),
             255
         );
         $event->addTab($menu);

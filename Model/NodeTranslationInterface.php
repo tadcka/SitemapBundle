@@ -10,56 +10,17 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Model;
 
+use Tadcka\Component\Tree\Model\NodeTranslationInterface as BaseNodeTranslationInterface;
 use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
-use Tadcka\Bundle\TreeBundle\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since 2/25/14 11:40 PM
  */
-interface NodeTranslationInterface
+interface NodeTranslationInterface extends BaseNodeTranslationInterface
 {
-    const OBJECT_TYPE = 'tadcka_sitemap.node_translation';
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId();
-
-    /**
-     * Set node.
-     *
-     * @param NodeInterface $node
-     *
-     * @return NodeTranslationInterface
-     */
-    public function setNode(NodeInterface $node);
-
-    /**
-     * Get node.
-     *
-     * @return NodeInterface
-     */
-    public function getNode();
-
-    /**
-     * Set lang.
-     *
-     * @param string $lang
-     *
-     * @return NodeTranslationInterface
-     */
-    public function setLang($lang);
-
-    /**
-     * Get lang.
-     *
-     * @return string
-     */
-    public function getLang();
+    const OBJECT_TYPE = 'tadcka_sitemap_node_translation';
 
     /**
      * Set metaTitle.
