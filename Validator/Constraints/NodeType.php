@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class NodeType extends Constraint
 {
-    public $message = 'tadcka_tree.node_type_invalid';
+    public $message = 'tadcka_sitemap.node_type_invalid';
 
     /**
      * {@inheritdoc}

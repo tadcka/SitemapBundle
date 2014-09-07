@@ -5,6 +5,9 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <!--Override nercury translation form-->
+        <parameter key="form.type.translations.class">Tadcka\Bundle\SitemapBundle\Form\Type\NercuryTranslationsEditorType</parameter>
+
         <parameter key="tadcka_sitemap.listener.sitemap_node.class">Tadcka\Bundle\SitemapBundle\EventListener\SitemapNodeListener</parameter>
         <parameter key="tadcka_sitemap.listener.tree_node.class">Tadcka\Bundle\SitemapBundle\EventListener\TreeNodeListener</parameter>
         <parameter key="tadcka_sitemap.security_manager.page.class">Tadcka\Bundle\SitemapBundle\Security\PageSecurityManager</parameter>
