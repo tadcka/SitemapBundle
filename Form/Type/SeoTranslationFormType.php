@@ -49,6 +49,7 @@ class SeoTranslationFormType extends AbstractType
             array(
                 'label' => 'form.seo_translation.meta_title',
                 'constraints' => array(new NotBlank()),
+                'required' => false,
             )
         );
 
