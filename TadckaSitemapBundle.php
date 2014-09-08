@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Tadcka\Component\Tree\DependencyInjection\AddNodeTypeConfigPass;
 use Tadcka\Component\Tree\DependencyInjection\AddTreeConfigPass;
-use Tadcka\Component\Tree\DependencyInjection\RegisterTreeConfigPass;
+use Tadcka\Component\Tree\DependencyInjection\RegisterNodeTypeConfigPass;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -41,7 +41,7 @@ class TadckaSitemapBundle extends Bundle
             new AddNodeTypeConfigPass('tadcka_sitemap.node_type.registry', 'tadcka_sitemap.node_type.config')
         );
         $container->addCompilerPass(
-            new RegisterTreeConfigPass('tadcka_sitemap.node_type.registry', 'tadcka_sitemap.node_type')
+            new RegisterNodeTypeConfigPass('tadcka_sitemap.node_type.registry', 'tadcka_sitemap.node_type')
         );
 
         $this->addRegisterMappingsPass($container);
