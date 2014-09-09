@@ -93,6 +93,14 @@ class NodeManager extends BaseNodeManager implements NodeManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function findManyNodesByType($type, TreeInterface $tree)
+    {
+        return $this->repository->findBy(array('tree' => $tree, 'type' => $type));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function add(NodeInterface $node, $save = false)
     {
         $this->em->persist($node);
