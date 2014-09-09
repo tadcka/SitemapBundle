@@ -40,7 +40,7 @@ class RouterHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function testEmptyRouterHelper()
     {
-        $helper = new RouterHelper(new RouteGenerator($this->routeManager), array());
+        $helper = new RouterHelper(new RouteGenerator($this->routeManager), array(), false);
 
         $this->assertFalse($helper->hasControllerByNodeType('test'));
 
@@ -49,7 +49,7 @@ class RouterHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testRouterHelper()
     {
-        $helper = new RouterHelper(new RouteGenerator($this->routeManager), array('test' => 'TestController'));
+        $helper = new RouterHelper(new RouteGenerator($this->routeManager), array('test' => 'TestController'), false);
 
         $this->assertFalse($helper->hasControllerByNodeType('test1'));
         $this->assertTrue($helper->hasControllerByNodeType('test'));
@@ -59,7 +59,7 @@ class RouterHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRouteName()
     {
-        $helper = new RouterHelper(new RouteGenerator($this->routeManager), array());
+        $helper = new RouterHelper(new RouteGenerator($this->routeManager), array(), false);
 
         $this->assertEquals('tadcka_sitemap_node_translation_1_en', $helper->getRouteName(1, 'en'));
     }
