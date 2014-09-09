@@ -47,7 +47,7 @@ class RouterHelperTest extends \PHPUnit_Framework_TestCase
         $helper->getControllerByNodeType('test');
     }
 
-    public function testRouterHelper()
+    public function testHasControllerByNodeType()
     {
         $helper = new RouterHelper(new RouteGenerator($this->routeManager), array('test' => 'TestController'), false);
 
