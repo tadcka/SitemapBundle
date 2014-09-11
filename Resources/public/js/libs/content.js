@@ -215,12 +215,12 @@ function SitemapContent() {
         };
 
         /**
-         * Delete node.
+         * Remove node.
          *
          * @param {String} $url
          * @param {Function} $callback
          */
-        this.delete = function ($url, $callback) {
+        this.remove = function ($url, $callback) {
             $.ajax({
                 url: $url,
                 type: 'DELETE',

@@ -86,7 +86,7 @@ $.fn.sitemap = function () {
      */
     $content.getContent().on('click', 'a#tadcka-tree-node-delete-confirm', function ($event) {
         $event.preventDefault();
-        $toolbar.delete($(this).attr('href'), function () {
+        $toolbar.remove($(this).attr('href'), function () {
             $tree.refresh();
         });
     });
