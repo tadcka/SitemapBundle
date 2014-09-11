@@ -90,4 +90,4 @@ $.fn.sitemap = function () {
             $tree.refresh();
         });
     });
-}
+};
