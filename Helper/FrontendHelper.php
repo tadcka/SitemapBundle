@@ -12,7 +12,9 @@
 namespace Tadcka\Bundle\SitemapBundle\Helper;
 
 use Symfony\Component\Translation\TranslatorInterface;
+use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
 use Tadcka\Component\Tree\Provider\NodeProviderInterface;
+use Tadcka\Component\Tree\Provider\TreeProviderInterface;
 use Tadcka\JsTreeBundle\Model\Node;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 
@@ -29,6 +31,11 @@ class FrontendHelper
     private $nodeProvider;
 
     /**
+     * @var TreeProviderInterface
+     */
+    private $treeProvider;
+
+    /**
      * @var TranslatorInterface
      */
     private $translator;
@@ -37,12 +44,17 @@ class FrontendHelper
      * Constructor.
      *
      * @param NodeProviderInterface $nodeProvider
+     * @param TreeProviderInterface $treeProvider
      * @param TranslatorInterface $translator
      */
-    public function __construct(NodeProviderInterface $nodeProvider, TranslatorInterface $translator)
-    {
+    public function __construct(
+        NodeProviderInterface $nodeProvider,
+        TreeProviderInterface $treeProvider,
+        TranslatorInterface $translator
+    ) {
         $this->nodeProvider = $nodeProvider;
         $this->translator = $translator;
+        $this->treeProvider = $treeProvider;
     }
 
 
@@ -68,7 +80,7 @@ class FrontendHelper
      *
      * @return array|Node[]
      */
-    public function getNodeChildren(NodeInterface $node, $locale)
+    public function getNode(NodeInterface $node, $locale)
     {
         $children = array();
         foreach ($node->getChildren() as $child) {
@@ -80,7 +92,13 @@ class FrontendHelper
             );
         }
 
-        return $children;
+        if (null === $node->getParent()) {
+            $iconPath = $this->getRootNodeIconPath();
+        } else {
+            $iconPath = $this->getIconPath($node);
+        }
+
+        return new Node($node->getId(), $this->getNodeTitle($node, $locale), $children, $iconPath);
     }
 
     /**
@@ -126,6 +144,21 @@ class FrontendHelper
     {
         $iconPath = null;
         if ($node->getType() && (null !== $config = $this->nodeProvider->getNodeTypeConfig($node->getType()))) {
+            $iconPath = $config->getIconPath();
+        }
+
+        return $iconPath;
+    }
+
+    /**
+     * Get root node icon path.
+     *
+     * @return null|string
+     */
+    private function getRootNodeIconPath()
+    {
+        $iconPath = null;
+        if (null !== $config = $this->treeProvider->getTreeConfig(TadckaSitemapBundle::SITEMAP_TREE)) {
             $iconPath = $config->getIconPath();
         }
 

@@ -21,6 +21,7 @@
         <!--Sitemap frontend helper-->
         <service id="tadcka_sitemap.helper.frontend" class="%tadcka_sitemap.helper.frontend.class%">
             <argument type="service" id="tadcka_sitemap.node.provider" />
+            <argument type="service" id="tadcka_sitemap.tree.provider" />
             <argument type="service" id="translator" />
         </service>
 

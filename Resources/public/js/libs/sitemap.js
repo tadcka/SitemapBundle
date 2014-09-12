@@ -17,10 +17,9 @@ $.fn.sitemap = function () {
 
     $tree.getJsTree()
         .on('changed.jstree', function ($event, $data) {
-            if (!$currentNode || ($data.node && ($currentNode.id !== $data.node.id))) {
+            if (!$currentNode || $data.node && (($currentNode.id !== $data.node.id))) {
                 $currentNode = $data.node;
-
-                $content.load($data.node.id, function () {
+                $content.load($currentNode.id, function () {
                     $tab.loadFirst();
                 });
             }
@@ -72,10 +71,12 @@ $.fn.sitemap = function () {
         var $form = $(this).closest('form');
         $toolbar.create($form.attr('action'), $form.serialize(), function ($response) {
             if ($response.node_id) {
-                $tree.refresh();
+                $tree.refreshNode($currentNode);
                 $content.load($response.node_id, function () {
                     $tab.loadFirst();
                     $content.getContent().find('.sub-content:first').prepend($response.content);
+                    $tree.selectNode($response.node_id);
+                    $tree.deselectNode($currentNode.id);
                 });
             }
         });

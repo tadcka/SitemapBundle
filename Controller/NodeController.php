@@ -46,7 +46,7 @@ class NodeController extends AbstractController
         }
 
         $iconPath = null;
-        if (null !== $config = $this->getTreeProvider()->getTreeConfig('tadcka_sitemap')) {
+        if (null !== $config = $this->getTreeProvider()->getTreeConfig(TadckaSitemapBundle::SITEMAP_TREE)) {
             $iconPath = $config->getIconPath();
         }
 
@@ -60,7 +60,7 @@ class NodeController extends AbstractController
     {
         $node = $this->getNodeOr404($id);
 
-        return $this->getJsonResponse($this->getFrontendHelper()->getNodeChildren($node, $request->getLocale()));
+        return $this->getJsonResponse($this->getFrontendHelper()->getNode($node, $request->getLocale()));
     }
 
     public function createAction(Request $request, $id)

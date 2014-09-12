@@ -24,6 +24,7 @@ function SitemapContent() {
             type: 'GET',
             success: function ($response) {
                 $content.html($response);
+
                 fadeOff();
                 $callback();
             },
@@ -134,6 +135,10 @@ function SitemapContent() {
                 data: $data,
                 success: function ($response) {
                     $tabContent.html($response);
+                    $content.find('div.sub-content:first > div.alert').each(function() {
+                        $(this).hide();
+                    });
+
                     fadeOff();
                     $callback();
                 },

@@ -38,4 +38,30 @@ function SitemapTree() {
     this.refresh = function () {
         $tree.jstree().refresh();
     };
+
+    /**
+     * Refresh node.
+     *
+     * @param $node
+     */
+    this.refreshNode = function ($node) {
+        $tree.jstree().refresh_node($node);
+    };
+
+    /**
+     * Open node.
+     *
+     * @param $nodeId
+     */
+    this.openNode = function ($nodeId) {
+        $tree.jstree().open_node($nodeId);
+    };
+
+    this.selectNode = function ($nodeId) {
+        $tree.jstree().select_node('#' + $nodeId);
+    };
+
+    this.deselectNode = function ($nodeId) {
+        $tree.jstree().deselect_node('#' + $nodeId);
+    };
 }
