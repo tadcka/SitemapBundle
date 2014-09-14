@@ -90,5 +90,4 @@ interface NodeInterface extends BaseNodeInterface
      * @return int
      */
     public function getRight();
-
 }
