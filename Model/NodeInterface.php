@@ -90,11 +90,4 @@ interface NodeInterface extends BaseNodeInterface
      * @return int
      */
     public function getRight();
-
-    /**
-     * Get translations.
-     *
-     * @return array|NodeTranslationInterface[]
-     */
-    public function getTranslations();
 }
