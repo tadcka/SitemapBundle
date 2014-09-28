@@ -68,7 +68,11 @@ $.fn.sitemap = function () {
      */
     $content.getContent().on('submit', 'div.toolbar-content > form', function ($event) {
         $event.preventDefault();
-        var $form = $(this).closest('form');
+
+        var $form = $(this);
+        var $button = $form.find('button:first');
+
+        $button.attr('disabled', 'disabled');
         $toolbar.create($form.attr('action'), $form.serialize(), function ($response) {
             if ($response.node_id) {
                 $tree.refreshNode($currentNode);
@@ -78,6 +82,8 @@ $.fn.sitemap = function () {
 //                    $tree.selectNode($response.node_id);
 //                    $tree.deselectNode($currentNode.id);
                 });
+            } else {
+                $button.attr('disabled', '')
             }
         });
     });
