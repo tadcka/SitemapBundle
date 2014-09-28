@@ -24,6 +24,8 @@ class Messages
 
     const INFO = 'info';
 
+    const WARNING = 'warning';
+
     private $messages = array();
 
     /**
@@ -54,6 +56,16 @@ class Messages
     public function addInfo($message)
     {
         $this->messages[self::SUCCESS][] = $message;
+    }
+
+    /**
+     * Add warning.
+     *
+     * @param string $message
+     */
+    public function addWarning($message)
+    {
+        $this->messages[self::WARNING][] = $message;
     }
 
     /**

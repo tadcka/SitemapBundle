@@ -1,0 +1,39 @@
+sitemap:
+  page_header: Sitemap tree
+  publish: Publish
+  unpublish: Unpublish
+  add_subpage: Add subpage
+  preview: Preview
+  delete: Delete
+
+node:
+  menu: Menu
+  seo: SEO
+
+form:
+  seo_translation:
+    meta_title: Meta title
+    meta_description: Meta description
+    meta_keywords: Meta keywords
+  node_translation:
+    title: Title
+    description: Description
+  node:
+    type: Type
+    priority: Priority
+  select: Select
+  button:
+    save: Save
+
+success:
+  create_node: Sėkmingai sukurta nauja medžio viršūnė.
+  edit_node: Sėkmingai redaguota medžio viršūnė.
+  delete_node: Sėkmingai pašalinta medžio viršūnė.
+  seo_save: Sėkmingai išsaugota medžio viršūnės optimizavimas paieškos sistemoms.
+
+not_found_title: Title not found
+delete_confirm: Ar tikrai norite trinti medžio viršūnę?
+yes: Yes
+no: No
+
+tadcka_sitemap: Tadcka sitemap tree

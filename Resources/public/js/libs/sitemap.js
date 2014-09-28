@@ -75,8 +75,8 @@ $.fn.sitemap = function () {
                 $content.load($response.node_id, function () {
                     $tab.loadFirst();
                     $content.getContent().find('.sub-content:first').prepend($response.content);
-                    $tree.selectNode($response.node_id);
-                    $tree.deselectNode($currentNode.id);
+//                    $tree.selectNode($response.node_id);
+//                    $tree.deselectNode($currentNode.id);
                 });
             }
         });

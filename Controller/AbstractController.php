@@ -131,15 +131,15 @@ abstract class AbstractController extends ContainerAware
     /**
      * Get node or 404.
      *
-     * @param int $id
+     * @param int $nodeId
      *
      * @return null|NodeInterface
      *
      * @throws NotFoundHttpException
      */
-    protected function getNodeOr404($id)
+    protected function getNodeOr404($nodeId)
     {
-        $node = $this->getNodeManager()->findNodeById($id);
+        $node = $this->getNodeManager()->findNodeById($nodeId);
         if (null === $node) {
             throw new NotFoundHttpException('Not found node!');
         }

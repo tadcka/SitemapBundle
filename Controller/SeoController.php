@@ -11,11 +11,12 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\TadckaTreeEvents;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tadcka\Bundle\SitemapBundle\Form\Factory\SeoFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\SeoFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
@@ -55,26 +56,59 @@ class SeoController extends AbstractController
 
     public function onlineAction(Request $request, $nodeId)
     {
-        $translations = $this->getNodeTranslationManager()->findManyTranslationsByNode($this->getNodeOr404($nodeId));
-        if (0 === count($translations)) {
-            throw new NotFoundHttpException('Not found node translations!');
+        $messages = new Messages();
+        $node = $this->getNodeOr404($nodeId);
+        $parent = $node->getParent();
+
+        if ((null !== $parent) && $this->getRouterHelper()->hasControllerByNodeType($parent->getType())) {
+            $translation = $parent->getTranslation($request->getLocale());
+            if (null === $translation || !$translation->isOnline()) {
+                $messages->addWarning(
+                    $this->getTranslator()->trans(
+                        'node_parent_is_not_online',
+                        array('%locale%' => $request->getLocale()),
+                        'TadckaSitemapBundle'
+                    )
+                );
+                $data = array('messages' => $this->getMessageHtml($messages), 'result' => false);
+
+                return new JsonResponse($data);
+            }
         }
 
-        $isOnline = false;
-        foreach ($translations as $translation) {
-            $isOnline = !$translation->isOnline();
-            $translation->setOnline($isOnline);
+        $translation = $node->getTranslation($request->getLocale());
+        if (null === $translation) {
+            $messages->addError(
+                $this->getTranslator()->trans(
+                    'node_translation_not_found',
+                    array('%locale%' => $request->getLocale()),
+                    'TadckaSitemapBundle'
+                )
+            );
+            $data = array('messages' => $this->getMessageHtml($messages), 'result' => false);
+
+            return new JsonResponse($data);
         }
 
-        if ($isOnline) {
-            $text = $this->getTranslator()->trans('sitemap.unpublish', array(), 'TadckaSitemapBundle');
+        $translation->setOnline(!$translation->isOnline());
+        $text = '[' . $request->getLocale() . '] ';
+        if ($translation->isOnline()) {
+            $text .= $this->getTranslator()->trans('sitemap.unpublish', array(), 'TadckaSitemapBundle');
         } else {
-            $text = $this->getTranslator()->trans('sitemap.publish', array(), 'TadckaSitemapBundle');
-        }
+            $children = $this->getNodeTranslationManager()
+                ->findNodeAllChildrenTranslationsByLang($node, $request->getLocale());
 
+            foreach ($children as $child) {
+                $child->setOnline(false);
+            }
+
+            $text .= $this->getTranslator()->trans('sitemap.publish', array(), 'TadckaSitemapBundle');
+        }
         $this->getNodeTranslationManager()->save();
 
-        return new Response($text);
+        $messages->addSuccess($this->getTranslator()->trans('success.online_save', array(), 'TadckaSitemapBundle'));
+
+        return new JsonResponse(array('messages' => $this->getMessageHtml($messages), 'result' => $text));
     }
 
     /**
@@ -91,5 +125,26 @@ class SeoController extends AbstractController
     private function getFormHandler()
     {
         return $this->container->get('tadcka_sitemap.form_handler.seo');
+    }
+
+    /**
+     * @return RouterHelper
+     */
+    private function getRouterHelper()
+    {
+        return $this->container->get('tadcka_sitemap.helper.router');
+    }
+
+    /**
+     * @param Messages $messages
+     *
+     * @return string
+     */
+    private function getMessageHtml(Messages $messages)
+    {
+        return $this->getTemplating()->render(
+            'TadckaSitemapBundle::messages.html.twig',
+            array('messages' => $messages)
+        );
     }
 }

@@ -6,13 +6,51 @@
     </a>
     {% if node.parent is not empty %}
         {% if has_controller %}
-            {% if node_route is not empty %}
-                <a href="{{ url('tadcka_sitemap_seo_online', {nodeId: node.id}) }}" class="btn btn-outline btn-primary toggle">
-                    {{ is_online ? 'sitemap.unpublish'|trans : 'sitemap.publish'|trans }}
-                </a>
-                <a href="{{ url('tadcka_sitemap_preview', {slug: node_route.routePattern|trim('/')}) }}" target="_blank" class="btn btn-outline btn-primary">
-                    {{ 'sitemap.preview'|trans }}
-                </a>
+            {% if multi_language_enabled %}
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline btn-primary dropdown-toggle" data-toggle="dropdown">
+                        {{ 'sitemap.publish'|trans }}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        {% for locale in multi_language_locales %}
+                            {% for translation in node.translations if (translation.lang == locale) %}
+                            <li>
+                                <a href="{{ url('tadcka_sitemap_seo_online', {_locale: locale, nodeId: node.id}) }}" class="toggle">
+                                    [{{ locale }}] {{ translation.isOnline ? 'sitemap.unpublish'|trans : 'sitemap.publish'|trans }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline btn-primary dropdown-toggle" data-toggle="dropdown">
+                        {{ 'sitemap.preview'|trans }}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        {% for locale in multi_language_locales %}
+                            {% for translation in node.translations if (translation.lang == locale and translation.route is not empty) %}
+                                <li>
+                                    <a target="_blank" href="{{ url('tadcka_sitemap_preview', {slug: translation.route.routePattern|trim('/')}) }}">
+                                        [{{ locale }}] {{ 'sitemap.preview'|trans }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                {% set translation = node.translation(app.request.locale) %}
+                {% if translation is not empty and translation.route is not empty %}
+                    <a href="{{ url('tadcka_sitemap_seo_online', {_locale: app.request.locale, nodeId: node.id}) }}" class="btn btn-outline btn-primary toggle">
+                        {{ translation.isOnline ? 'sitemap.unpublish'|trans : 'sitemap.publish'|trans }}
+                    </a>
+                    <a href="{{ url('tadcka_sitemap_preview', {slug: translation.route.routePattern|trim('/')}) }}" target="_blank" class="btn btn-outline btn-primary">
+                        {{ 'sitemap.preview'|trans }}
+                    </a>
+                {% endif %}
             {% endif %}
         {% endif %}
         <a href="{{ url('tadcka_sitemap_tree_delete_node', {id: node.id}) }}" class="btn btn-outline btn-primary load">

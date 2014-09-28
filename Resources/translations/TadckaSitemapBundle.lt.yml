@@ -26,14 +26,18 @@ form:
     save: Išsaugoti
 
 success:
-  create_node: Sėkmingai sukurta nauja medžio viršūnė.
-  edit_node: Sėkmingai redaguota medžio viršūnė.
-  delete_node: Sėkmingai pašalinta medžio viršūnė.
-  seo_save: Sėkmingai išsaugota medžio viršūnės optimizavimas paieškos sistemoms.
+  create_node: Sėkmingai sukurta nauja kategorija.
+  edit_node: Sėkmingai redaguota kategorija.
+  delete_node: Sėkmingai pašalinta kategorija.
+  seo_save: Sėkmingai išsaugota kategorijos optimizavimo paieškos sistemoms informacija.
+  online_save: Sėkmingai išsaugta kategorijos publikavimo informacija.
 
 not_found_title: Pavadinimas nerastas
-delete_confirm: Ar tikrai norite trinti medžio viršūnę?
+delete_confirm: Ar tikrai norite trinti kategorija?
 yes: Taip
 no: Ne
 
 tadcka_sitemap: Tadcka svetainės medis
+
+node_translation_not_found: Nepavyko rasti kategorijos lokalėje [%locale%]
+node_parent_is_not_online: Tėvinė kategorija nepublikuojama lokalėje [%locale%]

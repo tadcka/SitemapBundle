@@ -13,6 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManager as BaseNodeTranslationManager;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
@@ -75,6 +76,31 @@ class NodeTranslationManager extends BaseNodeTranslationManager
     public function findTranslationByRoute(RouteInterface $route)
     {
         return $this->repository->findOneBy(array('route' => $route));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findNodeAllChildrenTranslationsByLang(NodeInterface $node, $lang)
+    {
+        $qb = $this->repository->createQueryBuilder('t');
+
+        $qb->innerJoin('t.node', 'n');
+        $qb->andWhere($qb->expr()->eq('t.lang', ':locale'));
+        $qb->setParameter('locale', $lang);
+
+        $qb->andWhere($qb->expr()->eq('n.root', ':root'))
+            ->setParameter('root', $node->getRoot());
+
+        $qb->andWhere($qb->expr()->gte('n.left', ':left'))
+            ->setParameter('left', $node->getLeft());
+
+        $qb->andWhere($qb->expr()->lte('n.right', ':right'))
+            ->setParameter('right', $node->getRight());
+
+        $qb->select('t');
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

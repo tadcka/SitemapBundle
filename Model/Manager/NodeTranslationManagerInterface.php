@@ -51,6 +51,16 @@ interface NodeTranslationManagerInterface
     public function findTranslationByRoute(RouteInterface $route);
 
     /**
+     * Find node all children translations by language.
+     *
+     * @param NodeInterface $node
+     * @param string $lang
+     *
+     * @return array|NodeTranslationInterface[]
+     */
+    public function findNodeAllChildrenTranslationsByLang(NodeInterface $node, $lang);
+
+    /**
      * Create new node translation.
      *
      * @return NodeTranslationInterface

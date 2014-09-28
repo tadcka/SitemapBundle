@@ -42,16 +42,14 @@ class SitemapController extends AbstractController
         $this->container->get('event_dispatcher')->dispatch(TadckaSitemapEvents::SITEMAP_NODE_EDIT, $event);
         $tabs = $event->getTabs();
 
-        $translation = $this->getNodeTranslationManager()->findTranslationByNodeAndLang($node, $request->getLocale());
-
         return $this->renderResponse(
             'TadckaSitemapBundle:Sitemap:content.html.twig',
             array(
                 'node' => $node,
                 'tabs' => $tabs,
                 'has_controller' => $this->getRouterHelper()->hasControllerByNodeType($node->getType()),
-                'node_route' => $translation ? $translation->getRoute() : null,
-                'is_online' => $translation ? $translation->isOnline() : false,
+                'multi_language_locales' => $this->container->getParameter('tadcka_sitemap.multi_language.locales'),
+                'multi_language_enabled' => $this->container->getParameter('tadcka_sitemap.multi_language.enabled'),
             )
         );
     }

@@ -14,7 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Tadcka\Component\Tree\Model\Manager\NodeManager as BaseNodeManager;
-use Tadcka\Component\Tree\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeInterface as TreeNodeInterface;
 use Tadcka\Component\Tree\Model\TreeInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
 
@@ -101,7 +101,7 @@ class NodeManager extends BaseNodeManager implements NodeManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function add(NodeInterface $node, $save = false)
+    public function add(TreeNodeInterface $node, $save = false)
     {
         $this->em->persist($node);
         if (true === $save) {
@@ -112,7 +112,7 @@ class NodeManager extends BaseNodeManager implements NodeManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function remove(NodeInterface $node, $save = false)
+    public function remove(TreeNodeInterface $node, $save = false)
     {
         // TODO: fix me
         $this->recursiveDelete($node);
@@ -124,9 +124,9 @@ class NodeManager extends BaseNodeManager implements NodeManagerInterface
     /**
      * Recursive delete node children.
      *
-     * @param NodeInterface $node
+     * @param TreeNodeInterface $node
      */
-    private function recursiveDelete(NodeInterface $node)
+    private function recursiveDelete(TreeNodeInterface $node)
     {
         foreach ($node->getChildren() as $child) {
             $this->recursiveDelete($child);

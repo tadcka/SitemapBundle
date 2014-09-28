@@ -77,6 +77,15 @@ function SitemapContent() {
     };
 
     /**
+     * Clean alerts.
+     */
+    var cleanAlerts = function () {
+        $content.find('div.sub-content:first > div.alert').each(function() {
+            $(this).remove();
+        });
+    };
+
+    /**
      * Sitemap content tab object.
      */
     function Tab() {
@@ -135,9 +144,7 @@ function SitemapContent() {
                 data: $data,
                 success: function ($response) {
                     $tabContent.html($response);
-                    $content.find('div.sub-content:first > div.alert').each(function() {
-                        $(this).hide();
-                    });
+                    cleanAlerts();
 
                     fadeOff();
                     $callback();
@@ -189,7 +196,12 @@ function SitemapContent() {
          */
         this.toggle = function ($button) {
             get($button.attr('href'), function ($response) {
-                $button.html($response);
+                cleanAlerts();
+
+                if ($response.result) {
+                    $button.html($response.result);
+                }
+                $content.find('div.sub-content:first').prepend($response.messages);
             });
         };
 
