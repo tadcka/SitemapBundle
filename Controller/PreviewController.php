@@ -24,12 +24,17 @@ use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
  */
 class PreviewController extends ContainerAware
 {
-    public function indexAction(Request $request, $slug)
+    public function indexAction(Request $request)
     {
-        $route = $this->getRouteManager()->findByRoutePattern('/' . $slug);
+        $route = null;
+        $routePattern = $request->get('route', null);
+        
+        if (null !== $routePattern) {
+            $route = $this->getRouteManager()->findByRoutePattern($routePattern);
+        }
 
         if (null === $route) {
-            throw new NotFoundHttpException('Not found route: ' . $slug);
+            throw new NotFoundHttpException(sprintf('Not found route: %s', $routePattern));
         }
 
         $query = array('_route_params' => array('_route_object' => $route));

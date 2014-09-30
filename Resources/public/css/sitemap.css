@@ -13,5 +13,10 @@
     padding-top: 10px;
 }
 
-.dn { display:none!important }
-.fwb { font-weight:700!important }
+.dn {
+    display: none !important
+}
+
+.fwb {
+    font-weight: 700 !important
+}

@@ -13,6 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -65,13 +66,19 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('locales')
                             ->beforeNormalization()
                                 ->ifString()
-                                ->then(function($value) { return preg_split('/\s*,\s*/', $value); })
+                                ->then(
+                                    function ($value) {
+                                        return preg_split('/\s*,\s*/', $value);
+                                    }
+                                )
                             ->end()
                             ->requiresAtLeastOneElement()->prototype('scalar')->end()
                         ->end()
                     ->end()
                 ->end()
 
+                ->scalarNode('route_strategy')->defaultValue(RouteGenerator::STRATEGY_SIMPLE)
+                    ->cannotBeEmpty()->end()
 
             ->end();
 

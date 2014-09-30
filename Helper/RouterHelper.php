@@ -102,6 +102,23 @@ class RouterHelper
         return $name;
     }
 
+
+    /**
+     * Fill route without route pattern.
+     *
+     * @param RouteInterface $route
+     * @param NodeInterface $node
+     * @param string $locale
+     */
+    public function fillRouteWithoutRoutePattern(RouteInterface $route, NodeInterface $node, $locale)
+    {
+        $route->setDefault(RouteObjectInterface::CONTROLLER_NAME, $this->getControllerByNodeType($node->getType()));
+        if ($this->multiLanguageEnabled) {
+            $route->addLocale($locale, array($locale));
+        }
+        $route->setName($this->getRouteName($node->getId(), $locale));
+    }
+
     /**
      * Fill route.
      *
@@ -112,11 +129,7 @@ class RouterHelper
      */
     public function fillRoute(RouteInterface $route, NodeInterface $node, $text, $locale)
     {
-        $route->setDefault(RouteObjectInterface::CONTROLLER_NAME, $this->getControllerByNodeType($node->getType()));
-        if ($this->multiLanguageEnabled) {
-            $route->addLocale($locale, array($locale));
-        }
-        $route ->setName($this->getRouteName($node->getId(), $locale));
+        $this->fillRouteWithoutRoutePattern($route, $node, $locale);
         $route->setRoutePattern($this->routeGenerator->generateRouteFromText($text));
         $this->routeGenerator->generateUniqueRoute($route);
     }

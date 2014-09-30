@@ -15,6 +15,7 @@ use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 
@@ -31,6 +32,11 @@ class TreeNodeListener
     private $routerHelper;
 
     /**
+     * @var RouteGenerator
+     */
+    private $routeGenerator;
+
+    /**
      * @var RouteManagerInterface
      */
     private $routeManager;
@@ -44,15 +50,18 @@ class TreeNodeListener
      * Constructor.
      *
      * @param RouterHelper $routerHelper
+     * @param RouteGenerator $routeGenerator
      * @param RouteManagerInterface $routeManager
      * @param NodeTranslationManagerInterface $translationManager
      */
     public function __construct(
         RouterHelper $routerHelper,
+        RouteGenerator $routeGenerator,
         RouteManagerInterface $routeManager,
         NodeTranslationManagerInterface $translationManager
     ) {
         $this->routerHelper = $routerHelper;
+        $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
         $this->translationManager = $translationManager;
     }
@@ -99,7 +108,8 @@ class TreeNodeListener
             $translation->setMetaTitle($translation->getTitle());
 
             $route = $this->routeManager->create();
-            $this->routerHelper->fillRoute($route, $node, $translation->getTitle(), $translation->getLang());
+            $this->routerHelper->fillRouteWithoutRoutePattern($route, $node, $translation->getLang());
+            $route->setRoutePattern($this->routeGenerator->generateUniqueRoute($translation));
             $this->routeManager->add($route);
 
             $translation->setRoute($route);
