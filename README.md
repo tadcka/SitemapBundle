@@ -5,4 +5,49 @@ SitemapBundle
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/tadcka/SitemapBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/tadcka/SitemapBundle/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/tadcka/SitemapBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/tadcka/SitemapBundle/?branch=master)
 
-Sitemap.
+Simple web page list manager.
+
+## Installation
+
+### Step 1: Download TadckaSitemapBundle using composer
+
+Add TadckaSitemapBundle in your composer.json:
+
+```js
+{
+    "require": {
+        "tadcka/sitemap-bundle": "dev-master"
+    }
+}
+```
+
+Now tell composer to download the bundle by running the command:
+
+``` bash
+$ php composer.phar update tadcka/sitemap-bundle
+```
+
+### Step 2: Enable the bundle
+
+Enable the bundle in the kernel:
+
+``` php
+<?php
+// app/AppKernel.php
+
+public function registerBundles()
+{
+    $bundles = array(
+        // ...
+        new Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle(),
+    );
+}
+```
+
+License
+-------
+
+This bundle is under the MIT license. See the complete license in the bundle:
+
+Code License:
+[Resources/meta/LICENSE](https://github.com/tadcka/SitemapBundle/blob/master/Resources/meta/LICENSE)
