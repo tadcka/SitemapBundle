@@ -264,13 +264,15 @@ class RouteGeneratorTest extends \PHPUnit_Framework_TestCase
 
     private function fillRouteManagerMethodFindByRoutePattern()
     {
+        $route = $this->getMockRoute();
+        
         $this->routeManager->expects($this->any())
             ->method('findByRoutePattern')
             ->will(
                 $this->returnCallback(
-                    function ($routePattern) {
+                    function ($routePattern) use ($route) {
                         if ('/parent-test/test' === $routePattern) {
-                            return $this->getMockRoute();
+                            return $route;
                         }
 
                         return null;
