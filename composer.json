@@ -19,6 +19,7 @@
         "friendsofsymfony/jsrouting-bundle": "~1.5",
         "nercury/translation-editor-bundle": "0.1.x-dev",
         "jms/serializer-bundle": "~0.13",
+        "aferrandini/urlizer": "1.0.*",
 
         "tadcka/tree": "0.1.*@dev",
         "tadcka/jstree-bundle": "0.1.*@dev",
