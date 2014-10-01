@@ -55,9 +55,12 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
-                ->arrayNode('controllers_by_node_type')
-                    ->useAttributeAsKey('type')
-                    ->prototype('scalar')->end()
+                ->arrayNode('node_type')->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('controllers')
+                            ->useAttributeAsKey('type')->prototype('scalar')->end()
+                        ->end()
+                    ->end()
                 ->end()
 
                 ->arrayNode('multi_language')->addDefaultsIfNotSet()

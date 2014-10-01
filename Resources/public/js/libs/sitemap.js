@@ -75,7 +75,7 @@ $.fn.sitemap = function () {
         $button.attr('disabled', 'disabled');
         $toolbar.create($form.attr('action'), $form.serialize(), function ($response) {
             if ($response.node_id) {
-                $tree.refreshNode($currentNode);
+                $tree.refresh();
                 $content.load($response.node_id, function () {
                     $tab.loadFirst();
                     $content.getContent().find('.sub-content:first').prepend($response.content);

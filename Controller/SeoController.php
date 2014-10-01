@@ -13,6 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\TadckaTreeEvents;
@@ -30,20 +31,19 @@ class SeoController extends AbstractController
     public function indexAction(Request $request, $nodeId)
     {
         $node = $this->getNodeOr404($nodeId);
+        $hasRouteController = $this->getRouterHelper()->hasRouteController($node->getType());
 
         $messages = new Messages();
-        $form = $this->getFormFactory()->create(
-            array('translations' => $this->getNodeTranslationManager()->findManyTranslationsByNode($node)),
-            $this->getRouterHelper()->hasRouteController($node->getType())
-        );
+        $data = array('translations' => $this->getNodeTranslationManager()->findManyTranslationsByNode($node));
+        $form = $this->getFormFactory()->create($data, $hasRouteController);
         if ($this->getFormHandler()->process($request, $form, $node)) {
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
             $this->getNodeManager()->save();
             $messages->addSuccess(
                 $this->getTranslator()->trans('success.seo_save', array(), 'TadckaSitemapBundle')
             );
+            $form = $this->getFormFactory()->create($form->getData(), $hasRouteController);
         }
-
         return $this->renderResponse(
             'TadckaSitemapBundle:Seo:seo.html.twig',
             array(
@@ -53,19 +53,19 @@ class SeoController extends AbstractController
         );
     }
 
-    public function onlineAction(Request $request, $nodeId)
+    public function onlineAction($locale, $nodeId)
     {
         $messages = new Messages();
         $node = $this->getNodeOr404($nodeId);
         $parent = $node->getParent();
 
         if ((null !== $parent) && $this->getRouterHelper()->hasRouteController($parent->getType())) {
-            $translation = $parent->getTranslation($request->getLocale());
+            $translation = $parent->getTranslation($locale);
             if (null === $translation || !$translation->isOnline()) {
                 $messages->addWarning(
                     $this->getTranslator()->trans(
                         'node_parent_is_not_online',
-                        array('%locale%' => $request->getLocale()),
+                        array('%locale%' => $locale),
                         'TadckaSitemapBundle'
                     )
                 );
@@ -75,12 +75,13 @@ class SeoController extends AbstractController
             }
         }
 
-        $translation = $node->getTranslation($request->getLocale());
+        /** @var NodeTranslationInterface $translation */
+        $translation = $node->getTranslation($locale);
         if (null === $translation) {
             $messages->addError(
                 $this->getTranslator()->trans(
                     'node_translation_not_found',
-                    array('%locale%' => $request->getLocale()),
+                    array('%locale%' => $locale),
                     'TadckaSitemapBundle'
                 )
             );
@@ -90,12 +91,12 @@ class SeoController extends AbstractController
         }
 
         $translation->setOnline(!$translation->isOnline());
-        $text = '[' . $request->getLocale() . '] ';
+        $text = '[' . $locale . '] ';
         if ($translation->isOnline()) {
             $text .= $this->getTranslator()->trans('sitemap.unpublish', array(), 'TadckaSitemapBundle');
         } else {
             $children = $this->getNodeTranslationManager()
-                ->findNodeAllChildrenTranslationsByLang($node, $request->getLocale());
+                ->findNodeAllChildrenTranslationsByLang($node, $locale);
 
             foreach ($children as $child) {
                 $child->setOnline(false);

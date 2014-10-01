@@ -11,6 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Tests\Routing;
 
+use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
 use Tadcka\Bundle\SitemapBundle\Routing\RouteProvider;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
@@ -34,7 +35,7 @@ class RouteGeneratorTest extends AbstractRoutingTest
     private $routeProvider;
 
     /**
-     * @var MockObject|RouterHelper
+     * @var RouterHelper
      */
     private $routerHelper;
 
@@ -44,10 +45,7 @@ class RouteGeneratorTest extends AbstractRoutingTest
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->routerHelper = $this->getMockBuilder('Tadcka\\Bundle\\SitemapBundle\\Routing\\RouterHelper')
-            ->disableOriginalConstructor()
-            ->getMock();
-
+        $this->routerHelper = new RouterHelper(array('test' => 'test_controller'), RouteGenerator::STRATEGY_FULL_PATH);
         $this->routeGenerator = new RouteGenerator(true, $this->routeProvider, $this->routerHelper);
     }
 
@@ -64,22 +62,97 @@ class RouteGeneratorTest extends AbstractRoutingTest
         $this->routeGenerator->generateRoute($route, $node, 'en');
     }
 
-    private function fillRouteManagerMethodFindByRoutePattern()
+    public function testGenerateRoute()
     {
         $route = $this->getMockRoute();
+        $node = $this->getMockNode();
 
-//        $this->routeManager->expects($this->any())
-//            ->method('findByRoutePattern')
-//            ->will(
-//                $this->returnCallback(
-//                    function ($routePattern) use ($route) {
-//                        if ('/parent-test/test' === $routePattern) {
-//                            return $route;
-//                        }
-//
-//                        return null;
-//                    }
-//                )
-//            );
+        $this->addRoutePattern('test', $route);
+        $routePattern = function ($routePattern) {
+            $this->assertEquals('/test', $routePattern);
+        };
+        $this->addRouteMethodSetRoutePattern($routePattern, $route);
+        $this->addNodeType('test', $node);
+
+        $this->routeGenerator->generateRoute($route, $node, 'en');
+    }
+
+    public function testGenerateRouteDuplicate()
+    {
+        $route = $this->getMockRoute();
+        $node = $this->getMockNode();
+
+        $this->addRoutePattern('/test', $route);
+        $this->addRouteName('test', $route);
+        $callback = function ($routePattern) {
+            $this->assertEquals('/test', $routePattern);
+        };
+        $this->addRouteMethodSetRoutePattern($callback, $route);
+        $this->addNodeType('test', $node);
+        $this->addRouteProviderMethodGetRouteByPattern($route);
+
+        $this->routeGenerator->generateRoute($route, $node, 'en');
+    }
+
+    public function testGenerateUniqueRoute()
+    {
+        $route = $this->getMockRoute();
+        $node = $this->getMockNode();
+
+        $this->addRoutePattern('/test', $route);
+        $callback = function ($routePattern) {
+            $this->assertEquals('/test', $routePattern);
+        };
+        $this->addRouteMethodSetRoutePattern($callback, $route);
+        $this->addNodeType('test', $node);
+
+        $existingRoute = $this->getMockRoute();
+        $this->addRoutePattern('/test-1', $existingRoute);
+        $this->addRouteName('test', $existingRoute);
+        $this->addRouteProviderMethodGetRouteByPattern($existingRoute);
+
+        $this->routeGenerator->generateRoute($route, $node, 'en');
+    }
+
+    /**
+     * @param $callback
+     * @param MockObject|RouteInterface $route
+     */
+    private function addRouteMethodSetRoutePattern($callback, MockObject $route)
+    {
+        $route->expects($this->any())
+            ->method('setRoutePattern')
+            ->will($this->returnCallback($callback));
+    }
+
+    /**
+     * @param MockObject|RouteInterface $route
+     */
+    private function addRouteProviderMethodGetRouteByPattern(MockObject $route)
+    {
+        $this->routeProvider->expects($this->any())
+            ->method('getRouteByPattern')
+            ->will(
+                $this->returnCallback(
+                    function ($routePattern) use ($route) {
+                        if ($routePattern === $route->getRoutePattern()) {
+                            return $route;
+                        }
+
+                        return null;
+                    }
+                )
+            );
+    }
+
+    /**
+     * @param string $name
+     * @param MockObject|RouteInterface $route
+     */
+    private function addRouteName($name, MockObject $route)
+    {
+        $route->expects($this->any())
+            ->method('getName')
+            ->willReturn($name);
     }
 }

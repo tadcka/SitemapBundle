@@ -56,8 +56,7 @@ class TadckaSitemapExtension extends Extension
         $container->setAlias('tadcka_sitemap.manager.node', $config['node_manager']);
         $container->setAlias('tadcka_sitemap.manager.node_translation', $config['node_translation_manager']);
 
-        $container->setParameter('tadcka_sitemap.controllers_by_node_type', $config['controllers_by_node_type']);
-
+        $container->setParameter('tadcka_sitemap.node_type.controllers', $config['node_type']['controllers']);
         $container->setParameter('tadcka_sitemap.multi_language.enabled', $config['multi_language']['enabled']);
         $container->setParameter('tadcka_sitemap.multi_language.locales', $config['multi_language']['locales']);
         $container->setParameter('tadcka_sitemap.routing.route_strategy', $config['route_strategy']);
