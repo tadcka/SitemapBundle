@@ -68,9 +68,12 @@ class RouteGeneratorTest extends AbstractRoutingTest
         $node = $this->getMockNode();
 
         $this->addRoutePattern('test', $route);
-        $routePattern = function ($routePattern) {
-            $this->assertEquals('/test', $routePattern);
+
+        $object = $this;
+        $routePattern = function ($routePattern) use ($object) {
+            $object->assertEquals('/test', $routePattern);
         };
+
         $this->addRouteMethodSetRoutePattern($routePattern, $route);
         $this->addNodeType('test', $node);
 
@@ -84,9 +87,12 @@ class RouteGeneratorTest extends AbstractRoutingTest
 
         $this->addRoutePattern('/test', $route);
         $this->addRouteName('test', $route);
-        $callback = function ($routePattern) {
-            $this->assertEquals('/test', $routePattern);
+
+        $object = $this;
+        $callback = function ($routePattern) use ($object) {
+            $object->assertEquals('/test', $routePattern);
         };
+
         $this->addRouteMethodSetRoutePattern($callback, $route);
         $this->addNodeType('test', $node);
         $this->addRouteProviderMethodGetRouteByPattern($route);
@@ -100,9 +106,12 @@ class RouteGeneratorTest extends AbstractRoutingTest
         $node = $this->getMockNode();
 
         $this->addRoutePattern('/test', $route);
-        $callback = function ($routePattern) {
-            $this->assertEquals('/test', $routePattern);
+
+        $object = $this;
+        $callback = function ($routePattern) use ($object) {
+            $object->assertEquals('/test', $routePattern);
         };
+
         $this->addRouteMethodSetRoutePattern($callback, $route);
         $this->addNodeType('test', $node);
 
