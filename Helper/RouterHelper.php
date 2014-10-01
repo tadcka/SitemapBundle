@@ -11,12 +11,12 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Helper;
 
-use Symfony\Cmf\Component\Routing\RouteObjectInterface;
-use Tadcka\Bundle\RoutingBundle\Generator\RouteGenerator;
+use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
 use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Exception\ResourceNotFoundException;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -28,12 +28,7 @@ class RouterHelper
     /**
      * @var array
      */
-    private $controllerByNodeType = array();
-
-    /**
-     * @var RouteGenerator
-     */
-    private $routeGenerator;
+    private $controllers = array();
 
     /**
      * @var bool
@@ -41,17 +36,33 @@ class RouterHelper
     private $multiLanguageEnabled;
 
     /**
+     * @var RouteGenerator
+     */
+    private $routeGenerator;
+
+    /**
+     * @var RouteManagerInterface
+     */
+    private $routeManager;
+
+    /**
      * Constructor.
      *
      * @param RouteGenerator $routeGenerator
-     * @param array $controllerByNodeType
+     * @param RouteManagerInterface $routeManager
+     * @param array $controllers
      * @param bool $multiLanguageEnabled
      */
-    public function __construct(RouteGenerator $routeGenerator, array $controllerByNodeType, $multiLanguageEnabled)
-    {
-        $this->routeGenerator = $routeGenerator;
-        $this->controllerByNodeType = $controllerByNodeType;
+    public function __construct(
+        array $controllers,
+        $multiLanguageEnabled,
+        RouteGenerator $routeGenerator,
+        RouteManagerInterface $routeManager
+    ) {
+        $this->controllers = $controllers;
         $this->multiLanguageEnabled = $multiLanguageEnabled;
+        $this->routeGenerator = $routeGenerator;
+        $this->routeManager = $routeManager;
     }
 
     /**
@@ -63,7 +74,7 @@ class RouterHelper
      */
     public function hasControllerByNodeType($nodeType)
     {
-        return isset($this->controllerByNodeType[$nodeType]);
+        return isset($this->controllers[$nodeType]);
     }
 
     /**
@@ -78,7 +89,7 @@ class RouterHelper
     public function getControllerByNodeType($nodeType)
     {
         if ($this->hasControllerByNodeType($nodeType)) {
-            return $this->controllerByNodeType[$nodeType];
+            return $this->controllers[$nodeType];
         }
 
         throw new ResourceNotFoundException('Controller by node type not found!');
@@ -87,14 +98,20 @@ class RouterHelper
     /**
      * Get route name.
      *
-     * @param int $nodeId
+     * @param NodeInterface $node
      * @param null|string $locale
      *
      * @return string
+     *
+     * @throws ResourceNotFoundException
      */
-    public function getRouteName($nodeId, $locale = null)
+    public function getRouteName(NodeInterface $node, $locale = null)
     {
-        $name = NodeTranslationInterface::OBJECT_TYPE . '_' . $nodeId;
+        if (!$node->getId()) {
+            throw new ResourceNotFoundException('Node id cannot be empty!');
+        }
+
+        $name = NodeTranslationInterface::OBJECT_TYPE . '_' . $node->getId();
         if (null !== $locale) {
             $name .= '_' . $locale;
         }
@@ -102,35 +119,67 @@ class RouterHelper
         return $name;
     }
 
-
     /**
-     * Fill route without route pattern.
+     * Add sitemap node route controller.
      *
-     * @param RouteInterface $route
-     * @param NodeInterface $node
-     * @param string $locale
+     * @param NodeTranslationInterface $nodeTranslation
      */
-    public function fillRouteWithoutRoutePattern(RouteInterface $route, NodeInterface $node, $locale)
+    public function addController(NodeTranslationInterface $nodeTranslation)
     {
-        $route->setDefault(RouteObjectInterface::CONTROLLER_NAME, $this->getControllerByNodeType($node->getType()));
-        if ($this->multiLanguageEnabled) {
-            $route->addLocale($locale, array($locale));
-        }
-        $route->setName($this->getRouteName($node->getId(), $locale));
+        $nodeTranslation->getRoute()->setDefault(
+            RouteInterface::CONTROLLER_NAME,
+            $this->getControllerByNodeType($nodeTranslation->getNode()->getType())
+        );
     }
 
     /**
-     * Fill route.
+     * Add sitemap node route locale.
      *
-     * @param RouteInterface $route
-     * @param NodeInterface $node
-     * @param string $text
-     * @param string $locale
+     * @param NodeTranslationInterface $nodeTranslation
      */
-    public function fillRoute(RouteInterface $route, NodeInterface $node, $text, $locale)
+    public function addLocale(NodeTranslationInterface $nodeTranslation)
     {
-        $this->fillRouteWithoutRoutePattern($route, $node, $locale);
-        $route->setRoutePattern($this->routeGenerator->generateRouteFromText($text));
-        $this->routeGenerator->generateUniqueRoute($route);
+        if ($this->multiLanguageEnabled) {
+            $locale = $nodeTranslation->getLang();
+
+            $nodeTranslation->getRoute()->addLocale($locale, array($locale));
+        }
+    }
+
+    /**
+     * Add sitemap node route name.
+     *
+     * @param NodeTranslationInterface $nodeTranslation
+     */
+    public function addName(NodeTranslationInterface $nodeTranslation)
+    {
+        $nodeTranslation->getRoute()
+            ->setName($this->getRouteName($nodeTranslation->getNode(), $nodeTranslation->getLang()));
+    }
+
+    /**
+     * Add sitemap node route pattern.
+     *
+     * @param NodeTranslationInterface $nodeTranslation
+     *
+     * @throws ResourceNotFoundException
+     */
+    public function addPattern(NodeTranslationInterface $nodeTranslation)
+    {
+        $route = $nodeTranslation->getRoute();
+        $pattern = $route->getRoutePattern();
+
+        if (!$pattern) {
+            $pattern = trim($nodeTranslation->getTitle());
+        }
+
+        if (!$pattern) {
+            throw new ResourceNotFoundException('Route pattern cannot be empty!');
+        }
+
+        $originalRoute = $this->routeManager->findByRoutePattern($pattern);
+        if ((null === $originalRoute) || ($route->getName() !== $originalRoute->getName())) {
+            $route->setRoutePattern($this->routeGenerator->generateUniqueRoute($nodeTranslation));
+        }
     }
 }

@@ -13,8 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
+use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\TadckaTreeEvents;
 use Tadcka\Bundle\SitemapBundle\Form\Factory\SeoFormFactory;
@@ -35,7 +34,7 @@ class SeoController extends AbstractController
         $messages = new Messages();
         $form = $this->getFormFactory()->create(
             array('translations' => $this->getNodeTranslationManager()->findManyTranslationsByNode($node)),
-            $this->container->get('tadcka_sitemap.helper.router')->hasControllerByNodeType($node->getType())
+            $this->getRouterHelper()->hasRouteController($node->getType())
         );
         if ($this->getFormHandler()->process($request, $form, $node)) {
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
@@ -60,7 +59,7 @@ class SeoController extends AbstractController
         $node = $this->getNodeOr404($nodeId);
         $parent = $node->getParent();
 
-        if ((null !== $parent) && $this->getRouterHelper()->hasControllerByNodeType($parent->getType())) {
+        if ((null !== $parent) && $this->getRouterHelper()->hasRouteController($parent->getType())) {
             $translation = $parent->getTranslation($request->getLocale());
             if (null === $translation || !$translation->isOnline()) {
                 $messages->addWarning(
@@ -132,7 +131,7 @@ class SeoController extends AbstractController
      */
     private function getRouterHelper()
     {
-        return $this->container->get('tadcka_sitemap.helper.router');
+        return $this->container->get('tadcka_sitemap.routing.helper');
     }
 
     /**

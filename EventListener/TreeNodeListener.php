@@ -12,10 +12,11 @@
 namespace Tadcka\Bundle\SitemapBundle\EventListener;
 
 use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
+use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 
@@ -27,11 +28,6 @@ use Tadcka\Component\Tree\Event\TreeNodeEvent;
 class TreeNodeListener
 {
     /**
-     * @var RouterHelper
-     */
-    private $routerHelper;
-
-    /**
      * @var RouteGenerator
      */
     private $routeGenerator;
@@ -42,6 +38,11 @@ class TreeNodeListener
     private $routeManager;
 
     /**
+     * @var RouterHelper
+     */
+    private $routerHelper;
+
+    /**
      * @var NodeTranslationManagerInterface
      */
     private $translationManager;
@@ -49,20 +50,20 @@ class TreeNodeListener
     /**
      * Constructor.
      *
-     * @param RouterHelper $routerHelper
      * @param RouteGenerator $routeGenerator
      * @param RouteManagerInterface $routeManager
+     * @param RouterHelper $routerHelper
      * @param NodeTranslationManagerInterface $translationManager
      */
     public function __construct(
-        RouterHelper $routerHelper,
         RouteGenerator $routeGenerator,
         RouteManagerInterface $routeManager,
+        RouterHelper $routerHelper,
         NodeTranslationManagerInterface $translationManager
     ) {
-        $this->routerHelper = $routerHelper;
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
+        $this->routerHelper = $routerHelper;
         $this->translationManager = $translationManager;
     }
 
@@ -74,7 +75,7 @@ class TreeNodeListener
     public function onSitemapNodeCreate(TreeNodeEvent $event)
     {
         if (TadckaSitemapBundle::SITEMAP_TREE === $event->getNode()->getTree()->getSlug()) {
-            if ($this->routerHelper->hasControllerByNodeType($event->getNode()->getType())) {
+            if ($this->routerHelper->hasRouteController($event->getNode()->getType())) {
                 $this->createSeo($event->getNode());
             }
         }
@@ -104,15 +105,16 @@ class TreeNodeListener
      */
     private function createSeo(NodeInterface $node)
     {
+        /** @var NodeTranslationInterface $translation */
         foreach ($node->getTranslations() as $translation) {
+            $locale = $translation->getLang();
+            $route = $this->routeManager->create();
+
+            $route->setRoutePattern($this->routerHelper->getRoutePattern($translation->getTitle(), $node, $locale));
+            $translation->setRoute($this->routeGenerator->generateRoute($route, $node, $locale));
             $translation->setMetaTitle($translation->getTitle());
 
-            $route = $this->routeManager->create();
-            $this->routerHelper->fillRouteWithoutRoutePattern($route, $node, $translation->getLang());
-            $route->setRoutePattern($this->routeGenerator->generateUniqueRoute($translation));
             $this->routeManager->add($route);
-
-            $translation->setRoute($route);
         }
     }
 }

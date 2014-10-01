@@ -11,12 +11,9 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Routing;
 
-use Ferrandini\Urlizer;
-use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
+use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Exception\RouteException;
-use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -36,137 +33,111 @@ class RouteGenerator
     const STRATEGY_FULL_PATH = 'full_path';
 
     /**
+     * @var bool
+     */
+    private $multiLanguageEnabled;
+
+    /**
+     * @var RouteProvider
+     */
+    private $routeProvider;
+    /**
      * @var RouterHelper
      */
     private $routerHelper;
 
     /**
-     * @var RouteManagerInterface
-     */
-    private $routeManager;
-
-    /**
-     * @var string
-     */
-    private $strategy;
-
-    /**
      * Constructor.
      *
+     * @param bool $multiLanguageEnabled
+     * @param RouteProvider $routeProvider
      * @param RouterHelper $routerHelper
-     * @param RouteManagerInterface $routeManager
-     * @param string $strategy
      */
-    public function __construct(RouterHelper $routerHelper, RouteManagerInterface $routeManager, $strategy)
+    public function __construct($multiLanguageEnabled, RouteProvider $routeProvider, RouterHelper $routerHelper)
     {
+        $this->multiLanguageEnabled = $multiLanguageEnabled;
+        $this->routeProvider = $routeProvider;
         $this->routerHelper = $routerHelper;
-        $this->strategy = $strategy;
-        $this->routeManager = $routeManager;
     }
 
     /**
-     * Generate unique route.
+     * Generate route.
      *
-     * @param NodeTranslationInterface $nodeTranslation
-     *
-     * @return string
-     *
-     * @throws RouteException
-     */
-    public function generateUniqueRoute(NodeTranslationInterface $nodeTranslation)
-    {
-        if (!trim($nodeTranslation->getTitle())) {
-            throw new RouteException('Node title cannot be empty');
-        }
-
-        /** @var NodeInterface $node */
-        $node = $nodeTranslation->getNode();
-        if (false === $this->canGenerateNodeRoute($node)) {
-            throw new RouteException('Cannot generate node route.');
-        }
-
-        /** @var NodeInterface $parent */
-        $parent = $node->getParent();
-        $route = Urlizer::urlize($nodeTranslation->getTitle());
-        if ((self::STRATEGY_FULL_PATH === $this->strategy) && (null !== $parent)) {
-            $route = $this->getRouteFullPath($parent, $nodeTranslation->getLang()) . '/' .$route;
-        }
-
-        return $this->getUniqueRoute($route);
-    }
-
-    /**
-     * Can generate node route.
-     *
-     * @param NodeInterface $node
-     *
-     * @return bool
-     */
-    private function canGenerateNodeRoute(NodeInterface $node)
-    {
-        return $this->routerHelper->hasControllerByNodeType($node->getType());
-    }
-
-    /**
-     * Get route full path.
-     *
+     * @param RouteInterface $route
      * @param NodeInterface $node
      * @param string $locale
      *
-     * @return string
+     * @return RouteInterface
      */
-    private function getRouteFullPath(NodeInterface $node, $locale)
+    public function generateRoute(RouteInterface $route, NodeInterface $node, $locale)
     {
-        $path = '';
-        /** @var NodeInterface $parent */
-        $parent = $node->getParent();
+        $route->setName($this->routeProvider->getRouteName($node, $locale));
+        $route->setRoutePattern($this->generateUniqueRoutePattern($node, $route));
 
-        if ((null !== $parent) && $this->canGenerateNodeRoute($parent)) {
-            $path = $this->getRouteFullPath($parent, $locale);
-        }
-
-        /** @var NodeTranslationInterface $translation */
-        $translation = $node->getTranslation($locale);
-        if ((null !== $translation) && (null !== $translation->getRoute())) {
-            $path .= '/' . ltrim(rtrim($translation->getRoute()->getRoutePattern(), '/'), '/');
-        }
-
-        return $path;
-    }
-
-    /**
-     * Get unique route
-     *
-     * @param string $route
-     *
-     * @return string
-     */
-    private function getUniqueRoute($route)
-    {
-        $originalRoute = '/' . ltrim(trim($route), '/');
-
-        $key = 0;
-        $route = $originalRoute;
-
-        while ($this->hasRoute($route)) {
-            $key++;
-            $route = $originalRoute . '-' . $key;
+        $route->setDefault(RouteInterface::CONTROLLER_NAME, $this->routerHelper->getRouteController($node->getType()));
+        if ($this->multiLanguageEnabled) {
+            $route->addLocale($locale, array($locale));
         }
 
         return $route;
     }
 
     /**
-     * Has route.
+     * Generate unique route pattern.
      *
+     * @param NodeInterface $node
+     * @param RouteInterface $route
+     *
+     * @return string
+     *
+     * @throws RouteException
+     */
+    private function generateUniqueRoutePattern(NodeInterface $node, RouteInterface $route)
+    {
+        if (false === $this->routerHelper->hasRouteController($node->getType())) {
+            throw new RouteException('Cannot generate route pattern!');
+        }
+
+        if (!trim($route->getRoutePattern())) {
+            throw new RouteException('Route pattern cannot be empty!');
+        }
+
+        return $this->getUniqueRoutePattern($route);
+    }
+
+    /**
+     * Get unique route pattern.
+     *
+     * @param RouteInterface $route
+     *
+     * @return string
+     */
+    private function getUniqueRoutePattern(RouteInterface $route)
+    {
+        $key = 0;
+        $originalRoutePattern = $this->routerHelper->normalizeRoutePattern($route->getRoutePattern());
+        $routePattern = $originalRoutePattern;
+
+        while ($this->hasRoute($route->getName(), $routePattern)) {
+            $key++;
+            $routePattern = $originalRoutePattern . '-' . $key;
+        }
+
+        return $routePattern;
+    }
+
+    /**
+     * Check if has route.
+     *
+     * @param string $routeName
      * @param string $routePattern
      *
      * @return bool
      */
-    private function hasRoute($routePattern)
+    private function hasRoute($routeName, $routePattern)
     {
-        $route = $this->routeManager->findByRoutePattern($routePattern);
+        $route = $this->routeProvider->getRouteByPattern($routePattern);
 
-        return (null !== $route);
+        return (null !== $route) && ($routeName !== $route->getName());
     }
 }

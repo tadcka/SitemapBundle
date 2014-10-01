@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="tadcka_sitemap.routing.generator.class">Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator</parameter>
+        <parameter key="tadcka_sitemap.routing.provider.class">Tadcka\Bundle\SitemapBundle\Routing\RouteProvider</parameter>
+        <parameter key="tadcka_sitemap.routing.helper.class">Tadcka\Bundle\SitemapBundle\Routing\RouterHelper</parameter>
+    </parameters>
+
+    <services>
+
+        <!--Sitemap node route generator-->
+        <service id="tadcka_sitemap.routing.generator" class="%tadcka_sitemap.routing.generator.class%">
+            <argument>%tadcka_sitemap.multi_language.enabled%</argument>
+            <argument type="service" id="tadcka_sitemap.routing.provider" />
+            <argument type="service" id="tadcka_sitemap.routing.helper" />
+        </service>
+
+        <!--Sitemap route provider-->
+        <service id="tadcka_sitemap.routing.provider" class="%tadcka_sitemap.routing.provider.class%">
+            <argument type="service" id="tadcka_routing.manager.route.in_memory" />
+        </service>
+
+        <!--Sitemap route helper-->
+        <service id="tadcka_sitemap.routing.helper" class="%tadcka_sitemap.routing.helper.class%">
+            <argument>%tadcka_sitemap.controllers_by_node_type%</argument>
+            <argument>%tadcka_sitemap.routing.route_strategy%</argument>
+        </service>
+
+    </services>
+</container>

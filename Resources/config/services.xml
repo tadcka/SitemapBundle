@@ -12,14 +12,13 @@
         <parameter key="tadcka_sitemap.listener.tree_node.class">Tadcka\Bundle\SitemapBundle\EventListener\TreeNodeListener</parameter>
         <parameter key="tadcka_sitemap.security_manager.page.class">Tadcka\Bundle\SitemapBundle\Security\PageSecurityManager</parameter>
         <parameter key="tadcka_sitemap.provider.page_node.class">Tadcka\Bundle\SitemapBundle\Provider\PageNodeProvider</parameter>
-        <parameter key="tadcka_sitemap.generator.route.class">Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator</parameter>
     </parameters>
 
     <services>
         <!--Sitemap node event listener-->
         <service id="tadcka_sitemap.listener.sitemap_node" class="%tadcka_sitemap.listener.sitemap_node.class%">
             <tag name="kernel.event_listener" event="tadcka_sitemap.node_edit" method="onSitemapNodeEdit" />
-            <argument type="service" id="tadcka_sitemap.helper.router" />
+            <argument type="service" id="tadcka_sitemap.routing.helper" />
         </service>
 
         <!--Tree node create success event listener-->
@@ -27,9 +26,9 @@
         <service id="tadcka_sitemap.listener.tree_node" class="%tadcka_sitemap.listener.tree_node.class%">
             <tag name="kernel.event_listener" event="tadcka_tree.node.create.success" method="onSitemapNodeCreate" />
             <tag name="kernel.event_listener" event="tadcka_tree.node.pre_delete" method="onSitemapNodeDelete" />
-            <argument type="service" id="tadcka_sitemap.helper.router" />
-            <argument type="service" id="tadcka_sitemap.generator.route" />
+            <argument type="service" id="tadcka_sitemap.routing.generator" />
             <argument type="service" id="tadcka_routing.manager.route.in_memory" />
+            <argument type="service" id="tadcka_sitemap.routing.helper" />
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
         </service>
 
@@ -42,13 +41,6 @@
         <service id="tadcka_sitemap.provider.page_node" class="%tadcka_sitemap.provider.page_node.class%">
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
             <argument type="service" id="tadcka_sitemap.security_manager.page" />
-        </service>
-
-        <!--Sitemap route generator-->
-        <service id="tadcka_sitemap.generator.route" class="%tadcka_sitemap.generator.route.class%">
-            <argument type="service" id="tadcka_sitemap.helper.router" />
-            <argument type="service" id="tadcka_routing.manager.route.in_memory" />
-            <argument>%tadcka_sitemap.generator.route_strategy%</argument>
         </service>
 
     </services>

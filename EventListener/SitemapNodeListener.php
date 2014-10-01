@@ -13,7 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\EventListener;
 
 use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEvent;
 use Tadcka\Bundle\SitemapBundle\Frontend\Model\Tab;
-use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
+use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -55,7 +55,7 @@ class SitemapNodeListener
         );
         $event->addTab($menu);
 
-        if ((null !== $node->getParent()) && $this->routerHelper->hasControllerByNodeType($node->getType())) {
+        if ((null !== $node->getParent()) && $this->routerHelper->hasRouteController($node->getType())) {
             $seo = new Tab(
                 $event->getTranslator()->trans('node.seo', array(), 'TadckaSitemapBundle'),
                 'node_content',

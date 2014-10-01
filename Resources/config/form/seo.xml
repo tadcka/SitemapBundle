@@ -21,8 +21,9 @@
         <!--Sitemap seo form handler-->
         <service id="tadcka_sitemap.form_handler.seo" class="%tadcka_sitemap.form_handler.seo.class%">
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
+            <argument type="service" id="tadcka_sitemap.routing.generator" />
             <argument type="service" id="tadcka_routing.manager.route.in_memory" />
-            <argument type="service" id="tadcka_sitemap.helper.router" />
+            <argument type="service" id="tadcka_sitemap.routing.helper" />
         </service>
 
     </services>

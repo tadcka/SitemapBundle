@@ -13,7 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEvent;
-use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
+use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapEvents;
 
 /**
@@ -47,7 +47,7 @@ class SitemapController extends AbstractController
             array(
                 'node' => $node,
                 'tabs' => $tabs,
-                'has_controller' => $this->getRouterHelper()->hasControllerByNodeType($node->getType()),
+                'has_controller' => $this->getRouterHelper()->hasRouteController($node->getType()),
                 'multi_language_locales' => $this->container->getParameter('tadcka_sitemap.multi_language.locales'),
                 'multi_language_enabled' => $this->container->getParameter('tadcka_sitemap.multi_language.enabled'),
             )
@@ -59,6 +59,6 @@ class SitemapController extends AbstractController
      */
     private function getRouterHelper()
     {
-        return $this->container->get('tadcka_sitemap.helper.router');
+        return $this->container->get('tadcka_sitemap.routing.helper');
     }
 }

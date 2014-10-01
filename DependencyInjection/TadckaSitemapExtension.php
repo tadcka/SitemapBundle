@@ -38,6 +38,7 @@ class TadckaSitemapExtension extends Extension
         $loader->load('form/node.xml');
         $loader->load('tree.xml');
         $loader->load('node.xml');
+        $loader->load('routing.xml');
 
         if (!in_array(strtolower($config['db_driver']), array('mongodb', 'orm'))) {
             throw new \InvalidArgumentException(sprintf('Invalid db driver "%s".', $config['db_driver']));
@@ -59,6 +60,6 @@ class TadckaSitemapExtension extends Extension
 
         $container->setParameter('tadcka_sitemap.multi_language.enabled', $config['multi_language']['enabled']);
         $container->setParameter('tadcka_sitemap.multi_language.locales', $config['multi_language']['locales']);
-        $container->setParameter('tadcka_sitemap.generator.route_strategy', $config['route_strategy']);
+        $container->setParameter('tadcka_sitemap.routing.route_strategy', $config['route_strategy']);
     }
 }

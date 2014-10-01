@@ -14,10 +14,11 @@ namespace Tadcka\Bundle\SitemapBundle\Form\Handler;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Helper\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
+use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -32,6 +33,11 @@ class SeoFormHandler
     private $nodeTranslationManager;
 
     /**
+     * @var RouteGenerator
+     */
+    private $routeGenerator;
+
+    /**
      * @var RouteManagerInterface
      */
     private $routeManager;
@@ -39,23 +45,26 @@ class SeoFormHandler
     /**
      * @var RouterHelper
      */
-    private $routeHelper;
+    private $routerHelper;
 
     /**
      * Constructor.
      *
      * @param NodeTranslationManagerInterface $nodeTranslationManager
+     * @param RouteGenerator $routeGenerator
      * @param RouteManagerInterface $routeManager
-     * @param RouterHelper $routeHelper
+     * @param RouterHelper $routerHelper
      */
     public function __construct(
         NodeTranslationManagerInterface $nodeTranslationManager,
+        RouteGenerator $routeGenerator,
         RouteManagerInterface $routeManager,
-        RouterHelper $routeHelper
+        RouterHelper $routerHelper
     ) {
         $this->nodeTranslationManager = $nodeTranslationManager;
+        $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
-        $this->routeHelper = $routeHelper;
+        $this->routerHelper = $routerHelper;
     }
 
 
@@ -71,9 +80,9 @@ class SeoFormHandler
                     $route = $translation->getRoute();
 
                     if (null !== $route) {
-                        if ($this->routeHelper->hasControllerByNodeType($node->getType())) {
-                            $this->routeHelper
-                                ->fillRoute($route, $node, $route->getRoutePattern(), $translation->getLang());
+                        if ($this->routerHelper->hasRouteController($node->getType())) {
+                            $this->routeGenerator->generateRoute($route, $node, $translation->getLang());
+
                             $this->routeManager->add($translation->getRoute());
                         } else {
                             $this->routeManager->remove($translation->getRoute());
