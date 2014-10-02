@@ -27,6 +27,7 @@ class PreviewController extends ContainerAware
     public function indexAction(Request $request)
     {
         $route = null;
+
         if (null !== $routePattern = $request->get('route', null)) {
             $route = $this->getRouteManager()->findByRoutePattern($routePattern);
         }
