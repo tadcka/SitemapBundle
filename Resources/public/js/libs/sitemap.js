@@ -44,12 +44,10 @@ $.fn.sitemap = function () {
     /**
      * Load current tab content.
      */
-    $content.getContent().on('click', 'ul.nav-tabs a', function (e) {
-        e.preventDefault();
-        var $target = $(e.target).attr('href');
-        var $tabContent = $($target);
+    $content.getContent().on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+        var $navTab = $(e.target);
 
-        $tab.load($(this).data('href'), $tabContent);
+        $tab.load($navTab.data('href'), $($navTab.attr('href')));
     });
 
     /**

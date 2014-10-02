@@ -85,6 +85,28 @@ function SitemapContent() {
         });
     };
 
+    var refresh = function ($response) {
+        if ($response.messages) {
+            $content.find('.messages:first').html($response.messages);
+        }
+
+        if ($response.subContent) {
+            $content.find('.sub-content:first').html($response.subContent);
+        }
+
+        if ($response.tab) {
+            $content.find('.tab-content.active.in:first').html($response.tab);
+        }
+
+        if ($response.toolbar) {
+            $content.find('.tadcka-sitemap-toolbar:first').replaceWith($response.toolbar);
+        }
+    };
+
+    var isObject = function ($object) {
+        return (typeof $object == 'object');
+    };
+
     /**
      * Sitemap content tab object.
      */
@@ -104,15 +126,8 @@ function SitemapContent() {
                     url: $url,
                     type: 'GET',
                     success: function ($response) {
-                        if (typeof $response == 'object') {
-                            if ($response.tab) {
-                                $tabContent.html($response.tab);
-                            }
-
-                            if ($response.toolbar) {
-                                console.log($response.toolbar);
-                                $content.find('.tadcka-sitemap-toolbar:first').replaceWith($response.toolbar);
-                            }
+                        if (isObject($response)) {
+                            refresh($response);
                         } else {
                             $tabContent.html($response);
                         }
@@ -155,19 +170,12 @@ function SitemapContent() {
                 type: 'POST',
                 data: $data,
                 success: function ($response) {
-                    if (typeof $response == 'object') {
-                        if ($response.tab) {
-                            $tabContent.html($response.tab);
-                        }
-
-                        if ($response.toolbar) {
-                            console.log($response.toolbar);
-                            $content.find('.tadcka-sitemap-toolbar:first').replaceWith($response.toolbar);
-                        }
+                    if (isObject($response)) {
+                        refresh($response);
                     } else {
                         $tabContent.html($response);
                     }
-                    
+
                     cleanAlerts();
 
                     fadeOff();
@@ -220,12 +228,7 @@ function SitemapContent() {
          */
         this.toggle = function ($button) {
             get($button.attr('href'), function ($response) {
-                cleanAlerts();
-
-                if ($response.result) {
-                    $button.html($response.result);
-                }
-                $content.find('div.sub-content:first').prepend($response.messages);
+                refresh($response);
             });
         };
 

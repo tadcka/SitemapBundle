@@ -77,12 +77,8 @@ class NodeController extends AbstractController
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_CREATE_SUCCESS, $treeNodeEvent);
             $this->getNodeManager()->save();
 
-            $messages->addSuccess($this->getTranslator()->trans('success.create_node', array(), 'TadckaSitemapBundle'));
-
-            $content = $this->getTemplating()->render(
-                'TadckaSitemapBundle::messages.html.twig',
-                array('messages' => $messages)
-            );
+            $messages->addSuccess($this->translate('success.create_node'));
+            $content = $this->getMessageHtml($messages);
 
             if ($request->isXmlHttpRequest()) {
                 return $this->getJsonResponse(array('content' => $content, 'node_id' => $node->getId()));
@@ -115,7 +111,8 @@ class NodeController extends AbstractController
         if ($this->getFormHandler()->process($request, $form)) {
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
             $this->getNodeManager()->save();
-            $messages->addSuccess($this->getTranslator()->trans('success.edit_node', array(), 'TadckaSitemapBundle'));
+
+            $messages->addSuccess($this->translate('success.edit_node'));
         }
 
         return $this->renderResponse(
@@ -140,11 +137,9 @@ class NodeController extends AbstractController
                 $this->getNodeManager()->save();
 
                 $messages = new Messages();
-                $messages->addSuccess(
-                    $this->getTranslator()->trans('success.delete_node', array(), 'TadckaSitemapBundle')
-                );
+                $messages->addSuccess($this->translate('success.delete_node'));
 
-                return $this->renderResponse('TadckaSitemapBundle::messages.html.twig', array('messages' => $messages));
+                return new Response($this->getMessageHtml($messages));
             }
 
             return $this->renderResponse('TadckaSitemapBundle:Node:delete.html.twig', array('node_id' => $id));

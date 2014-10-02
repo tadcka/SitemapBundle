@@ -18,6 +18,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Component\Tree\Provider\TreeProviderInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
@@ -150,6 +151,20 @@ abstract class AbstractController extends ContainerAware
         return $this->getTemplating()->render($name, $parameters);
     }
 
+    /**
+     * Translator translate.
+     *
+     * @param $id
+     * @param array $parameters
+     * @param string $domain
+     * @param null|string $locale
+     *
+     * @return string
+     */
+    protected function translate($id, array $parameters = array(), $domain = 'TadckaSitemapBundle', $locale = null)
+    {
+        return $this->getTranslator()->trans($id, $parameters, $domain, $locale);
+    }
 
     /**
      * Get node or 404.
@@ -168,6 +183,21 @@ abstract class AbstractController extends ContainerAware
         }
 
         return $node;
+    }
+
+    /**
+     * Get messages html.
+     *
+     * @param Messages $messages
+     *
+     * @return string
+     */
+    protected function getMessageHtml(Messages $messages)
+    {
+        return $this->getTemplating()->render(
+            'TadckaSitemapBundle::messages.html.twig',
+            array('messages' => $messages)
+        );
     }
 
     /**

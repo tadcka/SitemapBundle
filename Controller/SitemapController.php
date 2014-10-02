@@ -11,7 +11,6 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEvent;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapEvents;
 
@@ -26,26 +25,22 @@ class SitemapController extends AbstractController
     {
         return $this->renderResponse(
             'TadckaSitemapBundle:Sitemap:index.html.twig',
-            array(
-                'page_header' => $this->getTranslator()
-                        ->trans('sitemap.page_header', array(), 'TadckaSitemapBundle'),
-            )
+            array('page_header' => $this->translate('sitemap.page_header'))
         );
     }
 
-    public function contentAction(Request $request, $nodeId)
+    public function contentAction($nodeId)
     {
         $node = $this->getNodeOr404($nodeId);
 
         $event = new SitemapNodeEvent($node, $this->getRouter(), $this->getTranslator());
         $this->container->get('event_dispatcher')->dispatch(TadckaSitemapEvents::SITEMAP_NODE_EDIT, $event);
-        $tabs = $event->getTabs();
 
         return $this->renderResponse(
             'TadckaSitemapBundle:Sitemap:content.html.twig',
             array(
                 'node' => $node,
-                'tabs' => $tabs,
+                'tabs' => $event->getTabs(),
                 'has_controller' => $this->getRouterHelper()->hasRouteController($node->getType()),
                 'multi_language_locales' => $this->container->getParameter('tadcka_sitemap.multi_language.locales'),
                 'multi_language_enabled' => $this->container->getParameter('tadcka_sitemap.multi_language.enabled'),

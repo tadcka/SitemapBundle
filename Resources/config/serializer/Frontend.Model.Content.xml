@@ -15,7 +15,7 @@
 
         <property name="messages" type="string" serialized-name="messages" expose="true" />
 
-        <property name="subContent" type="string" serialized-name="sub_content" expose="true" />
+        <property name="subContent" type="string" serialized-name="subContent" expose="true" />
 
         <property name="tab" type="string" serialized-name="tab" expose="true" />
 

@@ -1,4 +1,6 @@
-{% include 'TadckaSitemapBundle::messages.html.twig' with {messages: messages} %}
+{% if messages is defined %}
+    {% include 'TadckaSitemapBundle::messages.html.twig' with {messages: messages} %}
+{% endif %}
 
 {% block content %}
 
