@@ -80,7 +80,7 @@ function SitemapContent() {
      * Clean alerts.
      */
     var cleanAlerts = function () {
-        $content.find('div.sub-content:first > div.alert').each(function() {
+        $content.find('div.sub-content:first > div.alert').each(function () {
             $(this).remove();
         });
     };
@@ -104,7 +104,19 @@ function SitemapContent() {
                     url: $url,
                     type: 'GET',
                     success: function ($response) {
-                        $tabContent.html($response);
+                        if (typeof $response == 'object') {
+                            if ($response.tab) {
+                                $tabContent.html($response.tab);
+                            }
+
+                            if ($response.toolbar) {
+                                console.log($response.toolbar);
+                                $content.find('.tadcka-sitemap-toolbar:first').replaceWith($response.toolbar);
+                            }
+                        } else {
+                            $tabContent.html($response);
+                        }
+
                         fadeOff();
                     },
                     error: function ($request, $status, $error) {
@@ -143,7 +155,19 @@ function SitemapContent() {
                 type: 'POST',
                 data: $data,
                 success: function ($response) {
-                    $tabContent.html($response);
+                    if (typeof $response == 'object') {
+                        if ($response.tab) {
+                            $tabContent.html($response.tab);
+                        }
+
+                        if ($response.toolbar) {
+                            console.log($response.toolbar);
+                            $content.find('.tadcka-sitemap-toolbar:first').replaceWith($response.toolbar);
+                        }
+                    } else {
+                        $tabContent.html($response);
+                    }
+                    
                     cleanAlerts();
 
                     fadeOff();

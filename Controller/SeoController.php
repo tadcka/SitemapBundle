@@ -13,6 +13,8 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Tadcka\Bundle\SitemapBundle\Frontend\Model\Content;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
@@ -44,14 +46,26 @@ class SeoController extends AbstractController
             );
             $form = $this->getFormFactory()->create($form->getData(), $hasRouteController);
         }
-        return $this->renderResponse(
+
+        $formHtml = $this->render(
             'TadckaSitemapBundle:Seo:seo.html.twig',
             array(
                 'form' => $form->createView(),
                 'messages' => $messages,
             )
         );
+
+        if ($request->isXmlHttpRequest()) {
+            $content = new Content();
+            $content->setTab($formHtml);
+            $content->setToolbar($this->getToolbarHtml($node));
+
+            return $this->getJsonResponse($content);
+        }
+
+        return new Response($formHtml);
     }
+
 
     public function onlineAction($locale, $nodeId)
     {
@@ -125,14 +139,6 @@ class SeoController extends AbstractController
     private function getFormHandler()
     {
         return $this->container->get('tadcka_sitemap.form_handler.seo');
-    }
-
-    /**
-     * @return RouterHelper
-     */
-    private function getRouterHelper()
-    {
-        return $this->container->get('tadcka_sitemap.routing.helper');
     }
 
     /**

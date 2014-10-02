@@ -18,6 +18,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Component\Tree\Provider\TreeProviderInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
@@ -101,6 +102,14 @@ abstract class AbstractController extends ContainerAware
     }
 
     /**
+     * @return RouterHelper
+     */
+    protected function getRouterHelper()
+    {
+        return $this->container->get('tadcka_sitemap.routing.helper');
+    }
+
+    /**
      * Get json response.
      *
      * @param mixed $data
@@ -129,6 +138,20 @@ abstract class AbstractController extends ContainerAware
     }
 
     /**
+     * Render.
+     *
+     * @param string $name
+     * @param array $parameters
+     *
+     * @return string
+     */
+    protected function render($name, array $parameters = array())
+    {
+        return $this->getTemplating()->render($name, $parameters);
+    }
+
+
+    /**
      * Get node or 404.
      *
      * @param int $nodeId
@@ -145,5 +168,25 @@ abstract class AbstractController extends ContainerAware
         }
 
         return $node;
+    }
+
+    /**
+     * Get toolbar html.
+     *
+     * @param NodeInterface $node
+     *
+     * @return string
+     */
+    protected function getToolbarHtml(NodeInterface $node)
+    {
+        return $this->render(
+            'TadckaSitemapBundle:Sitemap:toolbar.html.twig',
+            array(
+                'node' => $node,
+                'multi_language_enabled' => $this->container->getParameter('tadcka_sitemap.multi_language.enabled'),
+                'multi_language_locales' => $this->container->getParameter('tadcka_sitemap.multi_language.locales'),
+                'has_controller' => $this->getRouterHelper()->hasRouteController($node->getType()),
+            )
+        );
     }
 }
