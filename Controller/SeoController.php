@@ -95,13 +95,6 @@ class SeoController extends AbstractController
         if ($translation->isOnline()) {
             $text .= $this->getTranslator()->trans('sitemap.unpublish', array(), 'TadckaSitemapBundle');
         } else {
-            $children = $this->getNodeTranslationManager()
-                ->findNodeAllChildrenTranslationsByLang($node, $locale);
-
-            foreach ($children as $child) {
-                $child->setOnline(false);
-            }
-
             $text .= $this->getTranslator()->trans('sitemap.publish', array(), 'TadckaSitemapBundle');
         }
         $this->getNodeTranslationManager()->save();
