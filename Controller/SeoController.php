@@ -12,7 +12,8 @@
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Tadcka\Bundle\SitemapBundle\Frontend\Model\Content;
+use Tadcka\Bundle\SitemapBundle\Frontend\Model\ResponseContent;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\TadckaTreeEvents;
@@ -30,21 +31,20 @@ class SeoController extends AbstractController
     public function indexAction(Request $request, $nodeId)
     {
         $node = $this->getNodeOr404($nodeId);
-        $hasRouteController = $this->getRouterHelper()->hasRouteController($node->getType());
-
+        $hasController = $this->getRouterHelper()->hasRouteController($node->getType());
         $messages = new Messages();
-        $data = array('translations' => $this->getNodeTranslationManager()->findManyTranslationsByNode($node));
-        $form = $this->getFormFactory()->create($data, $hasRouteController);
+        $form = $this->getFormFactory()->create(array('translations' => $node->getTranslations()), $hasController);
+
         if ($this->getFormHandler()->process($request, $form, $node)) {
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
             $this->getNodeManager()->save();
 
             $messages->addSuccess($this->translate('success.seo_save'));
-            $form = $this->getFormFactory()->create($form->getData(), $hasRouteController);
+            $form = $this->getFormFactory()->create($form->getData(), $hasController);
         }
 
         if ($request->isXmlHttpRequest()) {
-            $content = new Content();
+            $content = new ResponseContent();
             $content->setMessages($this->getMessageHtml($messages));
             $content->setTab(
                 $this->render('TadckaSitemapBundle:Seo:seo.html.twig', array('form' => $form->createView()))
@@ -66,31 +66,27 @@ class SeoController extends AbstractController
 
     public function onlineAction($locale, $nodeId)
     {
-        $content = new Content();
+        $content = new ResponseContent();
         $messages = new Messages();
         $node = $this->getNodeOr404($nodeId);
-        $parent = $node->getParent();
+        /** @var NodeTranslationInterface $nodeTranslation */
+        $nodeTranslation = $node->getTranslation($locale);
 
-        if ((null !== $parent) && $this->getRouterHelper()->hasRouteController($parent->getType())) {
-            $translation = $parent->getTranslation($locale);
-            if (null === $translation || !$translation->isOnline()) {
-                $messages->addWarning($this->translate('node_parent_is_not_online', array('%locale%' => $locale)));
-                $content->setMessages($this->getMessageHtml($messages));
-
-                return $this->getJsonResponse($content);
-            }
-        }
-
-        /** @var NodeTranslationInterface $translation */
-        $translation = $node->getTranslation($locale);
-        if (null === $translation) {
+        if (null === $nodeTranslation) {
             $messages->addError($this->translate('node_translation_not_found', array('%locale%' => $locale)));
             $content->setMessages($this->getMessageHtml($messages));
 
             return $this->getJsonResponse($content);
         }
 
-        $translation->setOnline(!$translation->isOnline());
+        if ($this->nodeParentIsOnline($node->getParent(), $locale)) {
+            $messages->addWarning($this->translate('node_parent_is_not_online', array('%locale%' => $locale)));
+            $content->setMessages($this->getMessageHtml($messages));
+
+            return $this->getJsonResponse($content);
+        }
+
+        $nodeTranslation->setOnline(!$nodeTranslation->isOnline());
         $this->getNodeTranslationManager()->save();
 
         $messages->addSuccess($this->translate('success.online_save'));
@@ -114,5 +110,28 @@ class SeoController extends AbstractController
     private function getFormHandler()
     {
         return $this->container->get('tadcka_sitemap.form_handler.seo');
+    }
+
+    /**
+     * Check if node parent is online.
+     *
+     * @param NodeInterface $parent
+     * @param $locale
+     *
+     * @return bool
+     */
+    private function nodeParentIsOnline(NodeInterface $parent, $locale)
+    {
+        $hasController = $this->getRouterHelper()->hasRouteController($parent->getType());
+
+        if ((null !== $parent) && $hasController) {
+            /** @var NodeTranslationInterface $translation */
+            $translation = $parent->getTranslation($locale);
+            if (null === $translation || !$translation->isOnline()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

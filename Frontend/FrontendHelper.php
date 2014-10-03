@@ -12,7 +12,6 @@
 namespace Tadcka\Bundle\SitemapBundle\Frontend;
 
 use Symfony\Component\Translation\TranslatorInterface;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Provider\SitemapProviderInterface;
@@ -78,7 +77,7 @@ class FrontendHelper
     }
 
     /**
-     * Get root node.
+     * Get frontend root node.
      *
      * @param string $locale
      *
@@ -105,12 +104,12 @@ class FrontendHelper
     }
 
     /**
-     * Get node children.
+     * Get frontend node.
      *
      * @param NodeInterface $node
      * @param string $locale
      *
-     * @return array|Node[]
+     * @return Node
      */
     public function getNode(NodeInterface $node, $locale)
     {
