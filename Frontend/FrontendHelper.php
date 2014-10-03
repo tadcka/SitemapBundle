@@ -89,17 +89,17 @@ class FrontendHelper
         $translation = $rootNode->getTranslation($locale);
 
         if (null === $translation) {
-            $translation = $this->createBackendNodeTranslation($rootNode, $this->getRootNodeTitle(), $locale);
+            $translation = $this->createBackendNodeTranslation($rootNode, $this->getTitle($rootNode, $locale), $locale);
 
             $rootNode->addTranslation($translation);
             $this->nodeTranslationManager->save();
         }
 
         return $this->createFrontendNode(
-            $rootNode->getId(),
+            $rootNode,
             $translation->getTitle(),
             $this->hasChildren($rootNode),
-            $this->getRootNodeIcon()
+            $this->getIcon($rootNode)
         );
     }
 
@@ -113,39 +113,49 @@ class FrontendHelper
      */
     public function getNode(NodeInterface $node, $locale)
     {
-        $children = array();
-        /** @var NodeInterface $child */
-        foreach ($node->getChildren() as $child) {
-            $children[] = $this->createFrontendNode(
-                $child->getId(),
-                $this->getNodeTitle($child, $locale),
-                $this->hasChildren($child),
-                $this->getNodeIcon($child)
-            );
-        }
+        $children = $this->createFrontendNodeChildren($node, $locale);
 
-        if (null === $node->getParent()) {
-            $icon = $this->getRootNodeIcon();
-        } else {
-            $icon = $this->getNodeIcon($node);
-        }
-
-        return $this->createFrontendNode($node->getId(), $this->getNodeTitle($node, $locale), $children, $icon);
+        return $this->createFrontendNode($node, $this->getTitle($node, $locale), $children, $this->getIcon($node));
     }
 
     /**
      * Create frontend node.
      *
-     * @param int $nodeId
+     * @param NodeInterface $node
      * @param string $title
      * @param bool|array|Node[] $children
      * @param string $icon
      *
      * @return Node
      */
-    private function createFrontendNode($nodeId, $title, $children, $icon)
+    private function createFrontendNode(NodeInterface $node, $title, $children, $icon)
     {
-        return new Node($nodeId, $title, $children, $icon);
+        return new Node($node->getId(), $title, $children, $icon);
+    }
+
+    /**
+     * Create frontend node children.
+     *
+     * @param NodeInterface $node
+     * @param string $locale
+     *
+     * @return array|Node[]
+     */
+    private function createFrontendNodeChildren(NodeInterface $node, $locale)
+    {
+        $children = array();
+
+        /** @var NodeInterface $child */
+        foreach ($node->getChildren() as $child) {
+            $children[] = $this->createFrontendNode(
+                $child,
+                $this->getTitle($child, $locale),
+                $this->hasChildren($child),
+                $this->getIcon($child)
+            );
+        }
+
+        return $children;
     }
 
     /**
@@ -170,6 +180,29 @@ class FrontendHelper
     }
 
     /**
+     * Get node title.
+     *
+     * @param NodeInterface $node
+     * @param string $locale
+     *
+     * @return string
+     */
+    private function getTitle(NodeInterface $node, $locale)
+    {
+        if (null === $node->getParent()) {
+            return $this->getRootNodeTitle();
+        }
+
+        $translation = $node->getTranslation($locale);
+
+        if (null !== $translation && $title = trim($translation->getTitle())) {
+            return $title;
+        }
+
+        return $this->translator->trans('not_found_title', array(), 'TadckaSitemapBundle');
+    }
+
+    /**
      * Get root node title.
      *
      * @return string
@@ -181,26 +214,6 @@ class FrontendHelper
         $title = $config->getName();
         if ($config->getTranslationDomain()) {
             $title = $this->translator->trans($config->getName(), array(), $config->getTranslationDomain());
-        }
-
-        return $title;
-    }
-
-    /**
-     * Get node title.
-     *
-     * @param NodeInterface $node
-     * @param string $locale
-     *
-     * @return string
-     */
-    private function getNodeTitle(NodeInterface $node, $locale)
-    {
-        $title = $this->translator->trans('not_found_title', array(), 'TadckaSitemapBundle');
-
-        $translation = $node->getTranslation($locale);
-        if (null !== $translation && trim($translation->getTitle())) {
-            $title = $translation->getTitle();
         }
 
         return $title;
@@ -225,14 +238,17 @@ class FrontendHelper
      *
      * @return null|string
      */
-    private function getNodeIcon(NodeInterface $node)
+    private function getIcon(NodeInterface $node)
     {
-        $icon = null;
-        if ($node->getType() && (null !== $config = $this->nodeProvider->getNodeTypeConfig($node->getType()))) {
-            $icon = $config->getIconPath();
+        if (null === $node->getParent()) {
+            return $this->getRootNodeIcon();
         }
 
-        return $icon;
+        if ($node->getType() && (null !== $config = $this->nodeProvider->getNodeTypeConfig($node->getType()))) {
+            return $config->getIconPath();
+        }
+
+        return null;
     }
 
     /**
@@ -242,11 +258,9 @@ class FrontendHelper
      */
     private function getRootNodeIcon()
     {
-        $icon = null;
-        if (null !== $config = $this->treeProvider->getTreeConfig(TadckaSitemapBundle::SITEMAP_TREE)) {
-            $icon = $config->getIconPath();
+        $config = $this->treeProvider->getTreeConfig(TadckaSitemapBundle::SITEMAP_TREE);
+        if (null !== $config) {
+            return $config->getIconPath();
         }
-
-        return $icon;
     }
 }
