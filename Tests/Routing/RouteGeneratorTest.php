@@ -41,7 +41,7 @@ class RouteGeneratorTest extends AbstractRoutingTest
 
     protected function setUp()
     {
-        $this->routeProvider = $this->getMockBuilder('Tadcka\Bundle\SitemapBundle\Routing\RouteProvider')
+        $this->routeProvider = $this->getMockBuilder('Tadcka\\Bundle\\SitemapBundle\\Routing\\RouteProvider')
             ->disableOriginalConstructor()
             ->getMock();
 

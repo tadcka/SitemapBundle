@@ -14,6 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tadcka\Bundle\SitemapBundle\Provider\SitemapProviderInterface;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\Model\TreeInterface;
 use Tadcka\Component\Tree\TadckaTreeEvents;
@@ -34,14 +35,11 @@ class NodeController extends AbstractController
 {
     public function getRootAction(Request $request)
     {
-        $tree = $this->getTreeProvider()->getTree(TadckaSitemapBundle::SITEMAP_TREE);
-        if (null === $tree) {
-            throw new NotFoundHttpException();
-        }
+        $rootNode = $this->getSitemapProvider()->getRootNode();
+        if (null === $rootNode->getTranslation($request->getLocale())) {
+            $translation = $this->createNodeTranslation($rootNode, $this->getRootNodeTitle(), $request->getLocale());
 
-        $rootNode = $this->getNodeManager()->findRootNode($tree);
-        if (null === $rootNode) {
-            $rootNode = $this->createRootNode($tree, $request->getLocale());
+            $rootNode->addTranslation($translation);
             $this->getNodeManager()->save();
         }
 
@@ -149,6 +147,14 @@ class NodeController extends AbstractController
     }
 
     /**
+     * @return SitemapProviderInterface
+     */
+    private function getSitemapProvider()
+    {
+        return $this->container->get('tadcka_sitemap.provider');
+    }
+
+    /**
      * @return FrontendHelper
      */
     private function getFrontendHelper()
@@ -173,22 +179,6 @@ class NodeController extends AbstractController
     }
 
     /**
-     * Create root node.
-     *
-     * @param TreeInterface $tree
-     * @param $locale
-     *
-     * @return NodeInterface
-     */
-    private function createRootNode(TreeInterface $tree, $locale)
-    {
-        $rootNode = $this->createNode($tree);
-        $rootNode->addTranslation($this->createNodeTranslation($rootNode, $this->getRootNodeTitle(), $locale));
-
-        return $rootNode;
-    }
-
-    /**
      * Create node.
      *
      * @param TreeInterface $tree
@@ -196,7 +186,7 @@ class NodeController extends AbstractController
      *
      * @return NodeInterface
      */
-    private function createNode(TreeInterface $tree, NodeInterface $parent = null)
+    private function createNode(TreeInterface $tree, NodeInterface $parent)
     {
         $node = $this->getNodeManager()->create();
         $node->setTree($tree);
