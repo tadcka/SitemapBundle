@@ -262,5 +262,7 @@ class FrontendHelper
         if (null !== $config) {
             return $config->getIconPath();
         }
+
+        return null;
     }
 }
