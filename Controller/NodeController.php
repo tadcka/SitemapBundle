@@ -14,17 +14,14 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Tadcka\Bundle\SitemapBundle\Provider\SitemapProviderInterface;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\Model\TreeInterface;
 use Tadcka\Component\Tree\TadckaTreeEvents;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Form\Factory\NodeFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\NodeFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
-use Tadcka\Bundle\SitemapBundle\Helper\FrontendHelper;
-use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
+use Tadcka\Bundle\SitemapBundle\Frontend\FrontendHelper;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -35,30 +32,14 @@ class NodeController extends AbstractController
 {
     public function getRootAction(Request $request)
     {
-        $rootNode = $this->getSitemapProvider()->getRootNode();
-        if (null === $rootNode->getTranslation($request->getLocale())) {
-            $translation = $this->createNodeTranslation($rootNode, $this->getRootNodeTitle(), $request->getLocale());
-
-            $rootNode->addTranslation($translation);
-            $this->getNodeManager()->save();
-        }
-
-        $iconPath = null;
-        if (null !== $config = $this->getTreeProvider()->getTreeConfig(TadckaSitemapBundle::SITEMAP_TREE)) {
-            $iconPath = $config->getIconPath();
-        }
-
-        $root = $this->getFrontendHelper()->getRoot($rootNode, $request->getLocale(), $iconPath);
-        $response = $this->getJsonResponse(array($root));
-
-        return $response;
+        return $this->getJsonResponse($this->getFrontendHelper()->getRootNode($request->getLocale()));
     }
 
     public function getNodeAction(Request $request, $id)
     {
-        $node = $this->getNodeOr404($id);
-
-        return $this->getJsonResponse($this->getFrontendHelper()->getNode($node, $request->getLocale()));
+        return $this->getJsonResponse(
+            $this->getFrontendHelper()->getNode($this->getNodeOr404($id), $request->getLocale())
+        );
     }
 
     public function createAction(Request $request, $id)
@@ -147,14 +128,6 @@ class NodeController extends AbstractController
     }
 
     /**
-     * @return SitemapProviderInterface
-     */
-    private function getSitemapProvider()
-    {
-        return $this->container->get('tadcka_sitemap.provider');
-    }
-
-    /**
      * @return FrontendHelper
      */
     private function getFrontendHelper()
@@ -196,42 +169,5 @@ class NodeController extends AbstractController
         $this->getNodeManager()->add($node);
 
         return $node;
-    }
-
-    /**
-     * Create node translation.
-     *
-     * @param NodeInterface $node
-     * @param string $title
-     * @param string $locale
-     *
-     * @return NodeTranslationInterface
-     */
-    private function createNodeTranslation(NodeInterface $node, $title, $locale)
-    {
-        $translation = $this->getNodeTranslationManager()->create();
-        $translation->setLang($locale);
-        $translation->setNode($node);
-        $translation->setTitle($title);
-        $this->getNodeTranslationManager()->add($translation);
-
-        return $translation;
-    }
-
-    /**
-     * Get root node title.
-     *
-     * @return string
-     */
-    private function getRootNodeTitle()
-    {
-        $config = $this->getTreeProvider()->getTreeConfig(TadckaSitemapBundle::SITEMAP_TREE);
-
-        $title = $config->getName();
-        if ($config->getTranslationDomain()) {
-            $title = $this->getTranslator()->trans($config->getName(), array(), $config->getTranslationDomain());
-        }
-
-        return $title;
     }
 }
