@@ -29,11 +29,4 @@ interface NodeManagerInterface extends BaseNodeManagerInterface
      * @return null|NodeInterface
      */
     public function findNodeById($id);
-
-    /**
-     * Create new node object.
-     *
-     * @return NodeInterface
-     */
-    public function create();
 }
