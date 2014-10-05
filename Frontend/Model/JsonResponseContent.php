@@ -16,7 +16,7 @@ namespace Tadcka\Bundle\SitemapBundle\Frontend\Model;
  *
  * @since 10/2/14 2:58 PM
  */
-class ResponseContent
+class JsonResponseContent
 {
     /**
      * @var string
@@ -49,11 +49,21 @@ class ResponseContent
     private $toolbar;
 
     /**
+     * Constructor.
+     *
+     * @param int $nodeId
+     */
+    public function __construct($nodeId)
+    {
+        $this->nodeId = $nodeId;
+    }
+
+    /**
      * Set content.
      *
      * @param string $content
      *
-     * @return ResponseContent
+     * @return JsonResponseContent
      */
     public function setContent($content)
     {
@@ -73,20 +83,6 @@ class ResponseContent
     }
 
     /**
-     * Set node id.
-     *
-     * @param int $nodeId
-     *
-     * @return ResponseContent
-     */
-    public function setNodeId($nodeId)
-    {
-        $this->nodeId = $nodeId;
-
-        return $this;
-    }
-
-    /**
      * Get node id.
      *
      * @return int
@@ -101,7 +97,7 @@ class ResponseContent
      *
      * @param string $messages
      *
-     * @return ResponseContent
+     * @return JsonResponseContent
      */
     public function setMessages($messages)
     {
@@ -125,7 +121,7 @@ class ResponseContent
      *
      * @param string $subContent
      *
-     * @return ResponseContent
+     * @return JsonResponseContent
      */
     public function setSubContent($subContent)
     {
@@ -149,7 +145,7 @@ class ResponseContent
      *
      * @param string $tab
      *
-     * @return ResponseContent
+     * @return JsonResponseContent
      */
     public function setTab($tab)
     {
@@ -173,7 +169,7 @@ class ResponseContent
      *
      * @param string $toolbar
      *
-     * @return ResponseContent
+     * @return JsonResponseContent
      */
     public function setToolbar($toolbar)
     {

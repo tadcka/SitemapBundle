@@ -11,7 +11,7 @@
 
 <serializer>
 
-    <class name="Tadcka\Bundle\SitemapBundle\Frontend\Model\ResponseContent">
+    <class name="Tadcka\Bundle\SitemapBundle\Frontend\Model\JsonResponseContent">
 
         <property name="content" type="string" serialized-name="content" expose="true" />
 

@@ -12,7 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Tadcka\Bundle\SitemapBundle\Frontend\Model\ResponseContent;
+use Tadcka\Bundle\SitemapBundle\Frontend\Model\JsonResponseContent;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
@@ -44,14 +44,14 @@ class SeoController extends AbstractController
         }
 
         if ($request->isXmlHttpRequest()) {
-            $content = new ResponseContent();
-            $content->setMessages($this->getMessageHtml($messages));
-            $content->setTab(
+            $jsonResponseContent = new JsonResponseContent($nodeId);
+            $jsonResponseContent->setMessages($this->getMessageHtml($messages));
+            $jsonResponseContent->setTab(
                 $this->render('TadckaSitemapBundle:Seo:seo.html.twig', array('form' => $form->createView()))
             );
-            $content->setToolbar($this->getToolbarHtml($node));
+            $jsonResponseContent->setToolbar($this->getToolbarHtml($node));
 
-            return $this->getJsonResponse($content);
+            return $this->getJsonResponse($jsonResponseContent);
         }
 
         return $this->renderResponse(
@@ -66,34 +66,34 @@ class SeoController extends AbstractController
 
     public function onlineAction($locale, $nodeId)
     {
-        $content = new ResponseContent();
-        $messages = new Messages();
         $node = $this->getNodeOr404($nodeId);
         /** @var NodeTranslationInterface $nodeTranslation */
         $nodeTranslation = $node->getTranslation($locale);
+        $jsonResponseContent = new JsonResponseContent($nodeId);
+        $messages = new Messages();
 
         if (null === $nodeTranslation) {
             $messages->addError($this->translate('node_translation_not_found', array('%locale%' => $locale)));
-            $content->setMessages($this->getMessageHtml($messages));
+            $jsonResponseContent->setMessages($this->getMessageHtml($messages));
 
-            return $this->getJsonResponse($content);
+            return $this->getJsonResponse($jsonResponseContent);
         }
 
         if ($this->nodeParentIsOnline($node->getParent(), $locale)) {
             $messages->addWarning($this->translate('node_parent_is_not_online', array('%locale%' => $locale)));
-            $content->setMessages($this->getMessageHtml($messages));
+            $jsonResponseContent->setMessages($this->getMessageHtml($messages));
 
-            return $this->getJsonResponse($content);
+            return $this->getJsonResponse($jsonResponseContent);
         }
 
         $nodeTranslation->setOnline(!$nodeTranslation->isOnline());
         $this->getNodeTranslationManager()->save();
 
         $messages->addSuccess($this->translate('success.online_save'));
-        $content->setMessages($this->getMessageHtml($messages));
-        $content->setToolbar($this->getToolbarHtml($node));
+        $jsonResponseContent->setMessages($this->getMessageHtml($messages));
+        $jsonResponseContent->setToolbar($this->getToolbarHtml($node));
 
-        return $this->getJsonResponse($content);
+        return $this->getJsonResponse($jsonResponseContent);
     }
 
     /**
