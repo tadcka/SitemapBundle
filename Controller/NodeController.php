@@ -14,6 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tadcka\Bundle\SitemapBundle\Frontend\Model\ResponseContent;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\Model\TreeInterface;
 use Tadcka\Component\Tree\TadckaTreeEvents;
@@ -108,6 +109,7 @@ class NodeController extends AbstractController
         $node = $this->getNodeOr404($id);
 
         if (null !== $node->getParent()) {
+            $responseContent = new ResponseContent();
             if ($request->isMethod('DELETE')) {
                 $treeNodeEvent = new TreeNodeEvent($node);
                 $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_PRE_DELETE, $treeNodeEvent);
@@ -118,10 +120,23 @@ class NodeController extends AbstractController
                 $messages = new Messages();
                 $messages->addSuccess($this->translate('success.delete_node'));
 
+                if ($request->isXmlHttpRequest()) {
+                    $responseContent->setMessages($this->getMessageHtml($messages));
+
+                    return $this->getJsonResponse($responseContent);
+                }
+
                 return new Response($this->getMessageHtml($messages));
             }
 
-            return $this->renderResponse('TadckaSitemapBundle:Node:delete.html.twig', array('node_id' => $id));
+            $content = $this->render('TadckaSitemapBundle:Node:delete.html.twig', array('node_id' => $id));
+            if ($request->isXmlHttpRequest()) {
+                $responseContent->setContent($content);
+
+                return $this->getJsonResponse($responseContent);
+            }
+
+            return new Response($content);
         }
 
         throw new NotFoundHttpException("Don't delete the tree root!");

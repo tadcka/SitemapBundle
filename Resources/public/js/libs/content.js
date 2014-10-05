@@ -86,11 +86,15 @@ function SitemapContent() {
     };
 
     var refresh = function ($response) {
+        if ($response.content) {
+            $content.html($response.content);
+        }
+
         if ($response.messages) {
             $content.find('.messages:first').html($response.messages);
         }
 
-        if ($response.subContent) {
+        if ($response.sub_content) {
             $content.find('.sub-content:first').html($response.subContent);
         }
 
@@ -213,8 +217,8 @@ function SitemapContent() {
                 var $subContent = $content.find('div.sub-content:first');
 
                 $subContent.addClass('toolbar-content');
-                if ($response.content) {
-                    $subContent.html($response.content);
+                if (isObject($response)) {
+                    refresh($response);
                 } else {
                     $subContent.html($response);
                 }

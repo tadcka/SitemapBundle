@@ -21,6 +21,16 @@ class ResponseContent
     /**
      * @var string
      */
+    private $content;
+
+    /**
+     * @var int
+     */
+    private $nodeId;
+
+    /**
+     * @var string
+     */
     private $messages;
 
     /**
@@ -37,6 +47,54 @@ class ResponseContent
      * @var string
      */
     private $toolbar;
+
+    /**
+     * Set content.
+     *
+     * @param string $content
+     *
+     * @return ResponseContent
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+
+        return $this;
+    }
+
+    /**
+     * Get content.
+     *
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Set node id.
+     *
+     * @param int $nodeId
+     *
+     * @return ResponseContent
+     */
+    public function setNodeId($nodeId)
+    {
+        $this->nodeId = $nodeId;
+
+        return $this;
+    }
+
+    /**
+     * Get node id.
+     *
+     * @return int
+     */
+    public function getNodeId()
+    {
+        return $this->nodeId;
+    }
 
     /**
      * Set messages html.
