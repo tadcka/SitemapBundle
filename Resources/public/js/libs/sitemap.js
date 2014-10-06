@@ -15,7 +15,7 @@ $.fn.sitemap = function () {
 
     $tree.getJsTree()
         .on('changed.jstree', function ($event, $data) {
-            if ($data.node) {
+            if (!$currentNode || $data.node && (($currentNode.id !== $data.node.id))) {
                 $currentNode = $data.node;
                 var $url = Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $currentNode.id});
 
