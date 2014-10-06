@@ -4,12 +4,17 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="tadcka_sitemap" pattern="/sitemap">
+    <route id="tadcka_sitemap" pattern="/sitemap.{_format}">
         <default key="_controller">TadckaSitemapBundle:Sitemap:index</default>
+        <default key="_format">html</default>
+        <requirement key="_format">html</requirement>
     </route>
 
-    <route id="tadcka_sitemap_content" pattern="/sitemap/content/{nodeId}">
+    <route id="tadcka_sitemap_content" pattern="/sitemap/content/{nodeId}.{_format}">
         <default key="_controller">TadckaSitemapBundle:Sitemap:content</default>
+        <default key="_format">html</default>
+        <requirement key="_format">html|json</requirement>
+        <requirement key="nodeId">\d+</requirement>
         <option key="expose">true</option>
     </route>
 </routes>

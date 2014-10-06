@@ -12,8 +12,9 @@
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEvent;
-use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
+use Tadcka\Bundle\SitemapBundle\Frontend\Model\JsonResponseContent;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapEvents;
 
 /**
@@ -27,10 +28,7 @@ class SitemapController extends AbstractController
     {
         return $this->renderResponse(
             'TadckaSitemapBundle:Sitemap:index.html.twig',
-            array(
-                'page_header' => $this->getTranslator()
-                        ->trans('sitemap.page_header', array(), 'TadckaSitemapBundle'),
-            )
+            array('page_header' => $this->translate('sitemap.page_header'))
         );
     }
 
@@ -40,25 +38,25 @@ class SitemapController extends AbstractController
 
         $event = new SitemapNodeEvent($node, $this->getRouter(), $this->getTranslator());
         $this->container->get('event_dispatcher')->dispatch(TadckaSitemapEvents::SITEMAP_NODE_EDIT, $event);
-        $tabs = $event->getTabs();
 
-        return $this->renderResponse(
+        $content = $this->render(
             'TadckaSitemapBundle:Sitemap:content.html.twig',
             array(
                 'node' => $node,
-                'tabs' => $tabs,
+                'tabs' => $event->getTabs(),
                 'has_controller' => $this->getRouterHelper()->hasRouteController($node->getType()),
                 'multi_language_locales' => $this->container->getParameter('tadcka_sitemap.multi_language.locales'),
                 'multi_language_enabled' => $this->container->getParameter('tadcka_sitemap.multi_language.enabled'),
             )
         );
-    }
 
-    /**
-     * @return RouterHelper
-     */
-    private function getRouterHelper()
-    {
-        return $this->container->get('tadcka_sitemap.routing.helper');
+        if ('json' === $request->getRequestFormat()) {
+            $jsonResponseContent = new JsonResponseContent($nodeId);
+            $jsonResponseContent->setContent($content);
+
+            return $this->getJsonResponse($jsonResponseContent);
+        }
+
+        return new Response($content);
     }
 }

@@ -18,6 +18,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
+use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Component\Tree\Provider\TreeProviderInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
@@ -101,6 +103,14 @@ abstract class AbstractController extends ContainerAware
     }
 
     /**
+     * @return RouterHelper
+     */
+    protected function getRouterHelper()
+    {
+        return $this->container->get('tadcka_sitemap.routing.helper');
+    }
+
+    /**
      * Get json response.
      *
      * @param mixed $data
@@ -129,6 +139,34 @@ abstract class AbstractController extends ContainerAware
     }
 
     /**
+     * Render.
+     *
+     * @param string $name
+     * @param array $parameters
+     *
+     * @return string
+     */
+    protected function render($name, array $parameters = array())
+    {
+        return $this->getTemplating()->render($name, $parameters);
+    }
+
+    /**
+     * Translator translate.
+     *
+     * @param $id
+     * @param array $parameters
+     * @param string $domain
+     * @param null|string $locale
+     *
+     * @return string
+     */
+    protected function translate($id, array $parameters = array(), $domain = 'TadckaSitemapBundle', $locale = null)
+    {
+        return $this->getTranslator()->trans($id, $parameters, $domain, $locale);
+    }
+
+    /**
      * Get node or 404.
      *
      * @param int $nodeId
@@ -145,5 +183,40 @@ abstract class AbstractController extends ContainerAware
         }
 
         return $node;
+    }
+
+    /**
+     * Get messages html.
+     *
+     * @param Messages $messages
+     *
+     * @return string
+     */
+    protected function getMessageHtml(Messages $messages)
+    {
+        return $this->getTemplating()->render(
+            'TadckaSitemapBundle::messages.html.twig',
+            array('messages' => $messages)
+        );
+    }
+
+    /**
+     * Get toolbar html.
+     *
+     * @param NodeInterface $node
+     *
+     * @return string
+     */
+    protected function getToolbarHtml(NodeInterface $node)
+    {
+        return $this->render(
+            'TadckaSitemapBundle:Sitemap:toolbar.html.twig',
+            array(
+                'node' => $node,
+                'multi_language_enabled' => $this->container->getParameter('tadcka_sitemap.multi_language.enabled'),
+                'multi_language_locales' => $this->container->getParameter('tadcka_sitemap.multi_language.locales'),
+                'has_controller' => $this->getRouterHelper()->hasRouteController($node->getType()),
+            )
+        );
     }
 }

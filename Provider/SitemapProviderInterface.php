@@ -9,24 +9,24 @@
  * file that was distributed with this source code.
  */
 
-namespace Tadcka\Bundle\SitemapBundle\Model\Manager;
+namespace Tadcka\Bundle\SitemapBundle\Provider;
 
+use Tadcka\Bundle\SitemapBundle\Exception\ResourceNotFoundException;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface as BaseNodeManagerInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 9/6/14 1:22 PM
+ * @since 10/3/14 10:51 AM
  */
-interface NodeManagerInterface extends BaseNodeManagerInterface
+interface SitemapProviderInterface
 {
     /**
-     * Find node by id.
+     * Get root node.
      *
-     * @param int $id
+     * @return NodeInterface
      *
-     * @return null|NodeInterface
+     * @throws ResourceNotFoundException
      */
-    public function findNodeById($id);
+    public function getRootNode();
 }

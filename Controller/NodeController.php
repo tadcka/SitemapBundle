@@ -14,16 +14,15 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tadcka\Bundle\SitemapBundle\Frontend\Model\JsonResponseContent;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\Model\TreeInterface;
 use Tadcka\Component\Tree\TadckaTreeEvents;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Form\Factory\NodeFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\NodeFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
-use Tadcka\Bundle\SitemapBundle\Helper\FrontendHelper;
-use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
+use Tadcka\Bundle\SitemapBundle\Frontend\FrontendHelper;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -34,33 +33,14 @@ class NodeController extends AbstractController
 {
     public function getRootAction(Request $request)
     {
-        $tree = $this->getTreeProvider()->getTree(TadckaSitemapBundle::SITEMAP_TREE);
-        if (null === $tree) {
-            throw new NotFoundHttpException();
-        }
-
-        $rootNode = $this->getNodeManager()->findRootNode($tree);
-        if (null === $rootNode) {
-            $rootNode = $this->createRootNode($tree, $request->getLocale());
-            $this->getNodeManager()->save();
-        }
-
-        $iconPath = null;
-        if (null !== $config = $this->getTreeProvider()->getTreeConfig(TadckaSitemapBundle::SITEMAP_TREE)) {
-            $iconPath = $config->getIconPath();
-        }
-
-        $root = $this->getFrontendHelper()->getRoot($rootNode, $request->getLocale(), $iconPath);
-        $response = $this->getJsonResponse(array($root));
-
-        return $response;
+        return $this->getJsonResponse($this->getFrontendHelper()->getRootNode($request->getLocale()));
     }
 
     public function getNodeAction(Request $request, $id)
     {
-        $node = $this->getNodeOr404($id);
-
-        return $this->getJsonResponse($this->getFrontendHelper()->getNode($node, $request->getLocale()));
+        return $this->getJsonResponse(
+            $this->getFrontendHelper()->getNode($this->getNodeOr404($id), $request->getLocale())
+        );
     }
 
     public function createAction(Request $request, $id)
@@ -77,30 +57,31 @@ class NodeController extends AbstractController
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_CREATE_SUCCESS, $treeNodeEvent);
             $this->getNodeManager()->save();
 
-            $messages->addSuccess($this->getTranslator()->trans('success.create_node', array(), 'TadckaSitemapBundle'));
+            $messages->addSuccess($this->translate('success.create_node'));
+            $messagesHtml = $this->getMessageHtml($messages);
 
-            $content = $this->getTemplating()->render(
-                'TadckaSitemapBundle::messages.html.twig',
-                array('messages' => $messages)
-            );
+            if ('json' === $request->getRequestFormat()) {
+                $jsonResponseContent = new JsonResponseContent($node->getId());
+                $jsonResponseContent->setMessages($messagesHtml);
 
-            if ($request->isXmlHttpRequest()) {
-                return $this->getJsonResponse(array('content' => $content, 'node_id' => $node->getId()));
+                return $this->getJsonResponse($jsonResponseContent);
             }
 
-            return new Response($content);
+            return new Response($messagesHtml);
         }
 
         $content = $this->getTemplating()->render(
             'TadckaSitemapBundle:Node:form.html.twig',
             array(
                 'form' => $form->createView(),
-                'messages' => $messages,
             )
         );
 
-        if ($request->isXmlHttpRequest()) {
-            return $this->getJsonResponse(array('content' => $content, 'node_id' => null));
+        if ('json' === $request->getRequestFormat()) {
+            $jsonResponseContent = new JsonResponseContent(null);
+            $jsonResponseContent->setContent($content);
+
+            return $this->getJsonResponse($jsonResponseContent);
         }
 
         return new Response($content);
@@ -115,7 +96,25 @@ class NodeController extends AbstractController
         if ($this->getFormHandler()->process($request, $form)) {
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
             $this->getNodeManager()->save();
-            $messages->addSuccess($this->getTranslator()->trans('success.edit_node', array(), 'TadckaSitemapBundle'));
+
+            $messages->addSuccess($this->translate('success.edit_node'));
+        }
+
+        if ('json' === $request->getRequestFormat()) {
+            $jsonResponseContent = new JsonResponseContent($id);
+            $jsonResponseContent->setTab(
+                $this->render(
+                    'TadckaSitemapBundle:Node:form.html.twig',
+                    array(
+                        'form' => $form->createView(),
+                    )
+                )
+            );
+            if ($messages->getMessages()) {
+                $jsonResponseContent->setMessages($this->getMessageHtml($messages));
+            }
+
+            return $this->getJsonResponse($jsonResponseContent);
         }
 
         return $this->renderResponse(
@@ -132,6 +131,7 @@ class NodeController extends AbstractController
         $node = $this->getNodeOr404($id);
 
         if (null !== $node->getParent()) {
+            $jsonResponseContent = new JsonResponseContent($id);
             if ($request->isMethod('DELETE')) {
                 $treeNodeEvent = new TreeNodeEvent($node);
                 $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_PRE_DELETE, $treeNodeEvent);
@@ -140,14 +140,25 @@ class NodeController extends AbstractController
                 $this->getNodeManager()->save();
 
                 $messages = new Messages();
-                $messages->addSuccess(
-                    $this->getTranslator()->trans('success.delete_node', array(), 'TadckaSitemapBundle')
-                );
+                $messages->addSuccess($this->translate('success.delete_node'));
 
-                return $this->renderResponse('TadckaSitemapBundle::messages.html.twig', array('messages' => $messages));
+                if ('json' === $request->getRequestFormat()) {
+                    $jsonResponseContent->setMessages($this->getMessageHtml($messages));
+
+                    return $this->getJsonResponse($jsonResponseContent);
+                }
+
+                return new Response($this->getMessageHtml($messages));
             }
 
-            return $this->renderResponse('TadckaSitemapBundle:Node:delete.html.twig', array('node_id' => $id));
+            $content = $this->render('TadckaSitemapBundle:Node:delete.html.twig', array('node_id' => $id));
+            if ('json' === $request->getRequestFormat()) {
+                $jsonResponseContent->setContent($content);
+
+                return $this->getJsonResponse($jsonResponseContent);
+            }
+
+            return new Response($content);
         }
 
         throw new NotFoundHttpException("Don't delete the tree root!");
@@ -178,22 +189,6 @@ class NodeController extends AbstractController
     }
 
     /**
-     * Create root node.
-     *
-     * @param TreeInterface $tree
-     * @param $locale
-     *
-     * @return NodeInterface
-     */
-    private function createRootNode(TreeInterface $tree, $locale)
-    {
-        $rootNode = $this->createNode($tree);
-        $rootNode->addTranslation($this->createNodeTranslation($rootNode, $this->getRootNodeTitle(), $locale));
-
-        return $rootNode;
-    }
-
-    /**
      * Create node.
      *
      * @param TreeInterface $tree
@@ -201,7 +196,7 @@ class NodeController extends AbstractController
      *
      * @return NodeInterface
      */
-    private function createNode(TreeInterface $tree, NodeInterface $parent = null)
+    private function createNode(TreeInterface $tree, NodeInterface $parent)
     {
         $node = $this->getNodeManager()->create();
         $node->setTree($tree);
@@ -211,42 +206,5 @@ class NodeController extends AbstractController
         $this->getNodeManager()->add($node);
 
         return $node;
-    }
-
-    /**
-     * Create node translation.
-     *
-     * @param NodeInterface $node
-     * @param string $title
-     * @param string $locale
-     *
-     * @return NodeTranslationInterface
-     */
-    private function createNodeTranslation(NodeInterface $node, $title, $locale)
-    {
-        $translation = $this->getNodeTranslationManager()->create();
-        $translation->setLang($locale);
-        $translation->setNode($node);
-        $translation->setTitle($title);
-        $this->getNodeTranslationManager()->add($translation);
-
-        return $translation;
-    }
-
-    /**
-     * Get root node title.
-     *
-     * @return string
-     */
-    private function getRootNodeTitle()
-    {
-        $config = $this->getTreeProvider()->getTreeConfig(TadckaSitemapBundle::SITEMAP_TREE);
-
-        $title = $config->getName();
-        if ($config->getTranslationDomain()) {
-            $title = $this->getTranslator()->trans($config->getName(), array(), $config->getTranslationDomain());
-        }
-
-        return $title;
     }
 }
