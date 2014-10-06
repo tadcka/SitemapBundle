@@ -5,28 +5,40 @@
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
 
-    <route id="tadcka_sitemap_tree_node_root" pattern="/sitemap-tree/root-node">
+    <route id="tadcka_sitemap_tree_node_root" pattern="/sitemap-tree/root-node.{_format}">
         <default key="_controller">TadckaSitemapBundle:Node:getRoot</default>
+        <requirement key="_format">json</requirement>
         <option key="expose">true</option>
     </route>
 
-    <route id="tadcka_sitemap_tree_node" pattern="/sitemap-tree/node/{id}">
+    <route id="tadcka_sitemap_tree_node" pattern="/sitemap-tree/node/{id}.{_format}">
         <default key="_controller">TadckaSitemapBundle:Node:getNode</default>
+        <requirement key="_format">json</requirement>
+        <requirement key="id">\d+</requirement>
         <option key="expose">true</option>
     </route>
 
-    <route id="tadcka_sitemap_tree_create_node" pattern="/sitemap-tree/create-node/{id}">
+    <route id="tadcka_sitemap_tree_create_node" pattern="/sitemap-tree/create-node/{id}.{_format}">
         <default key="_controller">TadckaSitemapBundle:Node:create</default>
+        <default key="_format">html</default>
+        <requirement key="_format">html|json</requirement>
+        <requirement key="id">\d+</requirement>
         <option key="expose">true</option>
     </route>
 
-    <route id="tadcka_sitemap_tree_edit_node" pattern="/sitemap-tree/edit-node/{id}">
+    <route id="tadcka_sitemap_tree_edit_node" pattern="/sitemap-tree/edit-node/{id}.{_format}">
         <default key="_controller">TadckaSitemapBundle:Node:edit</default>
+        <default key="_format">html</default>
+        <requirement key="_format">html|json</requirement>
+        <requirement key="id">\d+</requirement>
         <option key="expose">true</option>
     </route>
 
-    <route id="tadcka_sitemap_tree_delete_node" pattern="sitemap-tree/delete-node/{id}">
+    <route id="tadcka_sitemap_tree_delete_node" pattern="sitemap-tree/delete-node/{id}.{_format}">
         <default key="_controller">TadckaSitemapBundle:Node:delete</default>
+        <default key="_format">html</default>
+        <requirement key="_format">html|json</requirement>
+        <requirement key="id">\d+</requirement>
         <option key="expose">true</option>
     </route>
 

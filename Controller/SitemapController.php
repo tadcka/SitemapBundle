@@ -11,7 +11,10 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEvent;
+use Tadcka\Bundle\SitemapBundle\Frontend\Model\JsonResponseContent;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapEvents;
 
 /**
@@ -29,14 +32,14 @@ class SitemapController extends AbstractController
         );
     }
 
-    public function contentAction($nodeId)
+    public function contentAction(Request $request, $nodeId)
     {
         $node = $this->getNodeOr404($nodeId);
 
         $event = new SitemapNodeEvent($node, $this->getRouter(), $this->getTranslator());
         $this->container->get('event_dispatcher')->dispatch(TadckaSitemapEvents::SITEMAP_NODE_EDIT, $event);
 
-        return $this->renderResponse(
+        $content = $this->render(
             'TadckaSitemapBundle:Sitemap:content.html.twig',
             array(
                 'node' => $node,
@@ -46,5 +49,14 @@ class SitemapController extends AbstractController
                 'multi_language_enabled' => $this->container->getParameter('tadcka_sitemap.multi_language.enabled'),
             )
         );
+
+        if ('json' === $request->getRequestFormat()) {
+            $jsonResponseContent = new JsonResponseContent($nodeId);
+            $jsonResponseContent->setContent($content);
+
+            return $this->getJsonResponse($jsonResponseContent);
+        }
+
+        return new Response($content);
     }
 }

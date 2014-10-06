@@ -58,25 +58,30 @@ class NodeController extends AbstractController
             $this->getNodeManager()->save();
 
             $messages->addSuccess($this->translate('success.create_node'));
-            $content = $this->getMessageHtml($messages);
+            $messagesHtml = $this->getMessageHtml($messages);
 
-            if ($request->isXmlHttpRequest()) {
-                return $this->getJsonResponse(array('content' => $content, 'node_id' => $node->getId()));
+            if ('json' === $request->getRequestFormat()) {
+                $jsonResponseContent = new JsonResponseContent($node->getId());
+                $jsonResponseContent->setMessages($messagesHtml);
+
+                return $this->getJsonResponse($jsonResponseContent);
             }
 
-            return new Response($content);
+            return new Response($messagesHtml);
         }
 
         $content = $this->getTemplating()->render(
             'TadckaSitemapBundle:Node:form.html.twig',
             array(
                 'form' => $form->createView(),
-                'messages' => $messages,
             )
         );
 
-        if ($request->isXmlHttpRequest()) {
-            return $this->getJsonResponse(array('content' => $content, 'node_id' => null));
+        if ('json' === $request->getRequestFormat()) {
+            $jsonResponseContent = new JsonResponseContent(null);
+            $jsonResponseContent->setContent($content);
+
+            return $this->getJsonResponse($jsonResponseContent);
         }
 
         return new Response($content);
@@ -93,6 +98,23 @@ class NodeController extends AbstractController
             $this->getNodeManager()->save();
 
             $messages->addSuccess($this->translate('success.edit_node'));
+        }
+
+        if ('json' === $request->getRequestFormat()) {
+            $jsonResponseContent = new JsonResponseContent($id);
+            $jsonResponseContent->setTab(
+                $this->render(
+                    'TadckaSitemapBundle:Node:form.html.twig',
+                    array(
+                        'form' => $form->createView(),
+                    )
+                )
+            );
+            if ($messages->getMessages()) {
+                $jsonResponseContent->setMessages($this->getMessageHtml($messages));
+            }
+
+            return $this->getJsonResponse($jsonResponseContent);
         }
 
         return $this->renderResponse(
@@ -120,7 +142,7 @@ class NodeController extends AbstractController
                 $messages = new Messages();
                 $messages->addSuccess($this->translate('success.delete_node'));
 
-                if ($request->isXmlHttpRequest()) {
+                if ('json' === $request->getRequestFormat()) {
                     $jsonResponseContent->setMessages($this->getMessageHtml($messages));
 
                     return $this->getJsonResponse($jsonResponseContent);
@@ -130,7 +152,7 @@ class NodeController extends AbstractController
             }
 
             $content = $this->render('TadckaSitemapBundle:Node:delete.html.twig', array('node_id' => $id));
-            if ($request->isXmlHttpRequest()) {
+            if ('json' === $request->getRequestFormat()) {
                 $jsonResponseContent->setContent($content);
 
                 return $this->getJsonResponse($jsonResponseContent);

@@ -50,7 +50,10 @@ class SitemapNodeListener
         $menu = new Tab(
             $event->getTranslator()->trans('node.menu', array(), 'TadckaSitemapBundle'),
             'node_menu',
-            $event->getRouter()->generate('tadcka_sitemap_tree_edit_node', array('id' => $node->getId())),
+            $event->getRouter()->generate(
+                'tadcka_sitemap_tree_edit_node',
+                array('_format' => 'json', 'id' => $node->getId())
+            ),
             255
         );
         $event->addTab($menu);
@@ -59,7 +62,10 @@ class SitemapNodeListener
             $seo = new Tab(
                 $event->getTranslator()->trans('node.seo', array(), 'TadckaSitemapBundle'),
                 'node_content',
-                $event->getRouter()->generate('tadcka_sitemap_seo', array('nodeId' => $node->getId())),
+                $event->getRouter()->generate(
+                    'tadcka_sitemap_seo',
+                    array('_format' => 'json', 'id' => $node->getId())
+                ),
                 200
             );
 

@@ -20,10 +20,14 @@ function SitemapContent() {
         fadeOn();
 
         $.ajax({
-            url: Routing.generate('tadcka_sitemap_content', {nodeId: $nodeId}),
+            url: Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $nodeId}),
             type: 'GET',
             success: function ($response) {
-                $content.html($response);
+                if (isObject($response)) {
+                    refresh($response);
+                } else {
+                    $content.html($response);
+                }
 
                 fadeOff();
                 $callback();
@@ -249,9 +253,12 @@ function SitemapContent() {
                 type: 'POST',
                 data: $data,
                 success: function ($response) {
-                    if (!$response.node_id) {
-                        $content.find('div.sub-content:first').html($response.content);
+                    if (isObject($response)) {
+                        refresh($response);
+                    } else {
+                        $content.html($response);
                     }
+
                     fadeOff();
                     $callback($response);
                 },

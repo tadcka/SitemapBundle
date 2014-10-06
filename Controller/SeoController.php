@@ -28,9 +28,9 @@ use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
  */
 class SeoController extends AbstractController
 {
-    public function indexAction(Request $request, $nodeId)
+    public function indexAction(Request $request, $id)
     {
-        $node = $this->getNodeOr404($nodeId);
+        $node = $this->getNodeOr404($id);
         $hasController = $this->getRouterHelper()->hasRouteController($node->getType());
         $messages = new Messages();
         $form = $this->getFormFactory()->create(array('translations' => $node->getTranslations()), $hasController);
@@ -43,8 +43,8 @@ class SeoController extends AbstractController
             $form = $this->getFormFactory()->create($form->getData(), $hasController);
         }
 
-        if ($request->isXmlHttpRequest()) {
-            $jsonResponseContent = new JsonResponseContent($nodeId);
+        if ('json' === $request->getRequestFormat()) {
+            $jsonResponseContent = new JsonResponseContent($id);
             $jsonResponseContent->setMessages($this->getMessageHtml($messages));
             $jsonResponseContent->setTab(
                 $this->render('TadckaSitemapBundle:Seo:seo.html.twig', array('form' => $form->createView()))
@@ -64,12 +64,12 @@ class SeoController extends AbstractController
     }
 
 
-    public function onlineAction($locale, $nodeId)
+    public function onlineAction($locale, $id)
     {
-        $node = $this->getNodeOr404($nodeId);
+        $node = $this->getNodeOr404($id);
         /** @var NodeTranslationInterface $nodeTranslation */
         $nodeTranslation = $node->getTranslation($locale);
-        $jsonResponseContent = new JsonResponseContent($nodeId);
+        $jsonResponseContent = new JsonResponseContent($id);
         $messages = new Messages();
 
         if (null === $nodeTranslation) {

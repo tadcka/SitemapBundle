@@ -51,39 +51,35 @@ $.fn.sitemap = function () {
     });
 
     /**
-     * Submit tab content form.
+     * Submit form.
      */
-    $content.getContent().on('submit', 'div.tab-content > form', function ($event) {
-        $event.preventDefault();
-        var $form = $(this).closest('form');
-        $tab.submit($form.attr('action'), $form.serialize(), function () {
-            $tree.refresh();
-        });
-    });
-
-    /**
-     * Create node.
-     */
-    $content.getContent().on('submit', 'div.toolbar-content > form', function ($event) {
+    $content.getContent().on('submit', 'form', function ($event) {
         $event.preventDefault();
 
         var $form = $(this);
         var $button = $form.find('button:first');
 
         $button.attr('disabled', 'disabled');
-        $toolbar.create($form.attr('action'), $form.serialize(), function ($response) {
-            if ($response.node_id) {
+        if ($content.getContent().find('.tab-content:first').length) {
+            $tab.submit($form.attr('action'), $form.serialize(), function () {
                 $tree.refresh();
-                $content.load($response.node_id, function () {
-                    $tab.loadFirst();
-                    $content.getContent().find('.sub-content:first').prepend($response.content);
-//                    $tree.selectNode($response.node_id);
-//                    $tree.deselectNode($currentNode.id);
-                });
-            } else {
-                $button.attr('disabled', '')
-            }
-        });
+                $button.attr('disabled', '');
+            });
+        } else {
+            $toolbar.create($form.attr('action'), $form.serialize(), function ($response) {
+                if ($response.node_id) {
+                    $tree.refresh();
+                    $content.load($response.node_id, function () {
+                        if ($response.messages) {
+                            $content.getContent().find('.messages:first').html($response.messages);
+                        }
+                        $tab.loadFirst();
+                    });
+                }
+
+                $button.attr('disabled', '');
+            });
+        }
     });
 
     /**
