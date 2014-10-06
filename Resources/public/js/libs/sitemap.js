@@ -12,15 +12,15 @@ $.fn.sitemap = function () {
 
     var $content = new SitemapContent();
     var $tree = new SitemapTree();
-    var $tab = $content.createTab();
-    var $toolbar = $content.createToolbar();
 
     $tree.getJsTree()
         .on('changed.jstree', function ($event, $data) {
             if (!$currentNode || $data.node && (($currentNode.id !== $data.node.id))) {
                 $currentNode = $data.node;
-                $content.load($currentNode.id, function () {
-                    $tab.loadFirst();
+                var $url = Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $currentNode.id});
+
+                $content.load($url, $content.getContent(), function ($response) {
+                    $content.loadFirstTab();
                 });
             }
         });
@@ -30,24 +30,21 @@ $.fn.sitemap = function () {
      */
     $content.getContent().on('click', 'div.tadcka-sitemap-toolbar a.load', function ($event) {
         $event.preventDefault();
-        $toolbar.load($(this));
-    });
-
-    /**
-     * Toggle toolbar.
-     */
-    $content.getContent().on('click', 'div.tadcka-sitemap-toolbar a.toggle', function ($event) {
-        $event.preventDefault();
-        $toolbar.toggle($(this));
+        $content.load($(this).attr('href'), $content.getContent().find('div.sub-content:first'), function ($response) {
+        });
     });
 
     /**
      * Load current tab content.
      */
     $content.getContent().on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
-        var $navTab = $(e.target);
+        var $currentTabTarget = $(e.target);
+        var $tabContent = $($currentTabTarget.attr('href'));
 
-        $tab.load($navTab.data('href'), $($navTab.attr('href')));
+        if ($tabContent.is(':empty')) {
+            $content.load($currentTabTarget.data('href'), $tabContent, function ($response) {
+            });
+        }
     });
 
     /**
@@ -61,19 +58,21 @@ $.fn.sitemap = function () {
 
         $button.attr('disabled', 'disabled');
         if ($content.getContent().find('.tab-content:first').length) {
-            $tab.submit($form.attr('action'), $form.serialize(), function () {
+
+            $content.submit($form.attr('action'), $form.serialize(), $content.getActiveTab(), function ($response) {
                 $tree.refresh();
                 $button.attr('disabled', '');
             });
         } else {
-            $toolbar.create($form.attr('action'), $form.serialize(), function ($response) {
+            $content.submit($form.attr('action'), $form.serialize(), $content.getContent(), function ($response) {
                 if ($response.node_id) {
                     $tree.refresh();
                     $content.load($response.node_id, function () {
                         if ($response.messages) {
                             $content.getContent().find('.messages:first').html($response.messages);
                         }
-                        $tab.loadFirst();
+
+                        $content.loadFirstTab();
                     });
                 }
 
@@ -87,7 +86,7 @@ $.fn.sitemap = function () {
      */
     $content.getContent().on('click', 'a#tadcka-tree-node-delete-confirm', function ($event) {
         $event.preventDefault();
-        $toolbar.remove($(this).attr('href'), function () {
+        $content.deleteNode($(this).attr('href'), function ($response) {
             $tree.refresh();
         });
     });

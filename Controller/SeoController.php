@@ -79,7 +79,7 @@ class SeoController extends AbstractController
             return $this->getJsonResponse($jsonResponseContent);
         }
 
-        if ($this->nodeParentIsOnline($node->getParent(), $locale)) {
+        if (false === $this->nodeParentIsOnline($node, $locale)) {
             $messages->addWarning($this->translate('node_parent_is_not_online', array('%locale%' => $locale)));
             $jsonResponseContent->setMessages($this->getMessageHtml($messages));
 
@@ -115,13 +115,14 @@ class SeoController extends AbstractController
     /**
      * Check if node parent is online.
      *
-     * @param NodeInterface $parent
+     * @param NodeInterface $node
      * @param $locale
      *
      * @return bool
      */
-    private function nodeParentIsOnline(NodeInterface $parent, $locale)
+    private function nodeParentIsOnline(NodeInterface $node, $locale)
     {
+        $parent = $node->getParent();
         $hasController = $this->getRouterHelper()->hasRouteController($parent->getType());
 
         if ((null !== $parent) && $hasController) {

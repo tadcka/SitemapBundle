@@ -11,26 +11,24 @@ function SitemapContent() {
     var $content = $('div#tadcka-sitemap-content');
 
     /**
-     * Load sitemap content.
+     * Delete node.
      *
-     * @param {String} $nodeId
+     * @param {String} $url
      * @param {Function} $callback
      */
-    this.load = function ($nodeId, $callback) {
-        fadeOn();
-
+    this.deleteNode = function ($url, $callback) {
         $.ajax({
-            url: Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $nodeId}),
-            type: 'GET',
+            url: $url,
+            type: 'DELETE',
             success: function ($response) {
                 if (isObject($response)) {
                     refresh($response);
                 } else {
                     $content.html($response);
                 }
+                $callback($response);
 
                 fadeOff();
-                $callback();
             },
             error: function ($request, $status, $error) {
                 $content.html($request.responseText);
@@ -40,21 +38,21 @@ function SitemapContent() {
     };
 
     /**
-     * Create content tab.
+     * Get active tab target.
      *
-     * @returns {SitemapContent.Tab}
+     * @returns {HTMLElement}
      */
-    this.createTab = function () {
-        return new Tab();
+    this.getActiveTabTarget = function () {
+        return $content.find('.nav-tabs li.active a:first');
     };
 
     /**
-     * Create content toolbar.
+     * Get active tab.
      *
-     * @returns {SitemapContent.Toolbar}
+     * @returns {HTMLElement}
      */
-    this.createToolbar = function () {
-        return new Toolbar();
+    this.getActiveTab = function () {
+        return $(this.getActiveTabTarget().attr('href'));
     };
 
     /**
@@ -64,6 +62,78 @@ function SitemapContent() {
      */
     this.getContent = function () {
         return $content;
+    };
+
+    /**
+     * Load content.
+     *
+     * @param {String} $url
+     * @param {HTMLElement} $content
+     * @param {Function} $callback
+     */
+    this.load = function ($url, $content, $callback) {
+        fadeOn();
+
+        $.ajax({
+            url: $url,
+            type: 'GET',
+            success: function ($response) {
+                if (isObject($response)) {
+                    refresh($response);
+                } else {
+                    $content.html($response);
+                }
+                $callback($response);
+
+                fadeOff();
+            },
+            error: function ($request, $status, $error) {
+                $content.html($request.responseText);
+                fadeOff();
+            }
+        });
+    };
+
+    /**
+     * Load first tab content.
+     */
+    this.loadFirstTab = function () {
+        var $activeTabTarget = this.getActiveTabTarget();
+
+        this.load($activeTabTarget.data('href'), $($activeTabTarget.attr('href')), function ($response) {
+        });
+    };
+
+    /**
+     * Submit form.
+     *
+     * @param {String} $url
+     * @param {Array} $data
+     * @param {HTMLElement} $content
+     * @param {Function} $callback
+     */
+    this.submit = function ($url, $data, $content, $callback) {
+        fadeOn();
+
+        $.ajax({
+            url: $url,
+            type: 'POST',
+            data: $data,
+            success: function ($response) {
+                if (isObject($response)) {
+                    refresh($response);
+                } else {
+                    $content.html($response);
+                }
+                $callback($response);
+
+                fadeOff();
+            },
+            error: function ($request, $status, $error) {
+                $content.html($request.responseText);
+                fadeOff();
+            }
+        });
     };
 
     /**
@@ -81,14 +151,21 @@ function SitemapContent() {
     };
 
     /**
-     * Clean alerts.
+     * Check if is object.
+     *
+     * @param $object
+     *
+     * @returns {boolean}
      */
-    var cleanAlerts = function () {
-        $content.find('div.sub-content:first > div.alert').each(function () {
-            $(this).remove();
-        });
+    var isObject = function ($object) {
+        return (typeof $object == 'object');
     };
 
+    /**
+     * Refresh content.
+     *
+     * @param {object} $response
+     */
     var refresh = function ($response) {
         if ($response.content) {
             $content.html($response.content);
@@ -99,7 +176,7 @@ function SitemapContent() {
         }
 
         if ($response.sub_content) {
-            $content.find('.sub-content:first').html($response.subContent);
+            $content.find('.sub-content:first').html($response.sub_content);
         }
 
         if ($response.tab) {
@@ -110,235 +187,4 @@ function SitemapContent() {
             $content.find('.tadcka-sitemap-toolbar:first').replaceWith($response.toolbar);
         }
     };
-
-    var isObject = function ($object) {
-        return (typeof $object == 'object');
-    };
-
-    /**
-     * Sitemap content tab object.
-     */
-    function Tab() {
-
-        /**
-         * Load tab content.
-         *
-         * @param {String} $url
-         * @param {HTMLElement} $tabContent
-         */
-        this.load = function ($url, $tabContent) {
-            if ($tabContent.is(':empty')) {
-                fadeOn();
-
-                $.ajax({
-                    url: $url,
-                    type: 'GET',
-                    success: function ($response) {
-                        if (isObject($response)) {
-                            refresh($response);
-                        } else {
-                            $tabContent.html($response);
-                        }
-
-                        fadeOff();
-                    },
-                    error: function ($request, $status, $error) {
-                        $tabContent.html($request.responseText);
-                        fadeOff();
-                    }
-                });
-            }
-        };
-
-        /**
-         * Load first tab content.
-         */
-        this.loadFirst = function () {
-            var $tabButton = getActive().find('a:first');
-            var $tabContent = $($tabButton.attr('href'));
-
-            this.load($tabButton.data('href'), $tabContent);
-        };
-
-        /**
-         * Submit tab form.
-         *
-         * @param {String} $url
-         * @param {Array} $data
-         * @param {Function} $callback
-         */
-        this.submit = function ($url, $data, $callback) {
-            fadeOn();
-
-            var $tabButton = getActive().find('a:first');
-            var $tabContent = $($tabButton.attr('href'));
-
-            $.ajax({
-                url: $url,
-                type: 'POST',
-                data: $data,
-                success: function ($response) {
-                    if (isObject($response)) {
-                        refresh($response);
-                    } else {
-                        $tabContent.html($response);
-                    }
-
-                    cleanAlerts();
-
-                    fadeOff();
-                    $callback();
-                },
-                error: function ($request, $status, $error) {
-                    $content.html($request.responseText);
-                    fadeOff();
-                }
-            });
-        };
-
-        /**
-         * Get active tab.
-         *
-         * @returns {HTMLElement}
-         */
-        var getActive = function () {
-            return $content.find('li.active:first')
-        };
-    }
-
-    /**
-     * Sitemap content toolbar object.
-     */
-    function Toolbar() {
-
-        /**
-         * Load toolbar content.
-         *
-         * @param {HTMLElement} $button
-         */
-        this.load = function ($button) {
-            get($button.attr('href'), function ($response) {
-                var $subContent = $content.find('div.sub-content:first');
-
-                $subContent.addClass('toolbar-content');
-                if (isObject($response)) {
-                    refresh($response);
-                } else {
-                    $subContent.html($response);
-                }
-            });
-        };
-
-        /**
-         * Button toggle.
-         *
-         * @param {HTMLElement} $button
-         */
-        this.toggle = function ($button) {
-            get($button.attr('href'), function ($response) {
-                refresh($response);
-            });
-        };
-
-        /**
-         * Save node.
-         *
-         * @param {String} $url
-         * @param {Array} $data
-         * @param {Function} $callback
-         */
-        this.create = function ($url, $data, $callback) {
-            $.ajax({
-                url: $url,
-                type: 'POST',
-                data: $data,
-                success: function ($response) {
-                    if (isObject($response)) {
-                        refresh($response);
-                    } else {
-                        $content.html($response);
-                    }
-
-                    fadeOff();
-                    $callback($response);
-                },
-                error: function ($request, $status, $error) {
-                    $content.html($request.responseText);
-                    fadeOff();
-                }
-            });
-        };
-
-        /**
-         * Remove node.
-         *
-         * @param {String} $url
-         * @param {Function} $callback
-         */
-        this.remove = function ($url, $callback) {
-            $.ajax({
-                url: $url,
-                type: 'DELETE',
-                success: function ($response) {
-                    $content.html($response);
-                    fadeOff();
-                    $callback();
-                },
-                error: function ($request, $status, $error) {
-                    $content.html($request.responseText);
-                    fadeOff();
-                }
-            });
-        };
-
-        /**
-         * Submit toolbar form.
-         *
-         * @param {String} $url
-         * @param {Array}$data
-         * @param {String} $type
-         * @param {Function} $callback
-         */
-        this.submit = function ($url, $data, $type, $callback) {
-            fadeOn();
-
-            $.ajax({
-                url: $url,
-                type: $type,
-                data: $data,
-                success: function ($response) {
-                    $content.find('div.sub-content:first').html($response);
-                    fadeOff();
-                    $callback();
-                },
-                error: function ($request, $status, $error) {
-                    $content.html($request.responseText);
-                    fadeOff();
-                }
-            });
-        };
-
-        /**
-         * Get resource.
-         *
-         * @param {String} $url
-         * @param {Function} $callback
-         */
-        var get = function ($url, $callback) {
-            fadeOn();
-
-            $.ajax({
-                url: $url,
-                type: 'GET',
-                success: function ($response) {
-                    $callback($response);
-                    fadeOff();
-                },
-                error: function ($request, $status, $error) {
-                    $content.html($request.responseText);
-                    fadeOff();
-                }
-            });
-        };
-    }
 }
