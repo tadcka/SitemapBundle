@@ -38,21 +38,12 @@ function SitemapContent() {
     };
 
     /**
-     * Get active tab target.
-     *
-     * @returns {HTMLElement}
-     */
-    this.getActiveTabTarget = function () {
-        return $content.find('.nav-tabs li.active a:first');
-    };
-
-    /**
      * Get active tab.
      *
      * @returns {HTMLElement}
      */
     this.getActiveTab = function () {
-        return $(this.getActiveTabTarget().attr('href'));
+        return $(getActiveTabTarget().attr('href'));
     };
 
     /**
@@ -98,7 +89,7 @@ function SitemapContent() {
      * Load first tab content.
      */
     this.loadFirstTab = function () {
-        var $activeTabTarget = this.getActiveTabTarget();
+        var $activeTabTarget = getActiveTabTarget();
 
         this.load($activeTabTarget.data('href'), $($activeTabTarget.attr('href')), function ($response) {
         });
@@ -148,6 +139,15 @@ function SitemapContent() {
      */
     var fadeOff = function () {
         $content.fadeTo(0, 1);
+    };
+
+    /**
+     * Get active tab target.
+     *
+     * @returns {HTMLElement}
+     */
+    var getActiveTabTarget = function () {
+        return $content.find('.nav-tabs li.active a:first');
     };
 
     /**
