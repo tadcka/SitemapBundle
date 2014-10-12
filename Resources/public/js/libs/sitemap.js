@@ -66,8 +66,10 @@ $.fn.sitemap = function () {
         } else {
             $content.submit($form.attr('action'), $form.serialize(), $content.getContent(), function ($response) {
                 if ($response.node_id) {
+                    var $url = Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $response.node_id});
+
                     $tree.refresh();
-                    $content.load($response.node_id, function () {
+                    $content.load($url, $content.getContent(), function () {
                         if ($response.messages) {
                             $content.getContent().find('.messages:first').html($response.messages);
                         }
