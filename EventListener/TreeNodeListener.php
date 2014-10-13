@@ -90,7 +90,7 @@ class TreeNodeListener
             }
 
             if ($this->incrementalPriority) {
-                $this->incrementalPriority($node);
+                $this->incrementPriority($node);
             }
         }
     }
@@ -133,11 +133,11 @@ class TreeNodeListener
     }
 
     /**
-     * Incremental node priority.
+     * Increment node priority.
      *
      * @param NodeInterface $node
      */
-    private function incrementalPriority(NodeInterface $node)
+    private function incrementPriority(NodeInterface $node)
     {
         if (0 === $node->getPriority() && (0 !== $maxPriority = $this->getMaxPriority($node->getParent()))) {
             $node->setPriority(1 + $maxPriority);
