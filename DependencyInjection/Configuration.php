@@ -63,6 +63,8 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
+                ->booleanNode('incremental_priority')->defaultFalse()->end()
+
                 ->arrayNode('multi_language')->addDefaultsIfNotSet()
                     ->children()
                         ->booleanNode('enabled')->defaultFalse()->end()

@@ -48,23 +48,31 @@ class TreeNodeListener
     private $translationManager;
 
     /**
+     * @var bool
+     */
+    private $incrementalPriority;
+
+    /**
      * Constructor.
      *
      * @param RouteGenerator $routeGenerator
      * @param RouteManagerInterface $routeManager
      * @param RouterHelper $routerHelper
      * @param NodeTranslationManagerInterface $translationManager
+     * @param bool $incrementalPriority
      */
     public function __construct(
         RouteGenerator $routeGenerator,
         RouteManagerInterface $routeManager,
         RouterHelper $routerHelper,
-        NodeTranslationManagerInterface $translationManager
+        NodeTranslationManagerInterface $translationManager,
+        $incrementalPriority
     ) {
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
         $this->routerHelper = $routerHelper;
         $this->translationManager = $translationManager;
+        $this->incrementalPriority = $incrementalPriority;
     }
 
     /**
@@ -75,8 +83,14 @@ class TreeNodeListener
     public function onSitemapNodeCreate(TreeNodeEvent $event)
     {
         if (TadckaSitemapBundle::SITEMAP_TREE === $event->getNode()->getTree()->getSlug()) {
-            if ($this->routerHelper->hasRouteController($event->getNode()->getType())) {
-                $this->createSeo($event->getNode());
+            $node = $event->getNode();
+
+            if ($this->routerHelper->hasRouteController($node->getType())) {
+                $this->createSeo($node);
+            }
+
+            if ($this->incrementalPriority) {
+                $this->incrementalPriority($node);
             }
         }
     }
@@ -116,5 +130,34 @@ class TreeNodeListener
 
             $this->routeManager->add($route);
         }
+    }
+
+    /**
+     * Incremental node priority.
+     *
+     * @param NodeInterface $node
+     */
+    private function incrementalPriority(NodeInterface $node)
+    {
+        if (0 === $node->getPriority() && (0 !== $maxPriority = $this->getMaxPriority($node->getParent()))) {
+            $node->setPriority(1 + $maxPriority);
+        }
+    }
+
+    /**
+     * Get max priority.
+     *
+     * @param NodeInterface $parent
+     *
+     * @return int
+     */
+    private function getMaxPriority(NodeInterface $parent)
+    {
+        $priority = 0;
+        foreach ($parent->getChildren() as $child) {
+            $priority = max($priority, $child->getPriority());
+        }
+
+        return $priority;
     }
 }

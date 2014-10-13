@@ -60,5 +60,6 @@ class TadckaSitemapExtension extends Extension
         $container->setParameter('tadcka_sitemap.multi_language.enabled', $config['multi_language']['enabled']);
         $container->setParameter('tadcka_sitemap.multi_language.locales', $config['multi_language']['locales']);
         $container->setParameter('tadcka_sitemap.routing.route_strategy', $config['route_strategy']);
+        $container->setParameter('tadcka_sitemap.node.incremental_priority', $config['incremental_priority']);
     }
 }
