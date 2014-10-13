@@ -30,7 +30,7 @@ success:
   edit_node: Sėkmingai redaguota kategorija.
   delete_node: Sėkmingai pašalinta kategorija.
   seo_save: Sėkmingai išsaugota kategorijos optimizavimo paieškos sistemoms informacija.
-  online_save: Sėkmingai išsaugta kategorijos publikavimo informacija.
+  online_save: Sėkmingai išsaugta kategorijos publikavimo informacija lokalėje [%locale%].
 
 not_found_title: Pavadinimas nerastas
 delete_confirm: Ar tikrai norite trinti kategorija?
@@ -39,5 +39,6 @@ no: Ne
 
 tadcka_sitemap: Tadcka svetainės medis
 
-node_translation_not_found: Nepavyko rasti kategorijos lokalėje [%locale%]
-node_parent_is_not_online: Tėvinė kategorija nepublikuojama lokalėje [%locale%]
+node_translation_not_found: Nepavyko rasti kategorijos lokalėje [%locale%].
+node_parent_is_not_online: Tėvinė kategorija nepublikuojama lokalėje [%locale%].
+node_route_missing: Neįvestas kategorijos universalusis adresas lokalėje [%locale%].

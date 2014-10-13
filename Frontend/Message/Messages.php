@@ -20,7 +20,7 @@ class Messages
 {
     const SUCCESS = 'success';
 
-    const ERROR = 'error';
+    const ERROR = 'danger';
 
     const INFO = 'info';
 

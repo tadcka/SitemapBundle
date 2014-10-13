@@ -79,6 +79,14 @@ class SeoController extends AbstractController
             return $this->getJsonResponse($jsonResponseContent);
         }
 
+        $route = $nodeTranslation->getRoute();
+        if ((null === $route) || !$route->getRoutePattern()) {
+            $messages->addError($this->translate('node_route_missing', array('%locale%' => $locale)));
+            $jsonResponseContent->setMessages($this->getMessageHtml($messages));
+
+            return $this->getJsonResponse($jsonResponseContent);
+        }
+
         if (false === $this->nodeParentIsOnline($node, $locale)) {
             $messages->addWarning($this->translate('node_parent_is_not_online', array('%locale%' => $locale)));
             $jsonResponseContent->setMessages($this->getMessageHtml($messages));
@@ -89,7 +97,7 @@ class SeoController extends AbstractController
         $nodeTranslation->setOnline(!$nodeTranslation->isOnline());
         $this->getNodeTranslationManager()->save();
 
-        $messages->addSuccess($this->translate('success.online_save'));
+        $messages->addSuccess($this->translate('success.online_save', array('%locale%' => $locale)));
         $jsonResponseContent->setMessages($this->getMessageHtml($messages));
         $jsonResponseContent->setToolbar($this->getToolbarHtml($node));
 
