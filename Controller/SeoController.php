@@ -79,8 +79,7 @@ class SeoController extends AbstractController
             return $this->getJsonResponse($jsonResponseContent);
         }
 
-        $route = $nodeTranslation->getRoute();
-        if ((null === $route) || !$route->getRoutePattern()) {
+        if (false === $this->hasNodeRoute($nodeTranslation)) {
             $messages->addError($this->translate('node_route_missing', array('%locale%' => $locale)));
             $jsonResponseContent->setMessages($this->getMessageHtml($messages));
 
@@ -136,11 +135,23 @@ class SeoController extends AbstractController
         if ((null !== $parent) && $hasController) {
             /** @var NodeTranslationInterface $translation */
             $translation = $parent->getTranslation($locale);
-            if (null === $translation || !$translation->isOnline()) {
+            if ((null === $translation) || !$translation->isOnline() || (false === $this->hasNodeRoute($translation))) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Check if has node route.
+     *
+     * @param NodeTranslationInterface $translation
+     *
+     * @return bool
+     */
+    private function hasNodeRoute(NodeTranslationInterface $translation)
+    {
+        return (null !== $translation->getRoute()) && $translation->getRoute()->getRoutePattern();
     }
 }
