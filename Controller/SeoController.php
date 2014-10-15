@@ -35,7 +35,6 @@ class SeoController extends AbstractController
         $messages = new Messages();
         $form = $this->getFormFactory()->create($node, $hasController);
 
-//        $form = $this->container->get('form.factory')->create('silvestra_seo_metadata');
         if ($this->getFormHandler()->process($request, $form, $node)) {
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
             $this->getNodeManager()->save();
