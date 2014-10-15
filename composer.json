@@ -21,6 +21,8 @@
         "jms/serializer-bundle": "~0.13",
         "aferrandini/urlizer": "1.0.*",
 
+        "silvestra/seo-bundle": "0.1.*@dev",
+
         "tadcka/tree": "0.1.*@dev",
         "tadcka/jstree-bundle": "0.1.*@dev",
         "tadcka/routing-bundle": "0.1.*@dev"

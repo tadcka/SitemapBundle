@@ -11,32 +11,31 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Model;
 
-use Tadcka\Component\Tree\Model\NodeTranslation as BaseNodeTranslation;
-use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
+use Silvestra\Component\Seo\Model\SeoMetadataInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 2/25/14 11:40 PM
+ * @since 10/15/14 11:16 PM
  */
-abstract class NodeTranslation extends BaseNodeTranslation implements NodeTranslationInterface
+class NodeSeoMetadata implements NodeSeoMetadataInterface
 {
     /**
-     * @var bool
+     * @var NodeInterface
      */
-    protected $online = false;
+    private $node;
 
     /**
-     * @var RouteInterface
+     * @var SeoMetadataInterface
      */
-    protected $route;
+    private $seoMetadata;
 
     /**
      * {@inheritdoc}
      */
-    public function setOnline($online)
+    public function setNode(NodeInterface $node)
     {
-        $this->online = $online;
+        $this->node = $node;
 
         return $this;
     }
@@ -44,17 +43,17 @@ abstract class NodeTranslation extends BaseNodeTranslation implements NodeTransl
     /**
      * {@inheritdoc}
      */
-    public function isOnline()
+    public function getNode()
     {
-        return $this->online;
+        return $this->node;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setRoute(RouteInterface $route)
+    public function setSeoMetadata(SeoMetadataInterface $seoMetadata)
     {
-        $this->route = $route;
+        $this->seoMetadata = $seoMetadata;
 
         return $this;
     }
@@ -62,8 +61,8 @@ abstract class NodeTranslation extends BaseNodeTranslation implements NodeTransl
     /**
      * {@inheritdoc}
      */
-    public function getRoute()
+    public function getSeoMetadata()
     {
-        return $this->route;
+        return $this->seoMetadata;
     }
 }

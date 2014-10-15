@@ -25,16 +25,16 @@ class SeoFormType extends AbstractType
     /**
      * @var bool
      */
-    private $hasControllerByType;
+    private $hasController;
 
     /**
      * Constructor.
      *
-     * @param bool $hasControllerByType
+     * @param bool $hasController
      */
-    public function __construct($hasControllerByType = false)
+    public function __construct($hasController = false)
     {
-        $this->hasControllerByType = $hasControllerByType;
+        $this->hasController = $hasController;
     }
 
     /**
@@ -43,16 +43,27 @@ class SeoFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'translations',
+            'seoMetadata',
             'translations',
             array(
-                'type' => new SeoTranslationFormType($this->hasControllerByType),
-                'options' => array(
-                    'data_class' => $options['translation_class'],
-                ),
+                'type' => 'silvestra_seo_metadata',
                 'label' => false,
             )
         );
+
+        if ($this->hasController) {
+            $builder->add(
+                'translations',
+                'translations',
+                array(
+                    'type' => new SeoRouteFormType(),
+                    'options' => array(
+                        'data_class' => $options['translation_class'],
+                    ),
+                    'label' => false,
+                )
+            );
+        }
 
         $builder->add('submit', 'submit', array('label' => 'form.button.save'));
     }

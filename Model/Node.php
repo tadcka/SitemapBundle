@@ -11,6 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Model;
 
+use Silvestra\Component\Seo\Model\SeoMetadataInterface;
 use Tadcka\Component\Tree\Model\Node as BaseNode;
 
 /**
@@ -39,6 +40,21 @@ abstract class Node extends BaseNode implements NodeInterface
      * @var int
      */
     protected $right;
+
+    /**
+     * @var array|SeoMetadataInterface[]
+     */
+    protected $seoMetadata;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->seoMetadata = array();
+    }
 
     /**
      * {@inheritdoc}
@@ -110,5 +126,53 @@ abstract class Node extends BaseNode implements NodeInterface
     public function getRight()
     {
         return $this->right;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSeoMetadata($seoMetadata)
+    {
+        $this->seoMetadata = $seoMetadata;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSeoMetadata()
+    {
+        return $this->seoMetadata;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addSeoMetadata(SeoMetadataInterface $seoMetadata)
+    {
+        $this->seoMetadata[] = $seoMetadata;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeSeoMetadata(SeoMetadataInterface $seoMetadata)
+    {
+        // TODO
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSeoMetadataByLang($lang)
+    {
+        foreach ($this->seoMetadata as $seoMetadata) {
+            if ($lang === $seoMetadata->getLang()) {
+                return $seoMetadata;
+            }
+        }
+
+        return null;
     }
 }

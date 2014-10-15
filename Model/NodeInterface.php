@@ -11,6 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Model;
 
+use Silvestra\Component\Seo\Model\SeoMetadataInterface;
 use Tadcka\Component\Tree\Model\NodeInterface as BaseNodeInterface;
 
 /**
@@ -90,4 +91,43 @@ interface NodeInterface extends BaseNodeInterface
      * @return int
      */
     public function getRight();
+
+    /**
+     * Set list of seo metadata.
+     *
+     * @param array|SeoMetadataInterface[] $seoMetadata
+     *
+     * @return NodeInterface
+     */
+    public function setSeoMetadata($seoMetadata);
+
+    /**
+     * Get list of seo metadata.
+     *
+     * @return array|SeoMetadataInterface[]
+     */
+    public function getSeoMetadata();
+
+    /**
+     * Add seo metadata.
+     *
+     * @param SeoMetadataInterface $seoMetadata
+     */
+    public function addSeoMetadata(SeoMetadataInterface $seoMetadata);
+
+    /**
+     * Remove seo metadata.
+     *
+     * @param SeoMetadataInterface $seoMetadata
+     */
+    public function removeSeoMetadata(SeoMetadataInterface $seoMetadata);
+
+    /**
+     * Get seo metadata by language.
+     *
+     * @param string $lang
+     *
+     * @return null|SeoMetadataInterface
+     */
+    public function getSeoMetadataByLang($lang);
 }

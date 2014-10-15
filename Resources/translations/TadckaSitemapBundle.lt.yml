@@ -11,10 +11,8 @@ node:
   seo: Optimizavimas paieškos sistemoms
 
 form:
-  seo_translation:
-    meta_title: Meta pavadinimas
-    meta_description: Meta aprašymas
-    meta_keywords: Meta raktiniai žodžiai
+  seo_route:
+    publish_category: Publikuoti kategoriją
   node_translation:
     title: Pavadinimas
     description: Aprašymas

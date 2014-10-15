@@ -24,54 +24,6 @@ interface NodeTranslationInterface extends BaseNodeTranslationInterface
     const OBJECT_TYPE = 'tadcka_sitemap_node_translation';
 
     /**
-     * Set metaTitle.
-     *
-     * @param string $metaTitle
-     *
-     * @return NodeTranslationInterface
-     */
-    public function setMetaTitle($metaTitle);
-
-    /**
-     * Get title.
-     *
-     * @return string
-     */
-    public function getMetaTitle();
-
-    /**
-     * Set metaDescription.
-     *
-     * @param string $metaDescription
-     *
-     * @return NodeTranslationInterface
-     */
-    public function setMetaDescription($metaDescription);
-
-    /**
-     * Get metaDescription.
-     *
-     * @return string
-     */
-    public function getMetaDescription();
-
-    /**
-     * Set metaKeywords.
-     *
-     * @param string $metaKeywords
-     *
-     * @return NodeTranslationInterface
-     */
-    public function setMetaKeywords($metaKeywords);
-
-    /**
-     * Get metaKeywords.
-     *
-     * @return string
-     */
-    public function getMetaKeywords();
-
-    /**
      * Set online.
      *
      * @param bool $online
