@@ -25,6 +25,7 @@
             <argument type="service" id="tadcka_sitemap.routing.generator" />
             <argument type="service" id="tadcka_routing.manager.route.in_memory" />
             <argument type="service" id="tadcka_sitemap.routing.helper" />
+            <argument type="service" id="silvestra_seo.manager.seo_metadata" />
         </service>
 
     </services>

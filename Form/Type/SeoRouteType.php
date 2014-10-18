@@ -20,7 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  *
  * @since  14.6.29 14.05
  */
-class SeoRouteFormType extends AbstractType
+class SeoRouteType extends AbstractType
 {
     /**
      * {@inheritdoc}

@@ -20,7 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  *
  * @since 14.6.29 14.03
  */
-class SeoFormType extends AbstractType
+class SeoType extends AbstractType
 {
     /**
      * @var bool
@@ -56,7 +56,7 @@ class SeoFormType extends AbstractType
                 'translations',
                 'translations',
                 array(
-                    'type' => new SeoRouteFormType(),
+                    'type' => new SeoRouteType(),
                     'options' => array(
                         'data_class' => $options['translation_class'],
                     ),

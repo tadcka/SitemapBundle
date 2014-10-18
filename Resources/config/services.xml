@@ -30,6 +30,7 @@
             <argument type="service" id="tadcka_sitemap.routing.generator" />
             <argument type="service" id="tadcka_routing.manager.route.in_memory" />
             <argument type="service" id="tadcka_sitemap.routing.helper" />
+            <argument type="service" id="silvestra_seo.manager.seo_metadata" />
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
             <argument>%tadcka_sitemap.node.incremental_priority%</argument>
         </service>

@@ -14,7 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle\Form\Factory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Tadcka\Bundle\SitemapBundle\Form\Type\SeoFormType;
+use Tadcka\Bundle\SitemapBundle\Form\Type\SeoType;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 
 /**
@@ -71,7 +71,7 @@ class SeoFormFactory
     public function create(NodeInterface $node, $hasControllerByType = false)
     {
         return $this->formFactory->create(
-            new SeoFormType($hasControllerByType),
+            new SeoType($hasControllerByType),
             $node,
             array(
                 'translation_class' => $this->nodeTransClass,
