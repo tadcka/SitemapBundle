@@ -45,6 +45,8 @@ $.fn.sitemap = function () {
             $content.load($currentTabTarget.data('href'), $tabContent, function ($response) {
             });
         }
+
+        $content.cleanMessages();
     });
 
     /**

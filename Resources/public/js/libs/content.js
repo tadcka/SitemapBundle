@@ -11,6 +11,13 @@ function SitemapContent() {
     var $content = $('div#tadcka-sitemap-content');
 
     /**
+     * Clean content messages.
+     */
+    this.cleanMessages = function () {
+        $content.find('.messages:first').html('');
+    };
+
+    /**
      * Delete node.
      *
      * @param {String} $url
@@ -173,6 +180,8 @@ function SitemapContent() {
 
         if ($response.messages) {
             $content.find('.messages:first').html($response.messages);
+        } else {
+            $content.find('.messages:first').html('');
         }
 
         if ($response.sub_content) {
