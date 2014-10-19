@@ -15,15 +15,15 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeType;
+use Symfony\Component\Validator\Constraints as Assert;
+use Tadcka\Bundle\SitemapBundle\Validator\Constraints as AssertSitemap;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since 5/19/14 10:50 PM
  */
-class NodeFormType extends AbstractType
+class NodeType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -38,7 +38,7 @@ class NodeFormType extends AbstractType
                     'choices' => $options['node_types'],
                     'empty_value' => 'form.select',
                     'empty_data' => null,
-                    'constraints' => array(new NotBlank()),
+                    'constraints' => array(new Assert\NotBlank()),
                     'label' => 'form.node.type',
                 )
             );
@@ -58,7 +58,7 @@ class NodeFormType extends AbstractType
             'translations',
             array(
                 'label' => false,
-                'type' => new NodeTranslationFormType(),
+                'type' => new NodeTranslationType(),
                 'options' => array(
                     'data_class' => $options['translation_class'],
                 ),
@@ -80,12 +80,12 @@ class NodeFormType extends AbstractType
                 'translation_domain' => 'TadckaSitemapBundle',
                 'attr' => array('class' => 'tadcka_node'),
                 'constraints' => function (Options $options) {
-                        if (0 < count($options['node_types'])) {
-                            return array(new NodeType());
-                        }
+                    if (0 < count($options['node_types'])) {
+                        return array(new AssertSitemap\NodeType());
+                    }
 
-                        return array();
-                    },
+                    return array();
+                },
             )
         );
     }

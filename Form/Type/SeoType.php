@@ -14,28 +14,27 @@ namespace Tadcka\Bundle\SitemapBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since  14.6.29 14.05
+ * @since 14.6.29 14.03
  */
-class SeoTranslationFormType extends AbstractType
+class SeoType extends AbstractType
 {
     /**
      * @var bool
      */
-    private $hasControllerByType;
+    private $hasController;
 
     /**
      * Constructor.
      *
-     * @param bool $hasControllerByType
+     * @param bool $hasController
      */
-    public function __construct($hasControllerByType)
+    public function __construct($hasController = false)
     {
-        $this->hasControllerByType = $hasControllerByType;
+        $this->hasController = $hasController;
     }
 
     /**
@@ -44,36 +43,29 @@ class SeoTranslationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'metaTitle',
-            'text',
+            'seoMetadata',
+            'translations',
             array(
-                'label' => 'form.seo_translation.meta_title',
-                'constraints' => array(new NotBlank()),
-                'required' => false,
+                'type' => 'silvestra_seo_metadata',
+                'label' => false,
             )
         );
 
-        $builder->add(
-            'metaDescription',
-            'textarea',
-            array(
-                'label' => 'form.seo_translation.meta_description',
-                'required' => false,
-            )
-        );
-
-        $builder->add(
-            'metaKeywords',
-            'textarea',
-            array(
-                'label' => 'form.seo_translation.meta_keywords',
-                'required' => false,
-            )
-        );
-
-        if ($this->hasControllerByType) {
-            $builder->add('route', 'tadcka_route', array('label' => false));
+        if ($this->hasController) {
+            $builder->add(
+                'translations',
+                'translations',
+                array(
+                    'type' => new SeoRouteType(),
+                    'options' => array(
+                        'data_class' => $options['translation_class'],
+                    ),
+                    'label' => false,
+                )
+            );
         }
+
+        $builder->add('submit', 'submit', array('label' => 'form.button.save'));
     }
 
     /**
@@ -81,6 +73,8 @@ class SeoTranslationFormType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $resolver->setOptional(array('translation_class'));
+
         $resolver->setDefaults(
             array(
                 'translation_domain' => 'TadckaSitemapBundle',
@@ -93,6 +87,6 @@ class SeoTranslationFormType extends AbstractType
      */
     public function getName()
     {
-        return 'tadcka_sitemap_seo_translation';
+        return 'tadcka_sitemap_seo';
     }
 }

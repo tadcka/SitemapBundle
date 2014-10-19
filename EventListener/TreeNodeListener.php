@@ -11,6 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\EventListener;
 
+use Silvestra\Component\Seo\Model\Manager\SeoMetadataManagerInterface;
 use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
@@ -43,6 +44,11 @@ class TreeNodeListener
     private $routerHelper;
 
     /**
+     * @var SeoMetadataManagerInterface
+     */
+    private $seoMetadataManager;
+
+    /**
      * @var NodeTranslationManagerInterface
      */
     private $translationManager;
@@ -58,6 +64,7 @@ class TreeNodeListener
      * @param RouteGenerator $routeGenerator
      * @param RouteManagerInterface $routeManager
      * @param RouterHelper $routerHelper
+     * @param SeoMetadataManagerInterface $seoMetadataManager
      * @param NodeTranslationManagerInterface $translationManager
      * @param bool $incrementalPriority
      */
@@ -65,12 +72,14 @@ class TreeNodeListener
         RouteGenerator $routeGenerator,
         RouteManagerInterface $routeManager,
         RouterHelper $routerHelper,
+        SeoMetadataManagerInterface $seoMetadataManager,
         NodeTranslationManagerInterface $translationManager,
         $incrementalPriority
     ) {
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
         $this->routerHelper = $routerHelper;
+        $this->seoMetadataManager = $seoMetadataManager;
         $this->translationManager = $translationManager;
         $this->incrementalPriority = $incrementalPriority;
     }
@@ -126,7 +135,12 @@ class TreeNodeListener
 
             $route->setRoutePattern($this->routerHelper->getRoutePattern($translation->getTitle(), $node, $locale));
             $translation->setRoute($this->routeGenerator->generateRoute($route, $node, $locale));
-            $translation->setMetaTitle($translation->getTitle());
+
+            $seoMetadata = $this->seoMetadataManager->create();
+            $seoMetadata->setLang($translation->getLang());
+            $seoMetadata->setTitle($translation->getTitle());
+            $node->addSeoMetadata($seoMetadata);
+            $this->seoMetadataManager->add($seoMetadata);
 
             $this->routeManager->add($route);
         }

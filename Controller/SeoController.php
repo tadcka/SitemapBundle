@@ -33,9 +33,9 @@ class SeoController extends AbstractController
         $node = $this->getNodeOr404($id);
         $hasController = $this->getRouterHelper()->hasRouteController($node->getType());
         $messages = new Messages();
-        $form = $this->getFormFactory()->create(array('translations' => $node->getTranslations()), $hasController);
+        $form = $this->getFormFactory()->create($node, $hasController);
 
-        if ($this->getFormHandler()->process($request, $form, $node)) {
+        if ($this->getFormHandler()->process($request, $form)) {
             $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
             $this->getNodeManager()->save();
 

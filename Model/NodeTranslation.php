@@ -22,21 +22,6 @@ use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
 abstract class NodeTranslation extends BaseNodeTranslation implements NodeTranslationInterface
 {
     /**
-     * @var string
-     */
-    protected $metaTitle;
-
-    /**
-     * @var string
-     */
-    protected $metaDescription;
-
-    /**
-     * @var string
-     */
-    protected $metaKeywords;
-
-    /**
      * @var bool
      */
     protected $online = false;
@@ -45,60 +30,6 @@ abstract class NodeTranslation extends BaseNodeTranslation implements NodeTransl
      * @var RouteInterface
      */
     protected $route;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setMetaTitle($metaTitle)
-    {
-        $this->metaTitle = $metaTitle;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMetaTitle()
-    {
-        return $this->metaTitle;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setMetaDescription($metaDescription)
-    {
-        $this->metaDescription = $metaDescription;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMetaDescription()
-    {
-        return $this->metaDescription;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setMetaKeywords($metaKeywords)
-    {
-        $this->metaKeywords = $metaKeywords;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMetaKeywords()
-    {
-        return $this->metaKeywords;
-    }
 
     /**
      * {@inheritdoc}

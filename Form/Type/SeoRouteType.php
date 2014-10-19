@@ -18,43 +18,18 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 14.6.29 14.03
+ * @since  14.6.29 14.05
  */
-class SeoFormType extends AbstractType
+class SeoRouteType extends AbstractType
 {
-    /**
-     * @var bool
-     */
-    private $hasControllerByType;
-
-    /**
-     * Constructor.
-     *
-     * @param bool $hasControllerByType
-     */
-    public function __construct($hasControllerByType = false)
-    {
-        $this->hasControllerByType = $hasControllerByType;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
-            'translations',
-            'translations',
-            array(
-                'type' => new SeoTranslationFormType($this->hasControllerByType),
-                'options' => array(
-                    'data_class' => $options['translation_class'],
-                ),
-                'label' => false,
-            )
-        );
+        $builder->add('online', 'checkbox', array('label' => 'form.seo_route.publish_category', 'required' => false));
 
-        $builder->add('submit', 'submit', array('label' => 'form.button.save'));
+        $builder->add('route', 'tadcka_route', array('label' => false));
     }
 
     /**
@@ -62,8 +37,6 @@ class SeoFormType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setOptional(array('translation_class'));
-
         $resolver->setDefaults(
             array(
                 'translation_domain' => 'TadckaSitemapBundle',
@@ -76,6 +49,6 @@ class SeoFormType extends AbstractType
      */
     public function getName()
     {
-        return 'tadcka_sitemap_seo';
+        return 'tadcka_sitemap_seo_route';
     }
 }

@@ -8,6 +8,7 @@
         <parameter key="tadcka_sitemap.manager.tree.default.class">Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\TreeManager</parameter>
         <parameter key="tadcka_sitemap.manager.node.default.class">Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\NodeManager</parameter>
         <parameter key="tadcka_sitemap.manager.node_translation.default.class">Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\NodeTranslationManager</parameter>
+        <parameter key="tadcka_sitemap.manager.node_seo_metadata.class">Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\NodeSeoMetadataManager</parameter>
     </parameters>
 
     <services>
@@ -18,13 +19,13 @@
             <argument>%tadcka_sitemap.model.tree.class%</argument>
         </service>
 
-        <!--Sitemap node manager-->
+        <!--Sitemap default node manager-->
         <service id="tadcka_sitemap.manager.node.default" class="%tadcka_sitemap.manager.node.default.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%tadcka_sitemap.model.node.class%</argument>
         </service>
 
-        <!--Sitemap node translation manager-->
+        <!--Sitemap default node translation manager-->
         <service id="tadcka_sitemap.manager.node_translation.default" class="%tadcka_sitemap.manager.node_translation.default.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%tadcka_sitemap.model.node_translation.class%</argument>

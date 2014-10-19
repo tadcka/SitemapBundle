@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  *
  * @since 5/19/14 10:50 PM
  */
-class NodeTranslationFormType extends AbstractType
+class NodeTranslationType extends AbstractType
 {
     /**
      * {@inheritdoc}
