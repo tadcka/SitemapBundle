@@ -68,7 +68,8 @@ class FrontendHelper
         SitemapProviderInterface $sitemapProvider,
         TranslatorInterface $translator,
         TreeProviderInterface $treeProvider
-    ) {
+    )
+    {
         $this->nodeProvider = $nodeProvider;
         $this->nodeTranslationManager = $nodeTranslationManager;
         $this->sitemapProvider = $sitemapProvider;
@@ -113,9 +114,25 @@ class FrontendHelper
      */
     public function getNode(NodeInterface $node, $locale)
     {
-        $children = $this->createFrontendNodeChildren($node, $locale);
+        return $this->createFrontendNode(
+            $node,
+            $this->getTitle($node, $locale),
+            $this->getChildren($node, $locale),
+            $this->getIcon($node)
+        );
+    }
 
-        return $this->createFrontendNode($node, $this->getTitle($node, $locale), $children, $this->getIcon($node));
+    /**
+     * Get frontend node children.
+     *
+     * @param NodeInterface $node
+     * @param string $locale
+     *
+     * @return array|Node[]
+     */
+    public function getChildren(NodeInterface $node, $locale)
+    {
+        return $this->createFrontendNodeChildren($node, $locale);
     }
 
     /**

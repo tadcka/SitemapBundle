@@ -17,7 +17,7 @@ function SitemapTree() {
                     'url': function ($node) {
                         return $node.id === '#'
                             ? Routing.generate('tadcka_sitemap_tree_node_root', {_format: 'json'})
-                            : Routing.generate('tadcka_sitemap_tree_node', {_format: 'json', id: $node.id});
+                            : Routing.generate('tadcka_sitemap_tree_node_children', {_format: 'json', id: $node.id});
                     }
                 }
             }
@@ -45,7 +45,7 @@ function SitemapTree() {
      * @param $node
      */
     this.refreshNode = function ($node) {
-        $tree.jstree().refresh_node($node);
+        $tree.jstree(true).refresh_node($node);
     };
 
     /**
@@ -57,21 +57,21 @@ function SitemapTree() {
         $tree.jstree().open_node($node);
     };
 
+    /**
+     * Select node.
+     *
+     * @param $node
+     */
     this.selectNode = function ($node) {
         $tree.jstree().select_node($node);
     };
 
+    /**
+     * Deselect node.
+     *
+     * @param $node
+     */
     this.deselectNode = function ($node) {
         $tree.jstree().deselect_node($node);
-    };
-
-    this.isOpenNode = function ($node) {
-        console.log('esus');
-        $tree.jstree().is_closed($node);
-    };
-
-    this.closeNode = function ($node) {
-        console.log('esus');
-        $tree.jstree().close_node($node);
     };
 }

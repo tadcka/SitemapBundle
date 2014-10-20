@@ -9,4 +9,8 @@
 
 $(document).ready(function () {
     $('div#tadcka-sitemap').sitemap();
+
+    $('button').click(function () {
+        $('div#tadcka-sitemap-tree').jstree(true).load_node('2');
+    });
 });
