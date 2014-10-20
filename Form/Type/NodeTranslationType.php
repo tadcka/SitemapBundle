@@ -40,7 +40,7 @@ class NodeTranslationType extends AbstractType
 
         $builder->add(
             'description',
-            'textarea',
+            'ckeditor',
             array(
                 'label' => 'form.node_translation.description',
                 'required' => false

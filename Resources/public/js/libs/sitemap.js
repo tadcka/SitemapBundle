@@ -19,8 +19,8 @@ $.fn.sitemap = function () {
                 $currentNode = $data.node;
                 var $url = Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $currentNode.id});
 
-                $content.load($url, $content.getContent(), function ($response) {
-                    $content.loadFirstTab();
+                $content.load($url, $content.getContent(), function () {
+                    $content.loadFirstTab(function () {});
                 });
             }
         });
@@ -30,8 +30,7 @@ $.fn.sitemap = function () {
      */
     $content.getContent().on('click', 'div.tadcka-sitemap-toolbar a.load', function ($event) {
         $event.preventDefault();
-        $content.load($(this).attr('href'), $content.getContent().find('div.sub-content:first'), function ($response) {
-        });
+        $content.load($(this).attr('href'), $content.getContent().find('div.sub-content:first'), function () {});
     });
 
     /**
@@ -42,8 +41,7 @@ $.fn.sitemap = function () {
         var $tabContent = $($currentTabTarget.attr('href'));
 
         if ($tabContent.is(':empty')) {
-            $content.load($currentTabTarget.data('href'), $tabContent, function ($response) {
-            });
+            $content.load($currentTabTarget.data('href'), $tabContent, function () {});
         }
 
         $content.cleanMessages();
@@ -61,7 +59,7 @@ $.fn.sitemap = function () {
         $button.attr('disabled', 'disabled');
         if ($content.getContent().find('.tab-content:first').length) {
 
-            $content.submit($form.attr('action'), $form.serialize(), $content.getActiveTab(), function ($response) {
+            $content.submit($form.attr('action'), $form.serialize(), $content.getActiveTab(), function () {
                 $tree.refresh();
                 $button.attr('disabled', '');
             });
@@ -73,16 +71,17 @@ $.fn.sitemap = function () {
                     var $url = Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $nodeId});
 
                     $tree.refreshNode($currentNode);
-                    $tree.deselectNode($currentNode);
                     $content.load($url, $content.getContent(), function () {
-                        if ($response.messages) {
-                            $content.getContent().find('.messages:first').html($response.messages);
-                        }
                         $tree.openNode($currentNode);
+                        $tree.deselectNode($currentNode);
                         $tree.selectNode($nodeId);
                         $currentNode.id = $nodeId;
 
-                        $content.loadFirstTab();
+                        $content.loadFirstTab(function () {
+                            if ($response.messages) {
+                                $content.getContent().find('.messages:first').html($response.messages);
+                            }
+                        });
                     });
                 }
 
@@ -96,7 +95,7 @@ $.fn.sitemap = function () {
      */
     $content.getContent().on('click', 'a#tadcka-tree-node-delete-confirm', function ($event) {
         $event.preventDefault();
-        $content.deleteNode($(this).attr('href'), function ($response) {
+        $content.deleteNode($(this).attr('href'), function () {
             $tree.refresh();
         });
     });

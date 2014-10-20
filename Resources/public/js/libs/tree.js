@@ -72,6 +72,6 @@ function SitemapTree() {
      * @param {Object} $node
      */
     this.deselectNode = function ($node) {
-        $tree.jstree(true).deselect_node($node);
+        $tree.jstree(true).deselect_node($node, true);
     };
 }
