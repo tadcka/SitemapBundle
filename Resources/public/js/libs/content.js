@@ -94,12 +94,13 @@ function SitemapContent() {
 
     /**
      * Load first tab content.
+     *
+     * @param {Function} $callback
      */
-    this.loadFirstTab = function () {
+    this.loadFirstTab = function ($callback) {
         var $activeTabTarget = getActiveTabTarget();
 
-        this.load($activeTabTarget.data('href'), $($activeTabTarget.attr('href')), function ($response) {
-        });
+        this.load($activeTabTarget.data('href'), $($activeTabTarget.attr('href')), $callback);
     };
 
     /**

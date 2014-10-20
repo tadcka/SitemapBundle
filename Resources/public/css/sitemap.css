@@ -1,3 +1,7 @@
+#tadcka-sitemap-tree {
+    overflow-x: auto;
+}
+
 #tadcka-sitemap-tree, #tadcka-sitemap-content {
     border: 1px solid #DDDDDD;
     min-height: 300px;

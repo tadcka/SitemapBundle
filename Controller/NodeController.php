@@ -36,10 +36,10 @@ class NodeController extends AbstractController
         return $this->getJsonResponse($this->getFrontendHelper()->getRootNode($request->getLocale()));
     }
 
-    public function getNodeAction(Request $request, $id)
+    public function getChildrenAction(Request $request, $id)
     {
         return $this->getJsonResponse(
-            $this->getFrontendHelper()->getNode($this->getNodeOr404($id), $request->getLocale())
+            $this->getFrontendHelper()->getChildren($this->getNodeOr404($id), $request->getLocale())
         );
     }
 

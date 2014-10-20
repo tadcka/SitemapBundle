@@ -17,7 +17,7 @@ function SitemapTree() {
                     'url': function ($node) {
                         return $node.id === '#'
                             ? Routing.generate('tadcka_sitemap_tree_node_root', {_format: 'json'})
-                            : Routing.generate('tadcka_sitemap_tree_node', {_format: 'json', id: $node.id});
+                            : Routing.generate('tadcka_sitemap_tree_node_children', {_format: 'json', id: $node.id});
                     }
                 }
             }
@@ -36,32 +36,42 @@ function SitemapTree() {
      * Refresh tree.
      */
     this.refresh = function () {
-        $tree.jstree().refresh();
+        $tree.jstree(true).refresh();
     };
 
     /**
      * Refresh node.
      *
-     * @param $node
+     * @param {Object} $node
      */
     this.refreshNode = function ($node) {
-        $tree.jstree().refresh_node($node);
+        $tree.jstree(true).refresh_node($node);
     };
 
     /**
      * Open node.
      *
-     * @param $nodeId
+     * @param {Object} $node
      */
-    this.openNode = function ($nodeId) {
-        $tree.jstree().open_node($nodeId);
+    this.openNode = function ($node) {
+        $tree.jstree(true).open_node($node);
     };
 
-    this.selectNode = function ($nodeId) {
-        $tree.jstree().select_node('#' + $nodeId);
+    /**
+     * Select node.
+     *
+     * @param {Object} $node
+     */
+    this.selectNode = function ($node) {
+        $tree.jstree(true).select_node($node, true, false);
     };
 
-    this.deselectNode = function ($nodeId) {
-        $tree.jstree().deselect_node('#' + $nodeId);
+    /**
+     * Deselect node.
+     *
+     * @param {Object} $node
+     */
+    this.deselectNode = function ($node) {
+        $tree.jstree(true).deselect_node($node, true);
     };
 }
