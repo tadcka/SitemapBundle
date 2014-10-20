@@ -42,7 +42,7 @@ function SitemapTree() {
     /**
      * Refresh node.
      *
-     * @param $node
+     * @param {Object} $node
      */
     this.refreshNode = function ($node) {
         $tree.jstree(true).refresh_node($node);
@@ -51,7 +51,7 @@ function SitemapTree() {
     /**
      * Open node.
      *
-     * @param $node
+     * @param {Object} $node
      */
     this.openNode = function ($node) {
         $tree.jstree(true).open_node($node);
@@ -60,16 +60,16 @@ function SitemapTree() {
     /**
      * Select node.
      *
-     * @param $node
+     * @param {Object} $node
      */
     this.selectNode = function ($node) {
-        $tree.jstree(true).select_node($node);
+        $tree.jstree(true).select_node($node, true, false);
     };
 
     /**
      * Deselect node.
      *
-     * @param $node
+     * @param {Object} $node
      */
     this.deselectNode = function ($node) {
         $tree.jstree(true).deselect_node($node);

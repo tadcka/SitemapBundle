@@ -104,24 +104,6 @@ class FrontendHelper
     }
 
     /**
-     * Get frontend node.
-     *
-     * @param NodeInterface $node
-     * @param string $locale
-     *
-     * @return Node
-     */
-    public function getNode(NodeInterface $node, $locale)
-    {
-        return $this->createFrontendNode(
-            $node,
-            $this->getTitle($node, $locale),
-            $this->getChildren($node, $locale),
-            $this->getIcon($node)
-        );
-    }
-
-    /**
      * Get frontend node children.
      *
      * @param NodeInterface $node

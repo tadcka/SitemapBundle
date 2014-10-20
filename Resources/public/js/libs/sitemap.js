@@ -74,13 +74,14 @@ $.fn.sitemap = function () {
 
                     $tree.refreshNode($currentNode);
                     $tree.deselectNode($currentNode);
-                    $tree.openNode($currentNode);
                     $content.load($url, $content.getContent(), function () {
                         if ($response.messages) {
                             $content.getContent().find('.messages:first').html($response.messages);
                         }
+                        $tree.openNode($currentNode);
                         $tree.selectNode($nodeId);
                         $currentNode.id = $nodeId;
+
                         $content.loadFirstTab();
                     });
                 }
