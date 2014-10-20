@@ -67,15 +67,20 @@ $.fn.sitemap = function () {
             });
         } else {
             $content.submit($form.attr('action'), $form.serialize(), $content.getContent(), function ($response) {
-                if ($response.node_id) {
-                    var $url = Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $response.node_id});
+                var $nodeId = $response.node_id;
 
-                    $tree.refresh();
+                if ($nodeId) {
+                    var $url = Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $nodeId});
+
+                    $tree.refreshNode($currentNode);
+                    $tree.deselectNode($currentNode);
+                    $tree.openNode($currentNode);
                     $content.load($url, $content.getContent(), function () {
                         if ($response.messages) {
                             $content.getContent().find('.messages:first').html($response.messages);
                         }
-
+                        $tree.selectNode($nodeId);
+                        $currentNode.id = $nodeId;
                         $content.loadFirstTab();
                     });
                 }

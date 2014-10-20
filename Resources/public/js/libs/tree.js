@@ -51,17 +51,27 @@ function SitemapTree() {
     /**
      * Open node.
      *
-     * @param $nodeId
+     * @param $node
      */
-    this.openNode = function ($nodeId) {
-        $tree.jstree().open_node($nodeId);
+    this.openNode = function ($node) {
+        $tree.jstree().open_node($node);
     };
 
-    this.selectNode = function ($nodeId) {
-        $tree.jstree().select_node('#' + $nodeId);
+    this.selectNode = function ($node) {
+        $tree.jstree().select_node($node);
     };
 
-    this.deselectNode = function ($nodeId) {
-        $tree.jstree().deselect_node('#' + $nodeId);
+    this.deselectNode = function ($node) {
+        $tree.jstree().deselect_node($node);
+    };
+
+    this.isOpenNode = function ($node) {
+        console.log('esus');
+        $tree.jstree().is_closed($node);
+    };
+
+    this.closeNode = function ($node) {
+        console.log('esus');
+        $tree.jstree().close_node($node);
     };
 }
