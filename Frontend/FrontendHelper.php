@@ -68,8 +68,7 @@ class FrontendHelper
         SitemapProviderInterface $sitemapProvider,
         TranslatorInterface $translator,
         TreeProviderInterface $treeProvider
-    )
-    {
+    ) {
         $this->nodeProvider = $nodeProvider;
         $this->nodeTranslationManager = $nodeTranslationManager;
         $this->sitemapProvider = $sitemapProvider;
