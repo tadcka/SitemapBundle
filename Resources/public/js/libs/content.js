@@ -33,6 +33,7 @@ function SitemapContent() {
                 } else {
                     $content.html($response);
                 }
+
                 $callback($response);
 
                 fadeOff();

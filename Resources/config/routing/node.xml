@@ -10,6 +10,13 @@
         <option key="expose">true</option>
     </route>
 
+    <route id="tadcka_sitemap_tree_node" pattern="/sitemap-tree/node/{id}.{_format}">
+        <default key="_controller">TadckaSitemapBundle:Node:getNode</default>
+        <requirement key="_format">json</requirement>
+        <requirement key="id">\d+</requirement>
+        <option key="expose">true</option>
+    </route>
+
     <route id="tadcka_sitemap_tree_node_children" pattern="/sitemap-tree/node-children/{id}.{_format}">
         <default key="_controller">TadckaSitemapBundle:Node:getChildren</default>
         <requirement key="_format">json</requirement>

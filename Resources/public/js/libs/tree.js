@@ -12,7 +12,8 @@ function SitemapTree() {
 
     var $jsTree = $tree
         .jstree({
-            "core": {
+            'core': {
+                'check_callback' : true,
                 'data': {
                     'url': function ($node) {
                         return $node.id === '#'
@@ -26,26 +27,19 @@ function SitemapTree() {
     /**
      * Get jsTree.
      *
-     * @returns {jsTree}
+     * @returns {Object}
      */
     this.getJsTree = function () {
         return $jsTree;
     };
 
     /**
-     * Refresh tree.
-     */
-    this.refresh = function () {
-        $tree.jstree(true).refresh();
-    };
-
-    /**
-     * Refresh node.
+     * Deselect node.
      *
      * @param {Object} $node
      */
-    this.refreshNode = function ($node) {
-        $tree.jstree(true).refresh_node($node);
+    this.deselectNode = function ($node) {
+        $tree.jstree(true).deselect_node($node, true);
     };
 
     /**
@@ -58,6 +52,35 @@ function SitemapTree() {
     };
 
     /**
+     * Get parent.
+     *
+     * @param {Object} $node
+     */
+    this.getParent = function ($node) {
+        return $tree.jstree(true).get_parent($node)
+    };
+
+    /**
+     * Refresh node.
+     *
+     * @param {Object} $node
+     */
+    this.refreshNode = function ($node) {
+        $tree.jstree(true).refresh_node($node);
+    };
+
+    /**
+     * Rename node.
+     *
+     * @param {Object} $node
+     */
+    this.renameNode = function ($node) {
+        getNode($node, function($response) {
+            $tree.jstree(true).rename_node($node, $response.text);
+        });
+    };
+
+    /**
      * Select node.
      *
      * @param {Object} $node
@@ -67,11 +90,23 @@ function SitemapTree() {
     };
 
     /**
-     * Deselect node.
+     * Get node.
      *
      * @param {Object} $node
+     * @param {Function} $callback
      */
-    this.deselectNode = function ($node) {
-        $tree.jstree(true).deselect_node($node, true);
+    var getNode = function ($node, $callback) {
+        if ($node && $node.id) {
+            $.ajax({
+                url: Routing.generate('tadcka_sitemap_tree_node', {_format: 'json', id: $node.id}),
+                type: 'GET',
+                success: function ($response) {
+                    $callback($response);
+                },
+                error: function ($request, $status, $error) {
+                    console.log($request.responseText);
+                }
+            });
+        }
     };
 }
