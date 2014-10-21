@@ -104,9 +104,7 @@ $.fn.sitemap = function () {
      * Cancel delete.
      */
     $content.getContent().on('click', 'a#tadcka-tree-node-delete-cancel', function() {
-        $tree.deselectNode($currentNode);
-        $currentNode = null;
-        $content.getContent().html('');
+        loadContent($currentNode.id, function () {})
     });
 
     /**
