@@ -93,7 +93,19 @@ class RouterHelper
     }
 
     /**
-     * Check if has route controller.
+     * Check if node has route.
+     *
+     * @param NodeTranslationInterface $translation
+     *
+     * @return bool
+     */
+    public function hasNodeRoute(NodeTranslationInterface $translation)
+    {
+        return (null !== $translation->getRoute()) && $translation->getRoute()->getRoutePattern();
+    }
+
+    /**
+     * Check if route has controller.
      *
      * @param string $nodeType
      *
