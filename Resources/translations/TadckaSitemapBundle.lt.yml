@@ -26,7 +26,7 @@ form:
 success:
   create_node: Sėkmingai sukurta nauja kategorija.
   edit_node: Sėkmingai redaguota kategorija.
-  delete_node: Sėkmingai pašalinta kategorija.
+  delete_node: Sėkmingai pašalinta kategorija: %title%.
   seo_save: Sėkmingai išsaugota kategorijos optimizavimo paieškos sistemoms informacija.
   online_save: Sėkmingai išsaugta kategorijos publikavimo informacija lokalėje [%locale%].
 

@@ -26,7 +26,7 @@ form:
 success:
   create_node: Sėkmingai sukurta nauja medžio viršūnė.
   edit_node: Sėkmingai redaguota medžio viršūnė.
-  delete_node: Sėkmingai pašalinta medžio viršūnė.
+  delete_node: Sėkmingai pašalinta medžio viršūnė: %title%.
   seo_save: Sėkmingai išsaugota medžio viršūnės optimizavimas paieškos sistemoms.
 
 not_found_title: Title not found

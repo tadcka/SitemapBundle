@@ -96,7 +96,6 @@ $.fn.sitemap = function () {
 
             $currentNode.id = $parentId;
             $tree.refreshNode($parentId);
-            $tree.selectNode($parentId);
         });
     });
 

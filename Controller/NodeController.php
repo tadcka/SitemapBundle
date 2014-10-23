@@ -141,13 +141,20 @@ class NodeController extends AbstractController
             $jsonResponseContent = new JsonResponseContent($id);
             if ($request->isMethod('DELETE')) {
                 $treeNodeEvent = new TreeNodeEvent($node);
+                $translation = $node->getTranslation($request->getLocale());
+
                 $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_PRE_DELETE, $treeNodeEvent);
                 $this->getNodeManager()->remove($node, true);
                 $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_DELETE_SUCCESS, $treeNodeEvent);
                 $this->getNodeManager()->save();
 
+                $title = $this->translate('not_found_title');
+                if (null !== $translation) {
+                    $title = $translation->getTitle();
+                }
+
                 $messages = new Messages();
-                $messages->addSuccess($this->translate('success.delete_node'));
+                $messages->addSuccess($this->translate('success.delete_node', array('%title%' => $title)));
 
                 if ('json' === $request->getRequestFormat()) {
                     $jsonResponseContent->setMessages($this->getMessageHtml($messages));
