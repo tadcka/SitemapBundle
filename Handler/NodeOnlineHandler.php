@@ -60,10 +60,12 @@ class NodeOnlineHandler
      */
     public function process($locale, Messages $messages, NodeInterface $node)
     {
-        $violation = $this->validator->validateValue(
-            $node,
-            array(new NodeTranslationNotNull($locale), new NodeRouteNotEmpty($locale), new NodeParentIsOnline($locale))
+        $constrains = array(
+            new NodeTranslationNotNull($locale),
+            new NodeRouteNotEmpty($locale),
+            new NodeParentIsOnline($locale)
         );
+        $violation = $this->validator->validateValue($node, $constrains);
 
         if (0 < $violation->count()) {
             foreach ($violation as $value) {

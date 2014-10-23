@@ -14,6 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle\Response;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Templating\EngineInterface;
 use Tadcka\Bundle\SitemapBundle\Frontend\Model\JsonResponseContent;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
@@ -36,15 +37,25 @@ class ResponseHelper
     private $serializer;
 
     /**
+     * @var EngineInterface
+     */
+    private $templating;
+
+    /**
      * Constructor,
      *
      * @param NodeManagerInterface $nodeManager
      * @param SerializerInterface $serializer
+     * @param EngineInterface $templating
      */
-    public function __construct(NodeManagerInterface $nodeManager, SerializerInterface $serializer)
-    {
+    public function __construct(
+        NodeManagerInterface $nodeManager,
+        SerializerInterface $serializer,
+        EngineInterface $templating
+    ) {
         $this->nodeManager = $nodeManager;
         $this->serializer = $serializer;
+        $this->templating = $templating;
     }
 
     /**
@@ -92,5 +103,18 @@ class ResponseHelper
         }
 
         return $node;
+    }
+
+    /**
+     * Render response.
+     *
+     * @param string $name
+     * @param array $parameters
+     *
+     * @return Response
+     */
+    public function renderResponse($name, array $parameters = array())
+    {
+        return new Response($this->templating->render($name, $parameters));
     }
 }

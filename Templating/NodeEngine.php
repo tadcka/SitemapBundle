@@ -46,7 +46,20 @@ class NodeEngine
     }
 
     /**
-     * Render content.
+     * Renders a template.
+     *
+     * @param string $name
+     * @param array $parameters
+     *
+     * @return string
+     */
+    public function render($name, array $parameters = array())
+    {
+        return $this->templating->render($name, $parameters);
+    }
+
+    /**
+     * Render content template.
      *
      * @param NodeInterface $node
      * @param array $tabs
@@ -55,7 +68,7 @@ class NodeEngine
      */
     public function renderContent(NodeInterface $node, array $tabs)
     {
-        return $this->templating->render(
+        return $this->render(
             'TadckaSitemapBundle:Sitemap:content.html.twig',
             array(
                 'node' => $node,
@@ -68,7 +81,7 @@ class NodeEngine
     }
 
     /**
-     * Render messages.
+     * Render messages template.
      *
      * @param Messages $messages
      *
@@ -76,11 +89,11 @@ class NodeEngine
      */
     public function renderMessages(Messages $messages)
     {
-        return $this->templating->render('TadckaSitemapBundle::messages.html.twig', array('messages' => $messages));
+        return $this->render('TadckaSitemapBundle::messages.html.twig', array('messages' => $messages));
     }
 
     /**
-     * Render toolbar.
+     * Render toolbar template.
      *
      * @param NodeInterface $node
      *
@@ -88,13 +101,13 @@ class NodeEngine
      */
     public function renderToolbar(NodeInterface $node)
     {
-        return $this->templating->render(
+        return $this->render(
             'TadckaSitemapBundle:Sitemap:toolbar.html.twig',
             array(
                 'node' => $node,
                 'multi_language_enabled' => $this->routerHelper->multiLanguageIsEnabled(),
                 'multi_language_locales' => $this->routerHelper->getMultiLanguageLocales(),
-                'has_controller'         => $this->routerHelper->hasController($node->getType()),
+                'has_controller' => $this->routerHelper->hasController($node->getType()),
             )
         );
     }

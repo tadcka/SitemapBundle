@@ -15,17 +15,20 @@
         <service id="tadcka_sitemap.form_factory.seo" class="%tadcka_sitemap.form_factory.seo.class%">
             <argument type="service" id="form.factory" />
             <argument type="service" id="router" />
+            <argument type="service" id="tadcka_sitemap.routing.helper" />
             <argument>%tadcka_sitemap.model.node.class%</argument>
             <argument>%tadcka_sitemap.model.node_translation.class%</argument>
         </service>
 
         <!--Sitemap seo form handler-->
         <service id="tadcka_sitemap.form_handler.seo" class="%tadcka_sitemap.form_handler.seo.class%">
+            <argument type="service" id="event_dispatcher" />
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
             <argument type="service" id="tadcka_sitemap.routing.generator" />
             <argument type="service" id="tadcka_routing.manager.route.in_memory" />
             <argument type="service" id="tadcka_sitemap.routing.helper" />
             <argument type="service" id="silvestra_seo.manager.seo_metadata" />
+            <argument type="service" id="translator" />
         </service>
 
     </services>

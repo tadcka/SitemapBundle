@@ -16,6 +16,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Tadcka\Bundle\SitemapBundle\Form\Type\SeoType;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -35,6 +36,11 @@ class SeoFormFactory
     private $router;
 
     /**
+     * @var RouterHelper
+     */
+    private $routerHelper;
+
+    /**
      * @var string
      */
     private $nodeClass;
@@ -49,13 +55,20 @@ class SeoFormFactory
      *
      * @param FormFactoryInterface $formFactory
      * @param RouterInterface $router
+     * @param RouterHelper $routerHelper
      * @param string $nodeClass
      * @param string $nodeTransClass
      */
-    public function __construct(FormFactoryInterface $formFactory, RouterInterface $router, $nodeClass, $nodeTransClass)
-    {
+    public function __construct(
+        FormFactoryInterface $formFactory,
+        RouterInterface $router,
+        RouterHelper $routerHelper,
+        $nodeClass,
+        $nodeTransClass
+    ) {
         $this->formFactory = $formFactory;
         $this->router = $router;
+        $this->routerHelper = $routerHelper;
         $this->nodeClass = $nodeClass;
         $this->nodeTransClass = $nodeTransClass;
     }
@@ -64,14 +77,13 @@ class SeoFormFactory
      * Create seo form.
      *
      * @param NodeInterface $node
-     * @param bool $hasControllerByType
      *
      * @return FormInterface
      */
-    public function create(NodeInterface $node, $hasControllerByType = false)
+    public function create(NodeInterface $node)
     {
         return $this->formFactory->create(
-            new SeoType($hasControllerByType),
+            new SeoType($this->routerHelper->hasController($node->getType())),
             $node,
             array(
                 'translation_class' => $this->nodeTransClass,

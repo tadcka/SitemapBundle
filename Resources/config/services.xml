@@ -69,6 +69,7 @@
         <service id="tadcka_sitemap.helper.response" class="%tadcka_sitemap.helper.response.class%">
             <argument type="service" id="tadcka_sitemap.manager.node" />
             <argument type="service" id="serializer" />
+            <argument type="service" id="templating" />
         </service>
 
     </services>

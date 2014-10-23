@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="tadcka_sitemap.controller.node_content.class">Tadcka\Bundle\SitemapBundle\Controller\NodeContentController</parameter>
         <parameter key="tadcka_sitemap.controller.node_online.class">Tadcka\Bundle\SitemapBundle\Controller\NodeOnlineController</parameter>
+        <parameter key="tadcka_sitemap.controller.node_seo.class">Tadcka\Bundle\SitemapBundle\Controller\NodeSeoController</parameter>
         <parameter key="tadcka_sitemap.controller.preview.class">Tadcka\Bundle\SitemapBundle\Controller\PreviewController</parameter>
         <parameter key="tadcka_sitemap.controller.sitemap.class">Tadcka\Bundle\SitemapBundle\Controller\SitemapController</parameter>
         <parameter key="tadcka_sitemap.controller.tree.class">Tadcka\Bundle\SitemapBundle\Controller\TreeController</parameter>
@@ -28,6 +29,14 @@
             <argument type="service" id="tadcka_sitemap.manager.node" />
             <argument type="service" id="tadcka_sitemap.handler.node_online" />
             <argument type="service" id="tadcka_sitemap.helper.response" />
+        </service>
+
+        <!--Sitemap node seo controller-->
+        <service id="tadcka_sitemap.controller.node_seo" class="%tadcka_sitemap.controller.node_seo.class%">
+            <argument type="service" id="tadcka_sitemap.templating.node_engine" />
+            <argument type="service" id="tadcka_sitemap.helper.response" />
+            <argument type="service" id="tadcka_sitemap.form_factory.seo" />
+            <argument type="service" id="tadcka_sitemap.form_handler.seo" />
         </service>
 
         <!--Sitemap preview controller-->
