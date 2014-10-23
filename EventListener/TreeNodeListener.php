@@ -94,7 +94,7 @@ class TreeNodeListener
         if (TadckaSitemapBundle::SITEMAP_TREE === $event->getNode()->getTree()->getSlug()) {
             $node = $event->getNode();
 
-            if ($this->routerHelper->hasRouteController($node->getType())) {
+            if ($this->routerHelper->hasController($node->getType())) {
                 $this->createSeo($node);
             }
 

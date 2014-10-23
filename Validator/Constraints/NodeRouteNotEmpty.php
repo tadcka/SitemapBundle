@@ -11,12 +11,14 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Validator\Constraints;
 
+use Symfony\Component\Validator\Constraint;
+
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since 14.10.23 16.49
  */
-class NodeRouteNotEmpty
+class NodeRouteNotEmpty extends Constraint
 {
     public $message = 'tadcka_sitemap.node_route_missing';
 

@@ -72,7 +72,7 @@ $.fn.sitemap = function () {
                 var $nodeId = $response.node_id;
 
                 if ($nodeId) {
-                    var $url = Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $nodeId});
+                    var $url = Routing.generate('tadcka_sitemap_node_content', {_format: 'json', nodeId: $nodeId});
 
                     $tree.refreshNode($currentNode);
                     $content.load($url, $content.getContent(), function () {
@@ -129,7 +129,7 @@ $.fn.sitemap = function () {
      * @param {Function} $callback
      */
     var loadContent = function ($nodeId, $callback) {
-        var $url = Routing.generate('tadcka_sitemap_content', {_format: 'json', nodeId: $nodeId});
+        var $url = Routing.generate('tadcka_sitemap_node_content', {_format: 'json', nodeId: $nodeId});
 
         $content.load($url, $content.getContent(), function () {
             $content.loadFirstTab($callback);

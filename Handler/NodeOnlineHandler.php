@@ -11,8 +11,14 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Handler;
 
+use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\ValidatorInterface;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
+use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeRouteNotEmpty;
+use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeTranslationNotNull;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -21,31 +27,68 @@ use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
  */
 class NodeOnlineHandler
 {
-    public function process(NodeInterface $node, Messages $messages, $locale)
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
+     * Constructor.
+     *
+     * @param TranslatorInterface $translator
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(TranslatorInterface $translator, ValidatorInterface $validator)
     {
-        $nodeTranslation = $node->getTranslation($locale);
-
-        if (null === $nodeTranslation) {
-            $messages->addError($this->translate('node_translation_not_found', array('%locale%' => $locale)));
-
-            return $this->getJsonResponse($jsonResponseContent);
-        }
-
-        if (false === $this->getRouterHelper()->hasNodeRoute($nodeTranslation)) {
-            $messages->addError($this->translate('node_route_missing', array('%locale%' => $locale)));
-
-            return $this->getJsonResponse($jsonResponseContent);
-        }
-
-        if (false === $this->nodeParentIsOnline($node, $locale)) {
-            $messages->addWarning($this->translate('node_parent_is_not_online', array('%locale%' => $locale)));
-
-            return $this->getJsonResponse($jsonResponseContent);
-        }
+        $this->translator = $translator;
+        $this->validator = $validator;
     }
 
-    public function onSuccess()
+    /**
+     * Process node online.
+     *
+     * @param string $locale
+     * @param Messages $messages
+     * @param NodeInterface $node
+     *
+     * @return bool
+     */
+    public function process($locale, Messages $messages, NodeInterface $node)
     {
+        $violation = $this->validator->validateValue(
+            $node,
+            array(new NodeTranslationNotNull($locale), new NodeRouteNotEmpty($locale), new NodeParentIsOnline($locale))
+        );
 
+        if (0 < $violation->count()) {
+            foreach ($violation as $value) {
+                $messages->addError($value->getMessage());
+            }
+
+            return false;
+        }
+
+        /** @var NodeTranslationInterface $nodeTranslation */
+        $nodeTranslation = $node->getTranslation($locale);
+        $nodeTranslation->setOnline(!$nodeTranslation->isOnline());
+
+        return true;
+    }
+
+    /**
+     * On success.
+     *
+     * @param string $locale
+     * @param Messages $messages
+     */
+    public function onSuccess($locale, Messages $messages)
+    {
+        $success = $this->translator->trans('success.online_save', array('%locale%' => $locale), 'TadckaSitemapBundle');
+        $messages->addSuccess($success);
     }
 }

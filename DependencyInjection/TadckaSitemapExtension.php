@@ -32,13 +32,16 @@ class TadckaSitemapExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('services.xml');
-        $loader->load('frontend.xml');
+        $loader->load('controllers.xml');
         $loader->load('form/seo.xml');
         $loader->load('form/node.xml');
-        $loader->load('tree.xml');
+        $loader->load('frontend.xml');
         $loader->load('node.xml');
         $loader->load('routing.xml');
+        $loader->load('services.xml');
+        $loader->load('templating.xml');
+        $loader->load('tree.xml');
+        $loader->load('validators.xml');
 
         if (!in_array(strtolower($config['db_driver']), array('mongodb', 'orm'))) {
             throw new \InvalidArgumentException(sprintf('Invalid db driver "%s".', $config['db_driver']));

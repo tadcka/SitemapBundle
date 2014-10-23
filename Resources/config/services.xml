@@ -13,9 +13,13 @@
         <parameter key="tadcka_sitemap.security_manager.page.class">Tadcka\Bundle\SitemapBundle\Security\PageSecurityManager</parameter>
         <parameter key="tadcka_sitemap.provider.page_node.class">Tadcka\Bundle\SitemapBundle\Provider\PageNodeProvider</parameter>
         <parameter key="tadcka_sitemap.provider.class">Tadcka\Bundle\SitemapBundle\Provider\SitemapProvider</parameter>
+        <parameter key="tadcka_sitemap.handler.node_online.class">Tadcka\Bundle\SitemapBundle\Handler\NodeOnlineHandler</parameter>
+        <parameter key="tadcka_sitemap.factory.node_event.class">Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEventFactory</parameter>
+        <parameter key="tadcka_sitemap.helper.response.class">Tadcka\Bundle\SitemapBundle\Response\ResponseHelper</parameter>
     </parameters>
 
     <services>
+
         <!--Sitemap node event listener-->
         <service id="tadcka_sitemap.listener.sitemap_node" class="%tadcka_sitemap.listener.sitemap_node.class%">
             <tag name="kernel.event_listener" event="tadcka_sitemap.node_edit" method="onSitemapNodeEdit" />
@@ -50,6 +54,21 @@
         <service id="tadcka_sitemap.provider" class="%tadcka_sitemap.provider.class%">
             <argument type="service" id="tadcka_sitemap.manager.node" />
             <argument type="service" id="tadcka_sitemap.tree.provider" />
+        </service>
+
+        <service id="tadcka_sitemap.handler.node_online" class="%tadcka_sitemap.handler.node_online.class%">
+            <argument type="service" id="translator" />
+            <argument type="service" id="validator" />
+        </service>
+
+        <service id="tadcka_sitemap.factory.node_event" class="%tadcka_sitemap.factory.node_event.class%">
+            <argument type="service" id="router" />
+            <argument type="service" id="translator" />
+        </service>
+
+        <service id="tadcka_sitemap.helper.response" class="%tadcka_sitemap.helper.response.class%">
+            <argument type="service" id="tadcka_sitemap.manager.node" />
+            <argument type="service" id="serializer" />
         </service>
 
     </services>

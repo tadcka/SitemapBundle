@@ -105,10 +105,10 @@ class RouterHelperTest extends AbstractRoutingTest
         );
     }
 
-    public function testHasRouteController()
+    public function testHasController()
     {
-        $this->assertFalse($this->routerHelper->hasRouteController('fake'));
-        $this->assertTrue($this->routerHelper->hasRouteController('test'));
+        $this->assertFalse($this->routerHelper->hasController('fake'));
+        $this->assertTrue($this->routerHelper->hasController('test'));
     }
 
     public function testNormalizeRoutePattern()

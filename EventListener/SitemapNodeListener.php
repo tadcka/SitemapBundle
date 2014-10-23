@@ -58,7 +58,7 @@ class SitemapNodeListener
         );
         $event->addTab($menu);
 
-        if ((null !== $node->getParent()) && $this->routerHelper->hasRouteController($node->getType())) {
+        if ((null !== $node->getParent()) && $this->routerHelper->hasController($node->getType())) {
             $seo = new Tab(
                 $event->getTranslator()->trans('node.seo', array(), 'TadckaSitemapBundle'),
                 'node_content',

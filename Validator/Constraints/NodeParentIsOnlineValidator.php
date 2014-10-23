@@ -43,7 +43,7 @@ class NodeParentIsOnlineValidator extends ConstraintValidator
      * Checks if the passed node is valid.
      *
      * @param NodeInterface $node
-     * @param NodeParentIsOnline $constraint
+     * @param Constraint|NodeParentIsOnline $constraint
      */
     public function validate($node, Constraint $constraint)
     {
@@ -63,13 +63,13 @@ class NodeParentIsOnlineValidator extends ConstraintValidator
     private function nodeParentIsOnline(NodeInterface $node, $locale)
     {
         $parent = $node->getParent();
-        $hasController = $this->routeHelper->hasRouteController($parent->getType());
+        $hasController = $this->routeHelper->hasController($parent->getType());
 
         if ((null !== $parent) && $hasController) {
             /** @var NodeTranslationInterface $translation */
             $translation = $parent->getTranslation($locale);
             if ((null === $translation) || !$translation->isOnline()
-                || (false === $this->routeHelper->hasNodeRoute($translation))
+                || (false === $this->routeHelper->hasRoute($locale, $node))
             ) {
                 return false;
             }

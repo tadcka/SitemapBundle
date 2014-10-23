@@ -42,13 +42,11 @@ class NodeRouteNotEmptyValidator extends ConstraintValidator
      * Checks if the passed node is valid.
      *
      * @param NodeInterface $node
-     * @param NodeRouteNotEmpty $constraint
+     * @param Constraint|NodeRouteNotEmpty $constraint
      */
     public function validate($node, Constraint $constraint)
     {
-        $nodeTranslation = $node->getTranslation($constraint->getLocale());
-
-        if ((null === $nodeTranslation) || (false === $this->routeHelper->hasNodeRoute($nodeTranslation))) {
+        if (false === $this->routeHelper->hasRoute($constraint->getLocale(), $node)) {
             $this->context->addViolation($constraint->message, array('%locale%' => $constraint->getLocale()));
         }
     }

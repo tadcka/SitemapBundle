@@ -215,7 +215,7 @@ abstract class AbstractController extends ContainerAware
                 'node' => $node,
                 'multi_language_enabled' => $this->container->getParameter('tadcka_sitemap.multi_language.enabled'),
                 'multi_language_locales' => $this->container->getParameter('tadcka_sitemap.multi_language.locales'),
-                'has_controller' => $this->getRouterHelper()->hasRouteController($node->getType()),
+                'has_controller' => $this->getRouterHelper()->hasController($node->getType()),
             )
         );
     }

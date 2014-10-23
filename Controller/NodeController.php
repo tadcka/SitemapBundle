@@ -22,7 +22,6 @@ use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Form\Factory\NodeFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\NodeFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
-use Tadcka\Bundle\SitemapBundle\Frontend\FrontendHelper;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -31,25 +30,6 @@ use Tadcka\Bundle\SitemapBundle\Frontend\FrontendHelper;
  */
 class NodeController extends AbstractController
 {
-    public function getRootAction(Request $request)
-    {
-        return $this->getJsonResponse($this->getFrontendHelper()->getRootNode($request->getLocale()));
-    }
-
-    public function getNodeAction(Request $request, $id)
-    {
-        return $this->getJsonResponse(
-            $this->getFrontendHelper()->getNode($this->getNodeOr404($id), $request->getLocale())
-        );
-    }
-
-    public function getChildrenAction(Request $request, $id)
-    {
-        return $this->getJsonResponse(
-            $this->getFrontendHelper()->getChildren($this->getNodeOr404($id), $request->getLocale())
-        );
-    }
-
     public function createAction(Request $request, $id)
     {
         $parent = $this->getNodeOr404($id);
@@ -176,14 +156,6 @@ class NodeController extends AbstractController
         }
 
         throw new NotFoundHttpException("Don't delete the tree root!");
-    }
-
-    /**
-     * @return FrontendHelper
-     */
-    private function getFrontendHelper()
-    {
-        return $this->container->get('tadcka_sitemap.helper.frontend');
     }
 
     /**

@@ -24,6 +24,16 @@ use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 class RouterHelper
 {
     /**
+     * @var bool
+     */
+    private $multiLanguageEnabled;
+
+    /**
+     * @var array
+     */
+    private $multiLanguageLocales;
+
+    /**
      * @var array
      */
     private $controllers;
@@ -37,11 +47,15 @@ class RouterHelper
      * Constructor.
      *
      * @param array $controllers
+     * @param bool $multiLanguageEnabled
+     * @param array $multiLanguageLocales
      * @param string $strategy
      */
-    public function __construct(array $controllers, $strategy)
+    public function __construct(array $controllers, $multiLanguageEnabled, array $multiLanguageLocales, $strategy)
     {
         $this->controllers = $controllers;
+        $this->multiLanguageEnabled = $multiLanguageEnabled;
+        $this->multiLanguageLocales = $multiLanguageLocales;
         $this->strategy = $strategy;
     }
 
@@ -54,7 +68,7 @@ class RouterHelper
      */
     public function getRouteController($nodeType)
     {
-        if ($this->hasRouteController($nodeType)) {
+        if ($this->hasController($nodeType)) {
             return $this->controllers[$nodeType];
         }
 
@@ -74,7 +88,7 @@ class RouterHelper
      */
     public function getRoutePattern($pattern, NodeInterface $node, $locale)
     {
-        if (false === $this->hasRouteController($node->getType())) {
+        if (false === $this->hasController($node->getType())) {
             throw new RouteException(sprintf('Node type %s don\'t have controller!', $node->getType()));
         }
 
@@ -95,13 +109,18 @@ class RouterHelper
     /**
      * Check if node has route.
      *
-     * @param NodeTranslationInterface $translation
+     * @param string $locale
+     * @param NodeInterface $node
      *
      * @return bool
      */
-    public function hasNodeRoute(NodeTranslationInterface $translation)
+    public function hasRoute($locale, NodeInterface $node)
     {
-        return (null !== $translation->getRoute()) && $translation->getRoute()->getRoutePattern();
+        /** @var NodeTranslationInterface $translation */
+        $translation = $node->getTranslation($locale);
+
+        return (null !== $translation) && (null !== $translation->getRoute())
+            && $translation->getRoute()->getRoutePattern();
     }
 
     /**
@@ -111,9 +130,29 @@ class RouterHelper
      *
      * @return bool
      */
-    public function hasRouteController($nodeType)
+    public function hasController($nodeType)
     {
         return isset($this->controllers[$nodeType]);
+    }
+
+    /**
+     * Multi language is enabled.
+     *
+     * @return bool
+     */
+    public function multiLanguageIsEnabled()
+    {
+        return $this->multiLanguageEnabled;
+    }
+
+    /**
+     * Get multi language locales.
+     *
+     * @return array
+     */
+    public function getMultiLanguageLocales()
+    {
+        return $this->multiLanguageLocales;
     }
 
     /**
@@ -151,7 +190,7 @@ class RouterHelper
         /** @var NodeInterface $parent */
         $parent = $node->getParent();
 
-        if ((null !== $parent) && $this->hasRouteController($parent->getType())) {
+        if ((null !== $parent) && $this->hasController($parent->getType())) {
             $path = $this->getRouteFullPath($parent, $locale);
         }
 

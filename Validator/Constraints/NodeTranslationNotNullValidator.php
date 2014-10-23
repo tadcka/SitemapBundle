@@ -26,7 +26,7 @@ class NodeTranslationNotNullValidator extends ConstraintValidator
      * Checks if the passed node is valid.
      *
      * @param NodeInterface $node
-     * @param NodeTranslationNotNull $constraint
+     * @param Constraint|NodeTranslationNotNull $constraint
      */
     public function validate($node, Constraint $constraint)
     {

@@ -127,7 +127,7 @@ class SeoFormHandler
      */
     private function handleRoute(NodeInterface $node, RouteInterface $route, $locale)
     {
-        if ($this->routerHelper->hasRouteController($node->getType())) {
+        if ($this->routerHelper->hasController($node->getType())) {
             $this->routeGenerator->generateRoute($route, $node, $locale);
 
             $this->routeManager->add($route);

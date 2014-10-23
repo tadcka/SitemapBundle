@@ -11,52 +11,51 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEvent;
-use Tadcka\Bundle\SitemapBundle\Frontend\Model\JsonResponseContent;
-use Tadcka\Bundle\SitemapBundle\TadckaSitemapEvents;
+use Symfony\Component\Templating\EngineInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since 14.8.3 12.39
  */
-class SitemapController extends AbstractController
+class SitemapController
 {
-    public function indexAction()
+    /**
+     * @var EngineInterface
+     */
+    private $templating;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * Constructor.
+     *
+     * @param EngineInterface $templating
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(EngineInterface $templating, TranslatorInterface $translator)
     {
-        return $this->renderResponse(
-            'TadckaSitemapBundle:Sitemap:index.html.twig',
-            array('page_header' => $this->translate('sitemap.page_header'))
-        );
+        $this->templating = $templating;
+        $this->translator = $translator;
     }
 
-    public function contentAction(Request $request, $nodeId)
+    /**
+     * Sitemap index action.
+     *
+     * @return Response
+     */
+    public function indexAction()
     {
-        $node = $this->getNodeOr404($nodeId);
-
-        $event = new SitemapNodeEvent($node, $this->getRouter(), $this->getTranslator());
-        $this->container->get('event_dispatcher')->dispatch(TadckaSitemapEvents::SITEMAP_NODE_EDIT, $event);
-
-        $content = $this->render(
-            'TadckaSitemapBundle:Sitemap:content.html.twig',
-            array(
-                'node' => $node,
-                'tabs' => $event->getTabs(),
-                'has_controller' => $this->getRouterHelper()->hasRouteController($node->getType()),
-                'multi_language_locales' => $this->container->getParameter('tadcka_sitemap.multi_language.locales'),
-                'multi_language_enabled' => $this->container->getParameter('tadcka_sitemap.multi_language.enabled'),
+        return new Response(
+            $this->templating->render(
+                'TadckaSitemapBundle:Sitemap:index.html.twig',
+                array('page_header' => $this->translator->trans('sitemap.page_header', array(), 'TadckaSitemapBundle'))
             )
         );
-
-        if ('json' === $request->getRequestFormat()) {
-            $jsonResponseContent = new JsonResponseContent($nodeId);
-            $jsonResponseContent->setContent($content);
-
-            return $this->getJsonResponse($jsonResponseContent);
-        }
-
-        return new Response($content);
     }
 }
