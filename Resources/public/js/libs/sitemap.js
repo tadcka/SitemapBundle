@@ -13,13 +13,15 @@ $.fn.sitemap = function () {
     var $content = new SitemapContent();
     var $tree = new SitemapTree();
 
-    $tree.getJsTree()
-        .on('changed.jstree', function ($event, $data) {
-            if (!$currentNode || $data.node && (($currentNode.id !== $data.node.id))) {
-                $currentNode = $data.node;
-                loadContent($currentNode.id, function () {});
-            }
-        });
+    /**
+     * Triggered when an node is clicked or intercated with by the user. Load content.
+     */
+    $tree.getJsTree().on('activate_node.jstree', function ($event, $data) {
+        if (!$currentNode || $data.node && (($currentNode.id !== $data.node.id))) {
+            $currentNode = $data.node;
+            loadContent($currentNode.id, function () {});
+        }
+    });
 
     /**
      * Load current toolbar content.
@@ -56,7 +58,13 @@ $.fn.sitemap = function () {
         if ($content.getContent().find('.tab-content:first').length) {
 
             $content.submit($form.attr('action'), $form.serialize(), $content.getActiveTab(), function () {
-                $tree.renameNode($currentNode);
+                var $parent = $tree.getParent($currentNode);
+
+                if ('#' !== $parent) {
+                    $tree.refreshNode($parent);
+                } else {
+                    $tree.renameNode($currentNode);
+                }
                 $button.attr('disabled', '');
             });
         } else {
@@ -92,10 +100,9 @@ $.fn.sitemap = function () {
     $content.getContent().on('click', 'a#tadcka-tree-node-delete-confirm', function ($event) {
         $event.preventDefault();
         $content.deleteNode($(this).attr('href'), function () {
-            var $parentId = $tree.getParent($currentNode);
+            var $parent = $tree.getParent($currentNode);
 
-            $currentNode.id = $parentId;
-            $tree.refreshNode($parentId);
+            $tree.refreshNode($parent);
         });
     });
 
@@ -103,7 +110,16 @@ $.fn.sitemap = function () {
      * Cancel delete.
      */
     $content.getContent().on('click', 'a#tadcka-tree-node-delete-cancel', function() {
-        loadContent($currentNode.id, function () {})
+        loadContent($currentNode.id, function () {
+            $tree.selectNode($currentNode);
+        });
+    });
+
+    /**
+     * Triggered when a node is refreshed. Select current node.
+     */
+    $tree.getJsTree().on('refresh_node.jstree', function ($event, $data) {
+        $tree.selectNode($currentNode);
     });
 
     /**
