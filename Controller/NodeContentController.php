@@ -15,9 +15,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEventFactory;
-use Tadcka\Bundle\SitemapBundle\Response\ResponseHelper;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Frontend\ResponseHelper;
+use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapEvents;
-use Tadcka\Bundle\SitemapBundle\Templating\SitemapEngine;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -32,11 +33,6 @@ class NodeContentController
     private $eventDispatcher;
 
     /**
-     * @var SitemapEngine
-     */
-    private $sitemapEngine;
-
-    /**
      * @var SitemapNodeEventFactory
      */
     private $nodeEventFactory;
@@ -47,23 +43,28 @@ class NodeContentController
     private $responseHelper;
 
     /**
+     * @var RouterHelper
+     */
+    private $routerHelper;
+
+    /**
      * Constructor.
      *
      * @param EventDispatcherInterface $eventDispatcher
-     * @param SitemapEngine $sitemapEngine
-     * @param ResponseHelper $responseHelper
      * @param SitemapNodeEventFactory $nodeEventFactory
+     * @param ResponseHelper $responseHelper
+     * @param RouterHelper $routerHelper
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        SitemapEngine $sitemapEngine,
         SitemapNodeEventFactory $nodeEventFactory,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        RouterHelper $routerHelper
     ) {
         $this->eventDispatcher = $eventDispatcher;
-        $this->sitemapEngine = $sitemapEngine;
         $this->nodeEventFactory = $nodeEventFactory;
         $this->responseHelper = $responseHelper;
+        $this->routerHelper = $routerHelper;
     }
 
 
@@ -83,12 +84,34 @@ class NodeContentController
         $this->eventDispatcher->dispatch(TadckaSitemapEvents::SITEMAP_NODE_EDIT, $event);
 
         if ('json' === $request->getRequestFormat()) {
-            $jsonResponseContent = $this->responseHelper->createJsonResponseContent($node);
-            $jsonResponseContent->setContent($this->sitemapEngine->renderContent($node, $event->getTabs()));
+            $jsonContent = $this->responseHelper->createJsonContent($node);
+            $jsonContent->setContent($this->renderNodeContent($node, $event->getTabs()));
 
-            return $this->responseHelper->getJsonResponse($jsonResponseContent);
+            return $this->responseHelper->getJsonResponse($jsonContent);
         }
 
-        return new Response($this->sitemapEngine->renderContent($node, $event->getTabs()));
+        return new Response($this->renderNodeContent($node, $event->getTabs()));
+    }
+
+    /**
+     * Render node content template.
+     *
+     * @param NodeInterface $node
+     * @param array $tabs
+     *
+     * @return string
+     */
+    public function renderNodeContent(NodeInterface $node, array $tabs)
+    {
+        return $this->responseHelper->render(
+            'TadckaSitemapBundle:Sitemap:content.html.twig',
+            array(
+                'node' => $node,
+                'tabs' => $tabs,
+                'has_controller' => $this->routerHelper->hasController($node->getType()),
+                'multi_language_enabled' => $this->routerHelper->multiLanguageIsEnabled(),
+                'multi_language_locales' => $this->routerHelper->getMultiLanguageLocales(),
+            )
+        );
     }
 }

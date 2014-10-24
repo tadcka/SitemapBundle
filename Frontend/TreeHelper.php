@@ -26,7 +26,7 @@ use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
  *
  * @since 5/23/14 12:44 AM
  */
-class FrontendHelper
+class TreeHelper
 {
     /**
      * @var NodeProviderInterface

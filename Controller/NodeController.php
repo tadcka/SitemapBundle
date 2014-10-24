@@ -11,167 +11,172 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Controller;
 
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Tadcka\Bundle\SitemapBundle\Frontend\Model\JsonResponseContent;
-use Tadcka\Component\Tree\Event\TreeNodeEvent;
-use Tadcka\Component\Tree\Model\TreeInterface;
-use Tadcka\Component\Tree\TadckaTreeEvents;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Form\Factory\NodeFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\NodeFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
+use Tadcka\Bundle\SitemapBundle\Handler\NodeDeleteHandler;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
+use Tadcka\Bundle\SitemapBundle\Frontend\ResponseHelper;
+use Tadcka\Component\Tree\Model\TreeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since  4/2/14 11:11 PM
  */
-class NodeController extends AbstractController
+class NodeController
 {
-    public function createAction(Request $request, $id)
+    /**
+     * @var NodeDeleteHandler
+     */
+    private $nodeDeleteHandler;
+
+    /**
+     * @var NodeFormFactory
+     */
+    private $nodeFormFactory;
+
+    /**
+     * @var NodeFormHandler
+     */
+    private $nodeFormHandler;
+
+    /**
+     * @var NodeManagerInterface
+     */
+    private $nodeManager;
+
+    /**
+     * @var ResponseHelper
+     */
+    private $responseHelper;
+
+    /**
+     * Constructor.
+     *
+     * @param NodeDeleteHandler $nodeDeleteHandler
+     * @param NodeFormFactory $nodeFormFactory
+     * @param NodeFormHandler $nodeFormHandler
+     * @param NodeManagerInterface $nodeManager
+     * @param ResponseHelper $responseHelper
+     */
+    public function __construct(
+        NodeDeleteHandler $nodeDeleteHandler,
+        NodeFormFactory $nodeFormFactory,
+        NodeFormHandler $nodeFormHandler,
+        NodeManagerInterface $nodeManager,
+        ResponseHelper $responseHelper
+    ) {
+        $this->nodeDeleteHandler = $nodeDeleteHandler;
+        $this->nodeFormFactory = $nodeFormFactory;
+        $this->nodeFormHandler = $nodeFormHandler;
+        $this->nodeManager = $nodeManager;
+        $this->responseHelper = $responseHelper;
+    }
+
+
+    /**
+     * Sitemap tree node create action.
+     *
+     * @param Request $request
+     * @param int $parentId
+     *
+     * @return Response
+     */
+    public function createAction(Request $request, $parentId)
     {
-        $parent = $this->getNodeOr404($id);
+        $parent = $this->responseHelper->getNodeOr404($parentId);
         $node = $this->createNode($parent->getTree(), $parent);
-        $form = $this->getFormFactory()->create($node);
+        $form = $this->nodeFormFactory->create($node);
+        $jsonContent = $this->responseHelper->createJsonContent($node);
 
-        $messages = new Messages();
-        if ($this->getFormHandler()->process($request, $form)) {
-            $treeNodeEvent = new TreeNodeEvent($node);
-            $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_PRE_CREATE, $treeNodeEvent);
-            $this->getNodeManager()->save();
-            $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_CREATE_SUCCESS, $treeNodeEvent);
-            $this->getNodeManager()->save();
-
-            $messages->addSuccess($this->translate('success.create_node'));
-            $messagesHtml = $this->getMessageHtml($messages);
+        if ($this->nodeFormHandler->process($request, $form)) {
+            $messages = new Messages();
+            $messages->setMessages($this->nodeFormHandler->onCreateSuccess($node));
 
             if ('json' === $request->getRequestFormat()) {
-                $jsonResponseContent = new JsonResponseContent($node->getId());
-                $jsonResponseContent->setMessages($messagesHtml);
+                $jsonContent->setMessages($this->responseHelper->renderMessages($messages));
 
-                return $this->getJsonResponse($jsonResponseContent);
+                return $this->responseHelper->getJsonResponse($jsonContent);
             }
 
-            return new Response($messagesHtml);
-        }
-
-        $content = $this->getTemplating()->render(
-            'TadckaSitemapBundle:Node:form.html.twig',
-            array(
-                'form' => $form->createView(),
-            )
-        );
-
-        if ('json' === $request->getRequestFormat()) {
-            $jsonResponseContent = new JsonResponseContent(null);
-            $jsonResponseContent->setContent($content);
-
-            return $this->getJsonResponse($jsonResponseContent);
-        }
-
-        return new Response($content);
-    }
-
-    public function editAction(Request $request, $id)
-    {
-        $node = $this->getNodeOr404($id);
-        $form = $this->getFormFactory()->create($node);
-
-        $messages = new Messages();
-        if ($this->getFormHandler()->process($request, $form)) {
-            $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
-            $this->getNodeManager()->save();
-
-            $messages->addSuccess($this->translate('success.edit_node'));
+            return new Response($this->responseHelper->renderMessages($messages));
         }
 
         if ('json' === $request->getRequestFormat()) {
-            $jsonResponseContent = new JsonResponseContent($id);
-            $jsonResponseContent->setTab(
-                $this->render(
-                    'TadckaSitemapBundle:Node:form.html.twig',
-                    array(
-                        'form' => $form->createView(),
-                    )
-                )
-            );
-            if ($messages->getMessages()) {
-                $jsonResponseContent->setMessages($this->getMessageHtml($messages));
-            }
+            $jsonContent->setContent($this->renderNodeForm($form));
 
-            return $this->getJsonResponse($jsonResponseContent);
+            return $this->responseHelper->getJsonResponse($jsonContent);
         }
 
-        return $this->renderResponse(
-            'TadckaSitemapBundle:Node:form.html.twig',
-            array(
-                'form' => $form->createView(),
-                'messages' => $messages,
-            )
-        );
+        return new Response($this->renderNodeForm($form));
     }
 
-    public function deleteAction(Request $request, $id)
+    /**
+     * Sitemap tree node edit action.
+     *
+     * @param Request $request
+     * @param int $nodeId
+     *
+     * @return Response
+     */
+    public function editAction(Request $request, $nodeId)
     {
-        $node = $this->getNodeOr404($id);
+        $node = $this->responseHelper->getNodeOr404($nodeId);
+        $form = $this->nodeFormFactory->create($node);
+        $jsonContent = $this->responseHelper->createJsonContent($node);
+        $messages = new Messages();
 
-        if (null !== $node->getParent()) {
-            $jsonResponseContent = new JsonResponseContent($id);
-            if ($request->isMethod('DELETE')) {
-                $treeNodeEvent = new TreeNodeEvent($node);
-                $translation = $node->getTranslation($request->getLocale());
+        if ($this->nodeFormHandler->process($request, $form)) {
+            $messages->setMessages($this->nodeFormHandler->onEditSuccess($node));
+            $jsonContent->setMessages($this->responseHelper->renderMessages($messages));
+        }
 
-                $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_PRE_DELETE, $treeNodeEvent);
-                $this->getNodeManager()->remove($node, true);
-                $this->getEventDispatcher()->dispatch(TadckaTreeEvents::NODE_DELETE_SUCCESS, $treeNodeEvent);
-                $this->getNodeManager()->save();
+        if ('json' === $request->getRequestFormat()) {
+            $jsonContent->setTab($this->renderNodeForm($form));
 
-                $title = $this->translate('not_found_title');
-                if (null !== $translation) {
-                    $title = $translation->getTitle();
-                }
+            return $this->responseHelper->getJsonResponse($jsonContent);
+        }
 
-                $messages = new Messages();
-                $messages->addSuccess($this->translate('success.delete_node', array('%title%' => $title)));
+        return new Response($this->renderNodeForm($form, $messages));
+    }
 
-                if ('json' === $request->getRequestFormat()) {
-                    $jsonResponseContent->setMessages($this->getMessageHtml($messages));
+    /**
+     * Sitemap tree node delete action.
+     *
+     * @param Request $request
+     * @param int $nodeId
+     *
+     * @return Response
+     */
+    public function deleteAction(Request $request, $nodeId)
+    {
+        $node = $this->responseHelper->getNodeOr404($nodeId);
+        $jsonContent = $this->responseHelper->createJsonContent($node);
 
-                    return $this->getJsonResponse($jsonResponseContent);
-                }
+        if ($this->nodeDeleteHandler->process($node, $request)) {
+            $messages = $this->nodeDeleteHandler->onSuccess($request->getLocale(), $node);
 
-                return new Response($this->getMessageHtml($messages));
-            }
-
-            $content = $this->render('TadckaSitemapBundle:Node:delete.html.twig', array('node_id' => $id));
             if ('json' === $request->getRequestFormat()) {
-                $jsonResponseContent->setContent($content);
+                $jsonContent->setMessages($this->responseHelper->renderMessages($messages));
 
-                return $this->getJsonResponse($jsonResponseContent);
+                return $this->responseHelper->getJsonResponse($jsonContent);
             }
 
-            return new Response($content);
+            return new Response($this->responseHelper->renderMessages($messages));
         }
 
-        throw new NotFoundHttpException("Don't delete the tree root!");
-    }
+        if ('json' === $request->getRequestFormat()) {
+            $jsonContent->setContent($this->renderNodeDeleteConfirm($node));
 
-    /**
-     * @return NodeFormFactory
-     */
-    private function getFormFactory()
-    {
-        return $this->container->get('tadcka_sitemap.form_factory.node');
-    }
+            return $this->responseHelper->getJsonResponse($jsonContent);
+        }
 
-    /**
-     * @return NodeFormHandler
-     */
-    private function getFormHandler()
-    {
-        return $this->container->get('tadcka_sitemap.form_handler.node');
+        return new Response($this->renderNodeDeleteConfirm($node));
     }
 
     /**
@@ -184,13 +189,46 @@ class NodeController extends AbstractController
      */
     private function createNode(TreeInterface $tree, NodeInterface $parent)
     {
-        $node = $this->getNodeManager()->create();
+        $node = $this->nodeManager->create();
+
         $node->setTree($tree);
-        if (null !== $parent) {
-            $node->setParent($parent);
-        }
-        $this->getNodeManager()->add($node);
+        $node->setParent($parent);
+        $this->nodeManager->add($node);
 
         return $node;
+    }
+
+    /**
+     * Render node form.
+     *
+     * @param FormInterface $form
+     * @param null|Messages $messages
+     *
+     * @return string
+     */
+    private function renderNodeForm(FormInterface $form, Messages $messages = null)
+    {
+        return  $this->responseHelper->render(
+            'TadckaSitemapBundle:Node:form.html.twig',
+            array(
+                'form' => $form->createView(),
+                'messages' => $messages,
+            )
+        );
+    }
+
+    /**
+     * Render node delete confirm.
+     *
+     * @param NodeInterface $node
+     *
+     * @return string
+     */
+    private function renderNodeDeleteConfirm(NodeInterface $node)
+    {
+        return $this->responseHelper->render(
+            'TadckaSitemapBundle:Node:delete.html.twig',
+            array('node_id' => $node->getId())
+        );
     }
 }

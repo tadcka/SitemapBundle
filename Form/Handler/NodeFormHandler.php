@@ -11,9 +11,14 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Form\Handler;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
+use Tadcka\Component\Tree\TadckaTreeEvents;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -23,9 +28,19 @@ use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
 class NodeFormHandler
 {
     /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * @var NodeManagerInterface
      */
     private $nodeManager;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
 
     /**
      * Constructor.
@@ -57,5 +72,51 @@ class NodeFormHandler
         }
 
         return false;
+    }
+
+    /**
+     * On node create success.
+     *
+     * @param NodeInterface $node
+     *
+     * @return string
+     */
+    public function onCreateSuccess(NodeInterface $node)
+    {
+        $treeNodeEvent = $this->createTreeNodeEvent($node);
+
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_PRE_CREATE, $treeNodeEvent);
+        $this->nodeManager->save();
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_CREATE_SUCCESS, $treeNodeEvent);
+        $this->nodeManager->save();
+
+        return $this->translator->trans('success.create_node', array(), 'TadckaSitemapBundle');
+    }
+
+    /**
+     * On node edit success.
+     *
+     * @param NodeInterface $node
+     *
+     * @return string
+     */
+    public function onEditSuccess(NodeInterface $node)
+    {
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, $this->createTreeNodeEvent($node));
+        $this->nodeManager->save();
+
+        return $this->translator->trans('success.edit_node', array(), 'TadckaSitemapBundle');
+    }
+
+    /**
+     * Create tree node event.
+     *
+     * @param NodeInterface $node
+     *
+     * @return TreeNodeEvent
+     */
+    private function createTreeNodeEvent(NodeInterface $node)
+    {
+        return new TreeNodeEvent($node);
     }
 }

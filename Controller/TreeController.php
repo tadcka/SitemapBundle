@@ -13,8 +13,8 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Tadcka\Bundle\SitemapBundle\Frontend\FrontendHelper;
-use Tadcka\Bundle\SitemapBundle\Response\ResponseHelper;
+use Tadcka\Bundle\SitemapBundle\Frontend\TreeHelper;
+use Tadcka\Bundle\SitemapBundle\Frontend\ResponseHelper;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -24,25 +24,25 @@ use Tadcka\Bundle\SitemapBundle\Response\ResponseHelper;
 class TreeController
 {
     /**
-     * @var FrontendHelper
-     */
-    private $frontendHelper;
-
-    /**
      * @var ResponseHelper
      */
     private $responseHelper;
 
     /**
+     * @var TreeHelper
+     */
+    private $treeHelper;
+
+    /**
      * Constructor.
      *
-     * @param FrontendHelper $frontendHelper
      * @param ResponseHelper $responseHelper
+     * @param TreeHelper $treeHelper
      */
-    public function __construct(FrontendHelper $frontendHelper, ResponseHelper $responseHelper)
+    public function __construct(ResponseHelper $responseHelper, TreeHelper $treeHelper)
     {
-        $this->frontendHelper = $frontendHelper;
         $this->responseHelper = $responseHelper;
+        $this->treeHelper = $treeHelper;
     }
 
     /**
@@ -56,7 +56,7 @@ class TreeController
     public function getChildrenAction(Request $request, $nodeId)
     {
         return $this->responseHelper->getJsonResponse(
-            $this->frontendHelper->getChildren($this->responseHelper->getNodeOr404($nodeId), $request->getLocale())
+            $this->treeHelper->getChildren($this->responseHelper->getNodeOr404($nodeId), $request->getLocale())
         );
     }
 
@@ -71,7 +71,7 @@ class TreeController
     public function getNodeAction(Request $request, $nodeId)
     {
         return $this->responseHelper->getJsonResponse(
-            $this->frontendHelper->getNode($this->responseHelper->getNodeOr404($nodeId), $request->getLocale())
+            $this->treeHelper->getNode($this->responseHelper->getNodeOr404($nodeId), $request->getLocale())
         );
     }
 
@@ -84,8 +84,6 @@ class TreeController
      */
     public function getRootAction(Request $request)
     {
-        return $this->responseHelper->getJsonResponse(
-            $this->frontendHelper->getRootNode($request->getLocale())
-        );
+        return $this->responseHelper->getJsonResponse($this->treeHelper->getRootNode($request->getLocale()));
     }
 }

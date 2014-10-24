@@ -9,12 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Tadcka\Bundle\SitemapBundle\Response;
+namespace Tadcka\Bundle\SitemapBundle\Frontend;
 
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Templating\EngineInterface;
+use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Frontend\Model\JsonResponseContent;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
@@ -65,7 +66,7 @@ class ResponseHelper
      *
      * @return JsonResponseContent
      */
-    public function createJsonResponseContent(NodeInterface $node)
+    public function createJsonContent(NodeInterface $node)
     {
         return new JsonResponseContent($node->getId());
     }
@@ -106,6 +107,31 @@ class ResponseHelper
     }
 
     /**
+     * Renders a template.
+     *
+     * @param string $name
+     * @param array $parameters
+     *
+     * @return string
+     */
+    public function render($name, array $parameters = array())
+    {
+        return $this->templating->render($name, $parameters);
+    }
+
+    /**
+     * Render messages template.
+     *
+     * @param Messages $messages
+     *
+     * @return string
+     */
+    public function renderMessages(Messages $messages)
+    {
+        return $this->render('TadckaSitemapBundle::messages.html.twig', array('messages' => $messages));
+    }
+
+    /**
      * Render response.
      *
      * @param string $name
@@ -115,6 +141,6 @@ class ResponseHelper
      */
     public function renderResponse($name, array $parameters = array())
     {
-        return new Response($this->templating->render($name, $parameters));
+        return new Response($this->render($name, $parameters));
     }
 }

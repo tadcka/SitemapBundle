@@ -15,8 +15,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Handler\NodeOnlineHandler;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Response\ResponseHelper;
-use Tadcka\Bundle\SitemapBundle\Templating\SitemapEngine;
+use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Frontend\ResponseHelper;
+use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -25,11 +26,6 @@ use Tadcka\Bundle\SitemapBundle\Templating\SitemapEngine;
  */
 class NodeOnlineController
 {
-    /**
-     * @var SitemapEngine
-     */
-    private $sitemapEngine;
-
     /**
      * @var NodeManagerInterface
      */
@@ -46,23 +42,28 @@ class NodeOnlineController
     private $responseHelper;
 
     /**
+     * @var RouterHelper
+     */
+    private $routerHelper;
+
+    /**
      * Constructor.
      *
-     * @param SitemapEngine $sitemapEngine
      * @param NodeManagerInterface $nodeManager
      * @param NodeOnlineHandler $nodeOnlineHandler
      * @param ResponseHelper $responseHelper
+     * @param RouterHelper $routerHelper
      */
     public function __construct(
-        SitemapEngine $sitemapEngine,
         NodeManagerInterface $nodeManager,
         NodeOnlineHandler $nodeOnlineHandler,
-        ResponseHelper $responseHelper
+        ResponseHelper $responseHelper,
+        RouterHelper $routerHelper
     ) {
-        $this->sitemapEngine = $sitemapEngine;
         $this->nodeManager = $nodeManager;
         $this->nodeOnlineHandler = $nodeOnlineHandler;
         $this->responseHelper = $responseHelper;
+        $this->routerHelper = $routerHelper;
     }
 
     /**
@@ -76,17 +77,37 @@ class NodeOnlineController
     public function indexAction($locale, $nodeId)
     {
         $node = $this->responseHelper->getNodeOr404($nodeId);
-        $jsonResponseContent = $this->responseHelper->createJsonResponseContent($node);
+        $jsonContent = $this->responseHelper->createJsonContent($node);
         $messages = new Messages();
 
         if ($this->nodeOnlineHandler->process($locale, $messages, $node)) {
             $this->nodeOnlineHandler->onSuccess($locale, $messages);
-            $jsonResponseContent->setToolbar($this->sitemapEngine->renderToolbar($node));
+            $jsonContent->setToolbar($this->renderToolbar($node));
 
             $this->nodeManager->save();
         }
-        $jsonResponseContent->setMessages($this->sitemapEngine->renderMessages($messages));
+        $jsonContent->setMessages($this->responseHelper->renderMessages($messages));
 
-        return $this->responseHelper->getJsonResponse($jsonResponseContent);
+        return $this->responseHelper->getJsonResponse($jsonContent);
+    }
+
+    /**
+     * Render toolbar template.
+     *
+     * @param NodeInterface $node
+     *
+     * @return string
+     */
+    private function renderToolbar(NodeInterface $node)
+    {
+        return $this->responseHelper->render(
+            'TadckaSitemapBundle:Sitemap:toolbar.html.twig',
+            array(
+                'node' => $node,
+                'multi_language_enabled' => $this->routerHelper->multiLanguageIsEnabled(),
+                'multi_language_locales' => $this->routerHelper->getMultiLanguageLocales(),
+                'has_controller' => $this->routerHelper->hasController($node->getType()),
+            )
+        );
     }
 }
