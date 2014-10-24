@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEventFactory;
 use Tadcka\Bundle\SitemapBundle\Response\ResponseHelper;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapEvents;
-use Tadcka\Bundle\SitemapBundle\Templating\NodeEngine;
+use Tadcka\Bundle\SitemapBundle\Templating\SitemapEngine;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -32,9 +32,9 @@ class NodeContentController
     private $eventDispatcher;
 
     /**
-     * @var NodeEngine
+     * @var SitemapEngine
      */
-    private $nodeEngine;
+    private $sitemapEngine;
 
     /**
      * @var SitemapNodeEventFactory
@@ -50,18 +50,18 @@ class NodeContentController
      * Constructor.
      *
      * @param EventDispatcherInterface $eventDispatcher
-     * @param NodeEngine $nodeEngine
+     * @param SitemapEngine $sitemapEngine
      * @param ResponseHelper $responseHelper
      * @param SitemapNodeEventFactory $nodeEventFactory
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        NodeEngine $nodeEngine,
+        SitemapEngine $sitemapEngine,
         SitemapNodeEventFactory $nodeEventFactory,
         ResponseHelper $responseHelper
     ) {
         $this->eventDispatcher = $eventDispatcher;
-        $this->nodeEngine = $nodeEngine;
+        $this->sitemapEngine = $sitemapEngine;
         $this->nodeEventFactory = $nodeEventFactory;
         $this->responseHelper = $responseHelper;
     }
@@ -84,11 +84,11 @@ class NodeContentController
 
         if ('json' === $request->getRequestFormat()) {
             $jsonResponseContent = $this->responseHelper->createJsonResponseContent($node);
-            $jsonResponseContent->setContent($this->nodeEngine->renderContent($node, $event->getTabs()));
+            $jsonResponseContent->setContent($this->sitemapEngine->renderContent($node, $event->getTabs()));
 
             return $this->responseHelper->getJsonResponse($jsonResponseContent);
         }
 
-        return new Response($this->nodeEngine->renderContent($node, $event->getTabs()));
+        return new Response($this->sitemapEngine->renderContent($node, $event->getTabs()));
     }
 }

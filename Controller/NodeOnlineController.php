@@ -16,7 +16,7 @@ use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Handler\NodeOnlineHandler;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Response\ResponseHelper;
-use Tadcka\Bundle\SitemapBundle\Templating\NodeEngine;
+use Tadcka\Bundle\SitemapBundle\Templating\SitemapEngine;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -26,9 +26,9 @@ use Tadcka\Bundle\SitemapBundle\Templating\NodeEngine;
 class NodeOnlineController
 {
     /**
-     * @var NodeEngine
+     * @var SitemapEngine
      */
-    private $nodeEngine;
+    private $sitemapEngine;
 
     /**
      * @var NodeManagerInterface
@@ -48,18 +48,18 @@ class NodeOnlineController
     /**
      * Constructor.
      *
-     * @param NodeEngine $nodeEngine
+     * @param SitemapEngine $sitemapEngine
      * @param NodeManagerInterface $nodeManager
      * @param NodeOnlineHandler $nodeOnlineHandler
      * @param ResponseHelper $responseHelper
      */
     public function __construct(
-        NodeEngine $nodeEngine,
+        SitemapEngine $sitemapEngine,
         NodeManagerInterface $nodeManager,
         NodeOnlineHandler $nodeOnlineHandler,
         ResponseHelper $responseHelper
     ) {
-        $this->nodeEngine = $nodeEngine;
+        $this->sitemapEngine = $sitemapEngine;
         $this->nodeManager = $nodeManager;
         $this->nodeOnlineHandler = $nodeOnlineHandler;
         $this->responseHelper = $responseHelper;
@@ -81,11 +81,11 @@ class NodeOnlineController
 
         if ($this->nodeOnlineHandler->process($locale, $messages, $node)) {
             $this->nodeOnlineHandler->onSuccess($locale, $messages);
-            $jsonResponseContent->setToolbar($this->nodeEngine->renderToolbar($node));
+            $jsonResponseContent->setToolbar($this->sitemapEngine->renderToolbar($node));
 
             $this->nodeManager->save();
         }
-        $jsonResponseContent->setMessages($this->nodeEngine->renderMessages($messages));
+        $jsonResponseContent->setMessages($this->sitemapEngine->renderMessages($messages));
 
         return $this->responseHelper->getJsonResponse($jsonResponseContent);
     }

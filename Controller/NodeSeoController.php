@@ -16,7 +16,7 @@ use Tadcka\Bundle\SitemapBundle\Response\ResponseHelper;
 use Tadcka\Bundle\SitemapBundle\Form\Factory\SeoFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\SeoFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
-use Tadcka\Bundle\SitemapBundle\Templating\NodeEngine;
+use Tadcka\Bundle\SitemapBundle\Templating\SitemapEngine;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -26,9 +26,9 @@ use Tadcka\Bundle\SitemapBundle\Templating\NodeEngine;
 class NodeSeoController
 {
     /**
-     * @var NodeEngine
+     * @var SitemapEngine
      */
-    private $nodeEngine;
+    private $sitemapEngine;
 
     /**
      * @var ResponseHelper
@@ -48,18 +48,18 @@ class NodeSeoController
     /**
      * Constructor.
      *
-     * @param NodeEngine $nodeEngine
+     * @param SitemapEngine $sitemapEngine
      * @param ResponseHelper $responseHelper
      * @param SeoFormFactory $seoFormFactory
      * @param SeoFormHandler $seoFromHandler
      */
     public function __construct(
-        NodeEngine $nodeEngine,
+        SitemapEngine $sitemapEngine,
         ResponseHelper $responseHelper,
         SeoFormFactory $seoFormFactory,
         SeoFormHandler $seoFromHandler
     ) {
-        $this->nodeEngine = $nodeEngine;
+        $this->sitemapEngine = $sitemapEngine;
         $this->responseHelper = $responseHelper;
         $this->seoFormFactory = $seoFormFactory;
         $this->seoFromHandler = $seoFromHandler;
@@ -80,11 +80,11 @@ class NodeSeoController
 
         if ('json' === $request->getRequestFormat()) {
             $jsonResponseContent = $this->responseHelper->createJsonResponseContent($node);
-            $jsonResponseContent->setMessages($this->nodeEngine->renderMessages($messages));
+            $jsonResponseContent->setMessages($this->sitemapEngine->renderMessages($messages));
             $jsonResponseContent->setTab(
-                $this->nodeEngine->render('TadckaSitemapBundle:Seo:seo.html.twig', array('form' => $form->createView()))
+                $this->sitemapEngine->render('TadckaSitemapBundle:Seo:seo.html.twig', array('form' => $form->createView()))
             );
-            $jsonResponseContent->setToolbar($this->nodeEngine->renderToolbar($node));
+            $jsonResponseContent->setToolbar($this->sitemapEngine->renderToolbar($node));
 
             return $this->responseHelper->getJsonResponse($jsonResponseContent);
         }

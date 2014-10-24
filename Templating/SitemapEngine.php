@@ -21,7 +21,7 @@ use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
  *
  * @since 10/23/14 9:50 PM
  */
-class NodeEngine
+class SitemapEngine
 {
     /**
      * @var RouterHelper

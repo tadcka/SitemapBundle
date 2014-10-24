@@ -18,14 +18,14 @@
         <!--Sitemap node content controller-->
         <service id="tadcka_sitemap.controller.node_content" class="%tadcka_sitemap.controller.node_content.class%">
             <argument type="service" id="event_dispatcher" />
-            <argument type="service" id="tadcka_sitemap.templating.node_engine" />
+            <argument type="service" id="tadcka_sitemap.templating" />
             <argument type="service" id="tadcka_sitemap.factory.node_event" />
             <argument type="service" id="tadcka_sitemap.helper.response" />
         </service>
 
         <!--Sitemap node online controller-->
         <service id="tadcka_sitemap.controller.node_online" class="%tadcka_sitemap.controller.node_online.class%">
-            <argument type="service" id="tadcka_sitemap.templating.node_engine" />
+            <argument type="service" id="tadcka_sitemap.templating" />
             <argument type="service" id="tadcka_sitemap.manager.node" />
             <argument type="service" id="tadcka_sitemap.handler.node_online" />
             <argument type="service" id="tadcka_sitemap.helper.response" />
@@ -33,7 +33,7 @@
 
         <!--Sitemap node seo controller-->
         <service id="tadcka_sitemap.controller.node_seo" class="%tadcka_sitemap.controller.node_seo.class%">
-            <argument type="service" id="tadcka_sitemap.templating.node_engine" />
+            <argument type="service" id="tadcka_sitemap.templating" />
             <argument type="service" id="tadcka_sitemap.helper.response" />
             <argument type="service" id="tadcka_sitemap.form_factory.seo" />
             <argument type="service" id="tadcka_sitemap.form_handler.seo" />
