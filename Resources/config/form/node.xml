@@ -23,7 +23,9 @@
 
         <!--Sitemap node form handler-->
         <service id="tadcka_sitemap.form_handler.node" class="%tadcka_sitemap.form_handler.node.class%">
+            <argument type="service" id="event_dispatcher" />
             <argument type="service" id="tadcka_sitemap.manager.node" />
+            <argument type="service" id="translator" />
         </service>
 
     </services>

@@ -1,7 +1,7 @@
 {% trans_default_domain 'TadckaSitemapBundle' %}
 
 <div class="btn-group tadcka-sitemap-toolbar">
-    <a href="{{ url('tadcka_sitemap_tree_create_node', {_format: 'json', id: node.id}) }}" class="btn btn-outline btn-primary load">
+    <a href="{{ url('tadcka_sitemap_tree_create_node', {_format: 'json', parentId: node.id}) }}" class="btn btn-outline btn-primary load">
         {{ 'sitemap.add_subpage'|trans }}
     </a>
     {% if node.parent is not empty %}
@@ -53,7 +53,7 @@
                 {% endif %}
             {% endif %}
         {% endif %}
-        <a href="{{ url('tadcka_sitemap_tree_delete_node', {_format: 'json', id: node.id}) }}" class="btn btn-outline btn-primary load">
+        <a href="{{ url('tadcka_sitemap_tree_delete_node', {_format: 'json', nodeId: node.id}) }}" class="btn btn-outline btn-primary load">
             {{ 'sitemap.delete'|trans }}
         </a>
     {% endif %}

@@ -52,7 +52,7 @@ class SitemapNodeListener
             'node_menu',
             $event->getRouter()->generate(
                 'tadcka_sitemap_tree_edit_node',
-                array('_format' => 'json', 'id' => $node->getId())
+                array('_format' => 'json', 'nodeId' => $node->getId())
             ),
             255
         );
@@ -64,7 +64,7 @@ class SitemapNodeListener
                 'node_content',
                 $event->getRouter()->generate(
                     'tadcka_sitemap_seo',
-                    array('_format' => 'json', 'id' => $node->getId())
+                    array('_format' => 'json', 'nodeId' => $node->getId())
                 ),
                 200
             );

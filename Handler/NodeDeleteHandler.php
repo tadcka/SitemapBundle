@@ -70,7 +70,7 @@ class NodeDeleteHandler
     public function process(NodeInterface $node, Request $request)
     {
         if ((null !== $node->getParent()) && $request->isMethod('DELETE')) {
-            $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_PRE_DELETE, $this->createTreeNodeEvent($node));
+            $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_PRE_DELETE, $this->createEvent($node));
             $this->nodeManager->remove($node, true);
 
             return true;
@@ -92,7 +92,7 @@ class NodeDeleteHandler
         $messages = new Messages();
         $title = $this->translator->trans('not_found_title', array(), 'TadckaSitemapBundle');
 
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_DELETE_SUCCESS, $this->createTreeNodeEvent($node));
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_DELETE_SUCCESS, $this->createEvent($node));
         $this->nodeManager->save();
 
         if (null !== $translation = $node->getTranslation($locale)) {
@@ -113,7 +113,7 @@ class NodeDeleteHandler
      *
      * @return TreeNodeEvent
      */
-    private function createTreeNodeEvent(NodeInterface $node)
+    private function createEvent(NodeInterface $node)
     {
         return new TreeNodeEvent($node);
     }

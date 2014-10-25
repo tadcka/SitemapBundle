@@ -92,13 +92,13 @@ class NodeController
         $parent = $this->responseHelper->getNodeOr404($parentId);
         $node = $this->createNode($parent->getTree(), $parent);
         $form = $this->nodeFormFactory->create($node);
-        $jsonContent = $this->responseHelper->createJsonContent($node);
 
         if ($this->nodeFormHandler->process($request, $form)) {
             $messages = new Messages();
-            $messages->setMessages($this->nodeFormHandler->onCreateSuccess($node));
+            $messages->addSuccess($this->nodeFormHandler->onCreateSuccess($node));
 
             if ('json' === $request->getRequestFormat()) {
+                $jsonContent = $this->responseHelper->createJsonContent($node);
                 $jsonContent->setMessages($this->responseHelper->renderMessages($messages));
 
                 return $this->responseHelper->getJsonResponse($jsonContent);
@@ -108,6 +108,7 @@ class NodeController
         }
 
         if ('json' === $request->getRequestFormat()) {
+            $jsonContent = $this->responseHelper->createJsonContent($node);
             $jsonContent->setContent($this->renderNodeForm($form));
 
             return $this->responseHelper->getJsonResponse($jsonContent);
@@ -132,7 +133,7 @@ class NodeController
         $messages = new Messages();
 
         if ($this->nodeFormHandler->process($request, $form)) {
-            $messages->setMessages($this->nodeFormHandler->onEditSuccess($node));
+            $messages->addSuccess($this->nodeFormHandler->onEditSuccess($node));
             $jsonContent->setMessages($this->responseHelper->renderMessages($messages));
         }
 

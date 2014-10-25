@@ -2,5 +2,5 @@
 
 <p>{{ 'delete_confirm'|trans }}</p>
 
-<a href="{{ url('tadcka_sitemap_tree_delete_node', {id: node_id}) }}" class="btn btn-danger" id="tadcka-tree-node-delete-confirm">{{ 'yes'|trans }}</a>
+<a href="{{ url('tadcka_sitemap_tree_delete_node', {nodeId: node_id}) }}" class="btn btn-danger" id="tadcka-tree-node-delete-confirm">{{ 'yes'|trans }}</a>
 <a href="javascript:;" class="btn btn-default" id="tadcka-tree-node-delete-cancel">{{ 'no'|trans }}</a>

@@ -23,7 +23,7 @@ use Tadcka\Component\Tree\TadckaTreeEvents;
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 5/19/14 11:41 PM
+ * @since  5/19/14 11:41 PM
  */
 class NodeFormHandler
 {
@@ -45,11 +45,18 @@ class NodeFormHandler
     /**
      * Constructor.
      *
+     * @param EventDispatcherInterface $eventDispatcher
      * @param NodeManagerInterface $nodeManager
+     * @param TranslatorInterface $translator
      */
-    public function __construct(NodeManagerInterface $nodeManager)
-    {
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher,
+        NodeManagerInterface $nodeManager,
+        TranslatorInterface $translator
+    ) {
+        $this->eventDispatcher = $eventDispatcher;
         $this->nodeManager = $nodeManager;
+        $this->translator = $translator;
     }
 
     /**
@@ -83,7 +90,7 @@ class NodeFormHandler
      */
     public function onCreateSuccess(NodeInterface $node)
     {
-        $treeNodeEvent = $this->createTreeNodeEvent($node);
+        $treeNodeEvent = $this->createEvent($node);
 
         $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_PRE_CREATE, $treeNodeEvent);
         $this->nodeManager->save();
@@ -102,7 +109,7 @@ class NodeFormHandler
      */
     public function onEditSuccess(NodeInterface $node)
     {
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, $this->createTreeNodeEvent($node));
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, $this->createEvent($node));
         $this->nodeManager->save();
 
         return $this->translator->trans('success.edit_node', array(), 'TadckaSitemapBundle');
@@ -115,7 +122,7 @@ class NodeFormHandler
      *
      * @return TreeNodeEvent
      */
-    private function createTreeNodeEvent(NodeInterface $node)
+    private function createEvent(NodeInterface $node)
     {
         return new TreeNodeEvent($node);
     }
