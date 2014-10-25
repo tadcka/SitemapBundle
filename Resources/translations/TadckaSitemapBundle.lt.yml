@@ -9,6 +9,7 @@ sitemap:
 node:
   menu: Meniu
   seo: Optimizavimas paieškos sistemoms
+  route: Universalusis adresas
 
 form:
   seo_route:

@@ -11,6 +11,8 @@
 
     <import resource="@TadckaSitemapBundle/Resources/config/routing/node-online.xml" />
 
+    <import resource="@TadckaSitemapBundle/Resources/config/routing/node-route.xml" />
+
     <import resource="@TadckaSitemapBundle/Resources/config/routing/node-seo.xml" />
 
     <import resource="@TadckaSitemapBundle/Resources/config/routing/preview.xml" />

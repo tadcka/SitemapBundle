@@ -14,23 +14,45 @@ namespace Tadcka\Bundle\SitemapBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since  14.6.29 14.05
+ * @since  14.10.25 22.21
  */
-class SeoRouteType extends AbstractType
+class NodeRouteType extends AbstractType
 {
+    /**
+     * @var string
+     */
+    private $nodeClass;
+
+    /**
+     * Constructor.
+     *
+     * @param string $nodeClass
+     */
+    public function __construct($nodeClass)
+    {
+        $this->nodeClass = $nodeClass;
+    }
+
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('online', 'checkbox', array('label' => 'form.seo_route.publish_category', 'required' => false));
+        $builder->add(
+            'translations',
+            'translations',
+            array(
+                'type' => 'tadcka_sitemap_node_i18n_route',
+                'label' => false,
+            )
+        );
 
-        $builder->add('route', 'tadcka_route', array('label' => false));
+        $builder->add('submit', 'submit', array('label' => 'form.button.save'));
     }
 
     /**
@@ -40,8 +62,8 @@ class SeoRouteType extends AbstractType
     {
         $resolver->setDefaults(
             array(
+                'data_class' => $this->nodeClass,
                 'translation_domain' => 'TadckaSitemapBundle',
-                'constraints' => array(new NodeParentIsOnline()),
             )
         );
     }
@@ -51,6 +73,6 @@ class SeoRouteType extends AbstractType
      */
     public function getName()
     {
-        return 'tadcka_sitemap_seo_route';
+        return 'tadcka_sitemap_node_route';
     }
 }

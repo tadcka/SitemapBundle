@@ -33,8 +33,9 @@ class TadckaSitemapExtension extends Extension
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('controllers.xml');
-        $loader->load('form/seo.xml');
         $loader->load('form/node.xml');
+        $loader->load('form/node-route.xml');
+        $loader->load('form/seo.xml');
         $loader->load('frontend.xml');
         $loader->load('node.xml');
         $loader->load('routing.xml');

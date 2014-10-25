@@ -5,9 +5,10 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="tadcka_sitemap.controller.node_content.class">Tadcka\Bundle\SitemapBundle\Controller\NodeContentController</parameter>
         <parameter key="tadcka_sitemap.controller.node.class">Tadcka\Bundle\SitemapBundle\Controller\NodeController</parameter>
+        <parameter key="tadcka_sitemap.controller.node_content.class">Tadcka\Bundle\SitemapBundle\Controller\NodeContentController</parameter>
         <parameter key="tadcka_sitemap.controller.node_online.class">Tadcka\Bundle\SitemapBundle\Controller\NodeOnlineController</parameter>
+        <parameter key="tadcka_sitemap.controller.node_route.class">Tadcka\Bundle\SitemapBundle\Controller\NodeRouteController</parameter>
         <parameter key="tadcka_sitemap.controller.node_seo.class">Tadcka\Bundle\SitemapBundle\Controller\NodeSeoController</parameter>
         <parameter key="tadcka_sitemap.controller.preview.class">Tadcka\Bundle\SitemapBundle\Controller\PreviewController</parameter>
         <parameter key="tadcka_sitemap.controller.sitemap.class">Tadcka\Bundle\SitemapBundle\Controller\SitemapController</parameter>
@@ -15,14 +16,6 @@
     </parameters>
 
     <services>
-
-        <!--Sitemap node content controller-->
-        <service id="tadcka_sitemap.controller.node_content" class="%tadcka_sitemap.controller.node_content.class%">
-            <argument type="service" id="event_dispatcher" />
-            <argument type="service" id="tadcka_sitemap.factory.node_event" />
-            <argument type="service" id="tadcka_sitemap.helper.response" />
-            <argument type="service" id="tadcka_sitemap.routing.helper" />
-        </service>
 
         <!--Sitemap node controller-->
         <service id="tadcka_sitemap.controller.node" class="%tadcka_sitemap.controller.node.class%">
@@ -33,10 +26,26 @@
             <argument type="service" id="tadcka_sitemap.helper.response" />
         </service>
 
+        <!--Sitemap node content controller-->
+        <service id="tadcka_sitemap.controller.node_content" class="%tadcka_sitemap.controller.node_content.class%">
+            <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="tadcka_sitemap.factory.node_event" />
+            <argument type="service" id="tadcka_sitemap.helper.response" />
+            <argument type="service" id="tadcka_sitemap.routing.helper" />
+        </service>
+
         <!--Sitemap node online controller-->
         <service id="tadcka_sitemap.controller.node_online" class="%tadcka_sitemap.controller.node_online.class%">
             <argument type="service" id="tadcka_sitemap.manager.node" />
             <argument type="service" id="tadcka_sitemap.handler.node_online" />
+            <argument type="service" id="tadcka_sitemap.helper.response" />
+            <argument type="service" id="tadcka_sitemap.routing.helper" />
+        </service>
+
+        <!--Sitemap node route controller-->
+        <service id="tadcka_sitemap.controller.node_route" class="%tadcka_sitemap.controller.node_route.class%">
+            <argument type="service" id="tadcka_sitemap.form_factory.node_route" />
+            <argument type="service" id="tadcka_sitemap.form_handler.node_route" />
             <argument type="service" id="tadcka_sitemap.helper.response" />
             <argument type="service" id="tadcka_sitemap.routing.helper" />
         </service>
