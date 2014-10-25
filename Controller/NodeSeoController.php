@@ -69,9 +69,9 @@ class NodeSeoController
     }
 
 
-    public function indexAction(Request $request, $id)
+    public function indexAction(Request $request, $nodeId)
     {
-        $node = $this->responseHelper->getNodeOr404($id);
+        $node = $this->responseHelper->getNodeOr404($nodeId);
         $messages = new Messages();
         $form = $this->seoFormFactory->create($node);
 
