@@ -13,7 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 
 /**
@@ -41,13 +41,13 @@ class NodeRouteNotEmptyValidator extends ConstraintValidator
     /**
      * Checks if the passed node is valid.
      *
-     * @param NodeInterface $node
+     * @param NodeTranslationInterface $nodeTranslation
      * @param Constraint|NodeRouteNotEmpty $constraint
      */
-    public function validate($node, Constraint $constraint)
+    public function validate($nodeTranslation, Constraint $constraint)
     {
-        if (false === $this->routeHelper->hasRoute($constraint->getLocale(), $node)) {
-            $this->context->addViolation($constraint->message, array('%locale%' => $constraint->getLocale()));
+        if (false === $this->routeHelper->hasRoute($nodeTranslation->getLang(), $nodeTranslation->getNode())) {
+            $this->context->addViolation($constraint->message, array('%locale%' => $nodeTranslation->getLang()));
         }
     }
 }

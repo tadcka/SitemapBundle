@@ -23,31 +23,6 @@ class NodeRouteNotEmpty extends Constraint
     public $message = 'tadcka_sitemap.node_route_missing';
 
     /**
-     * @var string
-     */
-    private $locale;
-
-    /**
-     * Constructor.
-     *
-     * @param string $locale
-     */
-    public function __construct($locale)
-    {
-        $this->locale = $locale;
-    }
-
-    /**
-     * Get locale.
-     *
-     * @return string
-     */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function validatedBy()

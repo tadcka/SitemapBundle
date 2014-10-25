@@ -23,31 +23,6 @@ class NodeParentIsOnline extends Constraint
     public $message = 'tadcka_sitemap.node_parent_is_not_online';
 
     /**
-     * @var string
-     */
-    private $locale;
-
-    /**
-     * Constructor.
-     *
-     * @param string $locale
-     */
-    public function __construct($locale)
-    {
-        $this->locale = $locale;
-    }
-
-    /**
-     * Get locale.
-     *
-     * @return string
-     */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function validatedBy()

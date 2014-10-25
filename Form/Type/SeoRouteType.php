@@ -14,6 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -40,6 +41,7 @@ class SeoRouteType extends AbstractType
         $resolver->setDefaults(
             array(
                 'translation_domain' => 'TadckaSitemapBundle',
+                'constraints' => array(new NodeParentIsOnline()),
             )
         );
     }

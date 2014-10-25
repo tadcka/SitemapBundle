@@ -23,7 +23,7 @@ use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeTranslationNotNull;
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 14.10.23 16.36
+ * @since  14.10.23 16.36
  */
 class NodeOnlineHandler
 {
@@ -60,12 +60,23 @@ class NodeOnlineHandler
      */
     public function process($locale, Messages $messages, NodeInterface $node)
     {
-        $constrains = array(
-            new NodeTranslationNotNull($locale),
-            new NodeRouteNotEmpty($locale),
-            new NodeParentIsOnline($locale)
-        );
-        $violation = $this->validator->validateValue($node, $constrains);
+        /** @var NodeTranslationInterface $nodeTranslation */
+        $nodeTranslation = $node->getTranslation($locale);
+
+        if (null === $nodeTranslation) {
+            $messages->addError(
+                $this->translator->trans(
+                    'node_translation_not_found',
+                    array('%locale%' => $locale),
+                    'TadckaSitemapBundle'
+                )
+            );
+
+            return false;
+        }
+
+        $constraints = array(new NodeRouteNotEmpty(), new NodeParentIsOnline());
+        $violation = $this->validator->validateValue($nodeTranslation, $constraints);
 
         if (0 < $violation->count()) {
             foreach ($violation as $value) {
@@ -74,9 +85,6 @@ class NodeOnlineHandler
 
             return false;
         }
-
-        /** @var NodeTranslationInterface $nodeTranslation */
-        $nodeTranslation = $node->getTranslation($locale);
         $nodeTranslation->setOnline(!$nodeTranslation->isOnline());
 
         return true;

@@ -7,7 +7,6 @@
     <parameters>
         <parameter key="tadcka_sitemap.validator.node_parent_is_online.class">Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnlineValidator</parameter>
         <parameter key="tadcka_sitemap.validator.node_route_not_empty.class">Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeRouteNotEmptyValidator</parameter>
-        <parameter key="tadcka_sitemap.validator.node_translation_not_null.class">Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeTranslationNotNullValidator</parameter>
         <parameter key="tadcka_sitemap.validator.node_type.class">Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeTypeValidator</parameter>
     </parameters>
 
@@ -23,11 +22,6 @@
         <service id="tadcka_sitemap.validator.node_route_not_empty" class="%tadcka_sitemap.validator.node_route_not_empty.class%">
             <tag name="validator.constraint_validator" alias="tadcka_sitemap.node_route_not_empty" />
             <argument type="service" id="tadcka_sitemap.routing.helper" />
-        </service>
-
-        <!--Sitemap node translation not null validator-->
-        <service id="tadcka_sitemap.validator.node_translation_not_null" class="%tadcka_sitemap.validator.node_translation_not_null.class%">
-            <tag name="validator.constraint_validator" alias="tadcka_sitemap.node_translation_not_null" />
         </service>
 
         <!--Sitemap node type validator-->

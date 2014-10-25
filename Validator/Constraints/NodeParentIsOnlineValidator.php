@@ -42,13 +42,15 @@ class NodeParentIsOnlineValidator extends ConstraintValidator
     /**
      * Checks if the passed node is valid.
      *
-     * @param NodeInterface $node
+     * @param NodeTranslationInterface $nodeTranslation
      * @param Constraint|NodeParentIsOnline $constraint
      */
-    public function validate($node, Constraint $constraint)
+    public function validate($nodeTranslation, Constraint $constraint)
     {
-        if (false === $this->nodeParentIsOnline($node, $constraint->getLocale())) {
-            $this->context->addViolation($constraint->message, array('%locale%' => $constraint->getLocale()));
+        $node = $nodeTranslation->getNode();
+
+        if (false === $this->nodeParentIsOnline($node, $nodeTranslation->getLang())) {
+            $this->context->addViolation($constraint->message, array('%locale%' => $nodeTranslation->getLang()));
         }
     }
 
