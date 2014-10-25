@@ -41,7 +41,7 @@ class SeoRouteType extends AbstractType
         $resolver->setDefaults(
             array(
                 'translation_domain' => 'TadckaSitemapBundle',
-//                'constraints' => array(new NodeParentIsOnline()),
+                'constraints' => array(new NodeParentIsOnline()),
             )
         );
     }

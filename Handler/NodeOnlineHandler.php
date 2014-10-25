@@ -63,6 +63,8 @@ class NodeOnlineHandler
         /** @var NodeTranslationInterface $nodeTranslation */
         $nodeTranslation = $node->getTranslation($locale);
 
+        $nodeTranslation->setOnline(!$nodeTranslation->isOnline());
+
         if (null === $nodeTranslation) {
             $messages->addError(
                 $this->translator->trans(
@@ -85,7 +87,6 @@ class NodeOnlineHandler
 
             return false;
         }
-        $nodeTranslation->setOnline(!$nodeTranslation->isOnline());
 
         return true;
     }

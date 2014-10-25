@@ -49,7 +49,7 @@ class NodeParentIsOnlineValidator extends ConstraintValidator
     {
         $node = $nodeTranslation->getNode();
 
-        if (false === $this->nodeParentIsOnline($node, $nodeTranslation->getLang())) {
+        if ($nodeTranslation->isOnline() && (false === $this->nodeParentIsOnline($node, $nodeTranslation->getLang()))) {
             $this->context->addViolation($constraint->message, array('%locale%' => $nodeTranslation->getLang()));
         }
     }
