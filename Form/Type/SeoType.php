@@ -43,23 +43,23 @@ class SeoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'seoMetadata',
+            'translations',
             'translations',
             array(
-                'type' => 'silvestra_seo_metadata',
+                'type' => new SeoRouteType(),
+                'options' => array(
+                    'data_class' => $options['translation_class'],
+                ),
                 'label' => false,
             )
         );
 
         if ($this->hasController) {
             $builder->add(
-                'translations',
+                'seoMetadata',
                 'translations',
                 array(
-                    'type' => new SeoRouteType(),
-                    'options' => array(
-                        'data_class' => $options['translation_class'],
-                    ),
+                    'type' => 'silvestra_seo_metadata',
                     'label' => false,
                 )
             );
