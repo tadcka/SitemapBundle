@@ -32,7 +32,12 @@ class RouterHelperTest extends AbstractRoutingTest
      */
     protected function setUp()
     {
-        $this->routerHelper = new RouterHelper(array('test' => 'test_controller'), RouteGenerator::STRATEGY_FULL_PATH);
+        $this->routerHelper = new RouterHelper(
+            array('test' => 'test_controller'),
+            false,
+            array(),
+            RouteGenerator::STRATEGY_FULL_PATH
+        );
     }
 
     /**

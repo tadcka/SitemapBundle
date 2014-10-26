@@ -14,6 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tadcka\Bundle\SitemapBundle\Form\DataTransformer\NodeI18nRouteTransformer;
 use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
 
 /**
@@ -24,6 +25,11 @@ use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
 class NodeI18nRouteType extends AbstractType
 {
     /**
+     * @var NodeI18nRouteTransformer
+     */
+    private $i18nRouteTransformer;
+
+    /**
      * @var string
      */
     private $nodeTranslationClass;
@@ -31,10 +37,12 @@ class NodeI18nRouteType extends AbstractType
     /**
      * Constructor.
      *
+     * @param NodeI18nRouteTransformer $i18nRouteTransformer
      * @param string $nodeTranslationClass
      */
-    public function __construct($nodeTranslationClass)
+    public function __construct(NodeI18nRouteTransformer $i18nRouteTransformer, $nodeTranslationClass)
     {
+        $this->i18nRouteTransformer = $i18nRouteTransformer;
         $this->nodeTranslationClass = $nodeTranslationClass;
     }
 
@@ -46,6 +54,8 @@ class NodeI18nRouteType extends AbstractType
         $builder->add('online', 'checkbox', array('label' => 'form.seo_route.publish_category', 'required' => false));
 
         $builder->add('route', 'tadcka_route', array('label' => false, 'translation_domain' => 'TadckaSitemapBundle'));
+
+        $builder->addModelTransformer($this->i18nRouteTransformer);
     }
 
     /**

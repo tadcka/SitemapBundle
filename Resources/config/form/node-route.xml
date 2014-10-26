@@ -5,6 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="tadcka_sitemap.data_transformer.node_i18n_route.class">Tadcka\Bundle\SitemapBundle\Form\DataTransformer\NodeI18nRouteTransformer</parameter>
         <parameter key="tadcka_sitemap.form_factory.node_route.class">Tadcka\Bundle\SitemapBundle\Form\Factory\NodeRouteFormFactory</parameter>
         <parameter key="tadcka_sitemap.form_handler.node_route.class">Tadcka\Bundle\SitemapBundle\Form\Handler\NodeRouteFormHandler</parameter>
         <parameter key="tadcka_sitemap.form_type.node_i18n_route.class">Tadcka\Bundle\SitemapBundle\Form\Type\NodeI18nRouteType</parameter>
@@ -12,6 +13,13 @@
     </parameters>
 
     <services>
+
+        <!--Sitemap node i18n route data transformer-->
+        <service id="tadcka_sitemap.data_transformer.node_i18n_route" class="%tadcka_sitemap.data_transformer.node_i18n_route.class%">
+            <argument type="service" id="tadcka_sitemap.routing.generator" />
+            <argument type="service" id="tadcka_routing.manager.route.in_memory" />
+            <argument type="service" id="tadcka_sitemap.routing.helper" />
+        </service>
 
         <!--Sitemap node route form factory-->
         <service id="tadcka_sitemap.form_factory.node_route" class="%tadcka_sitemap.form_factory.node_route.class%">
@@ -23,15 +31,13 @@
         <service id="tadcka_sitemap.form_handler.node_route" class="%tadcka_sitemap.form_handler.node_route.class%">
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
-            <argument type="service" id="tadcka_sitemap.routing.generator" />
-            <argument type="service" id="tadcka_routing.manager.route.in_memory" />
-            <argument type="service" id="tadcka_sitemap.routing.helper" />
             <argument type="service" id="translator" />
         </service>
 
         <!--Sitemap node i18n route form type-->
         <service id="tadcka_sitemap.form_type.node_i18n_route" class="%tadcka_sitemap.form_type.node_i18n_route.class%">
             <tag name="form.type" alias="tadcka_sitemap_node_i18n_route" />
+            <argument type="service" id="tadcka_sitemap.data_transformer.node_i18n_route" />
             <argument>%tadcka_sitemap.model.node_translation.class%</argument>
         </service>
 

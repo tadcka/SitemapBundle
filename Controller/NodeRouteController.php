@@ -87,6 +87,9 @@ class NodeRouteController
             if ('json' === $request->getRequestFormat()) {
                 $jsonContent->setToolbar($this->renderToolbar($node));
             }
+
+            // Hack... Form with new data.
+            $form = $this->formFactory->create($node);
         }
 
         if ('json' === $request->getRequestFormat()) {

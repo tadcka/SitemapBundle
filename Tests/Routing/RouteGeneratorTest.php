@@ -45,8 +45,13 @@ class RouteGeneratorTest extends AbstractRoutingTest
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->routerHelper = new RouterHelper(array('test' => 'test_controller'), RouteGenerator::STRATEGY_FULL_PATH);
-        $this->routeGenerator = new RouteGenerator(true, $this->routeProvider, $this->routerHelper);
+        $this->routerHelper = new RouterHelper(
+            array('test' => 'test_controller'),
+            true,
+            array(),
+            RouteGenerator::STRATEGY_FULL_PATH
+        );
+        $this->routeGenerator = new RouteGenerator($this->routeProvider, $this->routerHelper);
     }
 
     /**
