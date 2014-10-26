@@ -20,21 +20,21 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  *
  * @since 14.6.29 14.03
  */
-class SeoType extends AbstractType
+class NodeSeoType extends AbstractType
 {
     /**
-     * @var bool
+     * @var string
      */
-    private $hasController;
+    private $nodeClass;
 
     /**
      * Constructor.
      *
-     * @param bool $hasController
+     * @param string $nodeClass
      */
-    public function __construct($hasController = false)
+    public function __construct($nodeClass)
     {
-        $this->hasController = $hasController;
+        $this->nodeClass = $nodeClass;
     }
 
     /**
@@ -59,10 +59,9 @@ class SeoType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setOptional(array('translation_class'));
-
         $resolver->setDefaults(
             array(
+                'data_class' => $this->nodeClass,
                 'translation_domain' => 'TadckaSitemapBundle',
             )
         );
@@ -73,6 +72,6 @@ class SeoType extends AbstractType
      */
     public function getName()
     {
-        return 'tadcka_sitemap_seo';
+        return 'tadcka_sitemap_node_seo';
     }
 }

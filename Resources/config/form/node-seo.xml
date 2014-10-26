@@ -7,28 +7,28 @@
     <parameters>
         <parameter key="tadcka_sitemap.form_factory.node_seo.class">Tadcka\Bundle\SitemapBundle\Form\Factory\NodeSeoFormFactory</parameter>
         <parameter key="tadcka_sitemap.form_handler.node_seo.class">Tadcka\Bundle\SitemapBundle\Form\Handler\NodeSeoFormHandler</parameter>
+        <parameter key="tadcka_sitemap.form_type.node_seo.class">Tadcka\Bundle\SitemapBundle\Form\Type\NodeSeoType</parameter>
     </parameters>
 
     <services>
 
-        <!--Sitemap seo form factory-->
+        <!--Sitemap node seo form factory-->
         <service id="tadcka_sitemap.form_factory.node_seo" class="%tadcka_sitemap.form_factory.node_seo.class%">
             <argument type="service" id="form.factory" />
             <argument type="service" id="router" />
-            <argument type="service" id="tadcka_sitemap.routing.helper" />
-            <argument>%tadcka_sitemap.model.node.class%</argument>
-            <argument>%tadcka_sitemap.model.node_translation.class%</argument>
         </service>
 
-        <!--Sitemap seo form handler-->
+        <!--Sitemap node seo form handler-->
         <service id="tadcka_sitemap.form_handler.node_seo" class="%tadcka_sitemap.form_handler.node_seo.class%">
             <argument type="service" id="event_dispatcher" />
-            <argument type="service" id="tadcka_sitemap.manager.node_translation" />
-            <argument type="service" id="tadcka_sitemap.routing.generator" />
-            <argument type="service" id="tadcka_routing.manager.route.in_memory" />
-            <argument type="service" id="tadcka_sitemap.routing.helper" />
             <argument type="service" id="silvestra_seo.manager.seo_metadata" />
             <argument type="service" id="translator" />
+        </service>
+
+        <!--Sitemap node seo form type-->
+        <service id="tadcka_sitemap.form_type.node_seo" class="%tadcka_sitemap.form_type.node_seo.class%">
+            <tag name="form.type" alias="tadcka_sitemap_node_seo" />
+            <argument>%tadcka_sitemap.model.node.class%</argument>
         </service>
 
     </services>

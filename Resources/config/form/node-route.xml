@@ -21,12 +21,12 @@
 
         <!--Sitemap node route form handler-->
         <service id="tadcka_sitemap.form_handler.node_route" class="%tadcka_sitemap.form_handler.node_route.class%">
-            <!--<argument type="service" id="event_dispatcher" />-->
-            <!--<argument type="service" id="tadcka_sitemap.manager.node_translation" />-->
-            <!--<argument type="service" id="tadcka_sitemap.routing.generator" />-->
-            <!--<argument type="service" id="tadcka_routing.manager.route.in_memory" />-->
-            <!--<argument type="service" id="tadcka_sitemap.routing.helper" />-->
-            <!--<argument type="service" id="translator" />-->
+            <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="tadcka_sitemap.manager.node_translation" />
+            <argument type="service" id="tadcka_sitemap.routing.generator" />
+            <argument type="service" id="tadcka_routing.manager.route.in_memory" />
+            <argument type="service" id="tadcka_sitemap.routing.helper" />
+            <argument type="service" id="translator" />
         </service>
 
         <!--Sitemap node i18n route form type-->

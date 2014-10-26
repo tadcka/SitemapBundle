@@ -79,17 +79,19 @@ class NodeRouteController
         }
 
         $form = $this->formFactory->create($node);
+        $jsonContent = $this->responseHelper->createJsonContent($node);
         $messages = new Messages();
 
         if ($this->formHandler->process($request, $form)) {
-
+            $this->formHandler->onSuccess($messages, $node);
+            if ('json' === $request->getRequestFormat()) {
+                $jsonContent->setToolbar($this->renderToolbar($node));
+            }
         }
 
         if ('json' === $request->getRequestFormat()) {
-            $jsonContent = $this->responseHelper->createJsonContent($node);
             $jsonContent->setMessages($this->responseHelper->renderMessages($messages));
             $jsonContent->setTab($this->renderNodeRoute($form));
-            $jsonContent->setToolbar($this->renderToolbar($node));
 
             return $this->responseHelper->getJsonResponse($jsonContent);
         }

@@ -52,10 +52,9 @@
 
         <!--Sitemap node seo controller-->
         <service id="tadcka_sitemap.controller.node_seo" class="%tadcka_sitemap.controller.node_seo.class%">
+            <argument type="service" id="tadcka_sitemap.form_factory.node_seo" />
+            <argument type="service" id="tadcka_sitemap.form_handler.node_seo" />
             <argument type="service" id="tadcka_sitemap.helper.response" />
-            <argument type="service" id="tadcka_sitemap.routing.helper" />
-            <argument type="service" id="tadcka_sitemap.form_factory.seo" />
-            <argument type="service" id="tadcka_sitemap.form_handler.seo" />
         </service>
 
         <!--Sitemap preview controller-->

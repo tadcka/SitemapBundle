@@ -59,18 +59,6 @@ class SitemapNodeListener
         $event->addTab($menu);
 
         if ((null !== $node->getParent()) && $this->routerHelper->hasController($node->getType())) {
-            $seo = new Tab(
-                $event->getTranslator()->trans('node.seo', array(), 'TadckaSitemapBundle'),
-                'node_seo',
-                $event->getRouter()->generate(
-                    'tadcka_sitemap_seo',
-                    array('_format' => 'json', 'nodeId' => $node->getId())
-                ),
-                200
-            );
-
-            $event->addTab($seo);
-
             $route = new Tab(
                 $event->getTranslator()->trans('node.route', array(), 'TadckaSitemapBundle'),
                 'node_route',
@@ -78,10 +66,22 @@ class SitemapNodeListener
                     'tadcka_sitemap_node_route',
                     array('_format' => 'json', 'nodeId' => $node->getId())
                 ),
-                150
+                200
             );
 
             $event->addTab($route);
+
+            $seo = new Tab(
+                $event->getTranslator()->trans('node.seo', array(), 'TadckaSitemapBundle'),
+                'node_seo',
+                $event->getRouter()->generate(
+                    'tadcka_sitemap_seo',
+                    array('_format' => 'json', 'nodeId' => $node->getId())
+                ),
+                150
+            );
+
+            $event->addTab($seo);
         }
     }
 }

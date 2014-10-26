@@ -35,7 +35,7 @@ class TadckaSitemapExtension extends Extension
         $loader->load('controllers.xml');
         $loader->load('form/node.xml');
         $loader->load('form/node-route.xml');
-        $loader->load('form/seo.xml');
+        $loader->load('form/node-seo.xml');
         $loader->load('frontend.xml');
         $loader->load('node.xml');
         $loader->load('routing.xml');

@@ -14,12 +14,10 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Bundle\SitemapBundle\Form\Factory\NodeSeoFormFactory;
+use Tadcka\Bundle\SitemapBundle\Form\Handler\NodeSeoFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\ResponseHelper;
-use Tadcka\Bundle\SitemapBundle\Form\Factory\SeoFormFactory;
-use Tadcka\Bundle\SitemapBundle\Form\Handler\SeoFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
-use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -29,43 +27,35 @@ use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 class NodeSeoController
 {
     /**
+     * @var NodeSeoFormFactory
+     */
+    private $formFactory;
+
+    /**
+     * @var NodeSeoFormHandler
+     */
+    private $formHandler;
+
+    /**
      * @var ResponseHelper
      */
     private $responseHelper;
 
     /**
-     * @var RouterHelper
-     */
-    private $routerHelper;
-
-    /**
-     * @var SeoFormFactory
-     */
-    private $seoFormFactory;
-
-    /**
-     * @var SeoFormHandler
-     */
-    private $seoFromHandler;
-
-    /**
      * Constructor.
      *
+     * @param NodeSeoFormFactory $formFactory
+     * @param NodeSeoFormHandler $formHandler
      * @param ResponseHelper $responseHelper
-     * @param RouterHelper $routerHelper
-     * @param SeoFormFactory $seoFormFactory
-     * @param SeoFormHandler $seoFromHandler
      */
     public function __construct(
-        ResponseHelper $responseHelper,
-        RouterHelper $routerHelper,
-        SeoFormFactory $seoFormFactory,
-        SeoFormHandler $seoFromHandler
+        NodeSeoFormFactory $formFactory,
+        NodeSeoFormHandler $formHandler,
+        ResponseHelper $responseHelper
     ) {
+        $this->formFactory = $formFactory;
+        $this->formHandler = $formHandler;
         $this->responseHelper = $responseHelper;
-        $this->routerHelper = $routerHelper;
-        $this->seoFormFactory = $seoFormFactory;
-        $this->seoFromHandler = $seoFromHandler;
     }
 
 
@@ -73,19 +63,16 @@ class NodeSeoController
     {
         $node = $this->responseHelper->getNodeOr404($nodeId);
         $messages = new Messages();
-        $form = $this->seoFormFactory->create($node);
+        $form = $this->formFactory->create($node);
 
-        if ($this->seoFromHandler->process($request, $form)) {
-            $this->seoFromHandler->onSuccess($messages, $node);
-            // Hack... Set new form data.
-            $form = $this->seoFormFactory->create($node);
+        if ($this->formHandler->process($request, $form)) {
+            $this->formHandler->onSuccess($messages, $node);
         }
 
         if ('json' === $request->getRequestFormat()) {
             $jsonContent = $this->responseHelper->createJsonContent($node);
             $jsonContent->setMessages($this->responseHelper->renderMessages($messages));
             $jsonContent->setTab($this->renderNodeSeoForm($form));
-            $jsonContent->setToolbar($this->renderToolbar($node));
 
             return $this->responseHelper->getJsonResponse($jsonContent);
         }
@@ -104,30 +91,10 @@ class NodeSeoController
     private function renderNodeSeoForm(FormInterface $form, Messages $messages = null)
     {
         return $this->responseHelper->render(
-            'TadckaSitemapBundle:Seo:seo.html.twig',
+            'TadckaSitemapBundle:Node:seo.html.twig',
             array(
                 'form' => $form->createView(),
                 'messages' => $messages,
-            )
-        );
-    }
-
-    /**
-     * Render toolbar template.
-     *
-     * @param NodeInterface $node
-     *
-     * @return string
-     */
-    private function renderToolbar(NodeInterface $node)
-    {
-        return $this->responseHelper->render(
-            'TadckaSitemapBundle:Sitemap:toolbar.html.twig',
-            array(
-                'node' => $node,
-                'multi_language_enabled' => $this->routerHelper->multiLanguageIsEnabled(),
-                'multi_language_locales' => $this->routerHelper->getMultiLanguageLocales(),
-                'has_controller' => $this->routerHelper->hasController($node->getType()),
             )
         );
     }

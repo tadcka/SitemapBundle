@@ -45,7 +45,7 @@ class NodeI18nRouteType extends AbstractType
     {
         $builder->add('online', 'checkbox', array('label' => 'form.seo_route.publish_category', 'required' => false));
 
-        $builder->add('route', 'tadcka_route', array('label' => false));
+        $builder->add('route', 'tadcka_route', array('label' => false, 'translation_domain' => 'TadckaSitemapBundle'));
     }
 
     /**
