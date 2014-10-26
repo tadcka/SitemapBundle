@@ -2,11 +2,6 @@
 
 {% block content %}
     {{ form_start(form) }}
-        {{ form_widget(form.seoMetadata) }}
-
-        {{ form_errors(form.translations) }}
-        {{ form_widget(form.translations) }}
-
         {{ form_rest(form) }}
     {{ form_end(form) }}
 {% endblock %}

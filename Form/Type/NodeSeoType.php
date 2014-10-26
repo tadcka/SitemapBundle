@@ -51,20 +51,6 @@ class SeoType extends AbstractType
             )
         );
 
-        if ($this->hasController) {
-            $builder->add(
-                'translations',
-                'translations',
-                array(
-                    'type' => new SeoRouteType(),
-                    'options' => array(
-                        'data_class' => $options['translation_class'],
-                    ),
-                    'label' => false,
-                )
-            );
-        }
-
         $builder->add('submit', 'submit', array('label' => 'form.button.save'));
     }
 

@@ -5,14 +5,14 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="tadcka_sitemap.form_factory.seo.class">Tadcka\Bundle\SitemapBundle\Form\Factory\SeoFormFactory</parameter>
-        <parameter key="tadcka_sitemap.form_handler.seo.class">Tadcka\Bundle\SitemapBundle\Form\Handler\SeoFormHandler</parameter>
+        <parameter key="tadcka_sitemap.form_factory.node_seo.class">Tadcka\Bundle\SitemapBundle\Form\Factory\NodeSeoFormFactory</parameter>
+        <parameter key="tadcka_sitemap.form_handler.node_seo.class">Tadcka\Bundle\SitemapBundle\Form\Handler\NodeSeoFormHandler</parameter>
     </parameters>
 
     <services>
 
         <!--Sitemap seo form factory-->
-        <service id="tadcka_sitemap.form_factory.seo" class="%tadcka_sitemap.form_factory.seo.class%">
+        <service id="tadcka_sitemap.form_factory.node_seo" class="%tadcka_sitemap.form_factory.node_seo.class%">
             <argument type="service" id="form.factory" />
             <argument type="service" id="router" />
             <argument type="service" id="tadcka_sitemap.routing.helper" />
@@ -21,7 +21,7 @@
         </service>
 
         <!--Sitemap seo form handler-->
-        <service id="tadcka_sitemap.form_handler.seo" class="%tadcka_sitemap.form_handler.seo.class%">
+        <service id="tadcka_sitemap.form_handler.node_seo" class="%tadcka_sitemap.form_handler.node_seo.class%">
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
             <argument type="service" id="tadcka_sitemap.routing.generator" />
