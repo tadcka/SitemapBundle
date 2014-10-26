@@ -129,7 +129,7 @@ class RouteGeneratorTest extends AbstractRoutingTest
     }
 
     /**
-     * @param $callback
+     * @param \Closure $callback
      * @param MockObject|RouteInterface $route
      */
     private function addRouteMethodSetRoutePattern($callback, MockObject $route)

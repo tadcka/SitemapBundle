@@ -92,7 +92,7 @@ class ResponseHelper
      *
      * @param int $nodeId
      *
-     * @return null|NodeInterface
+     * @return NodeInterface
      *
      * @throws NotFoundHttpException
      */

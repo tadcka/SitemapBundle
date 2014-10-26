@@ -18,7 +18,6 @@ use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
 use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeRouteNotEmpty;
-use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeTranslationNotNull;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
