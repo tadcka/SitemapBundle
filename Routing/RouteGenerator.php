@@ -33,11 +33,6 @@ class RouteGenerator
     const STRATEGY_FULL_PATH = 'full_path';
 
     /**
-     * @var bool
-     */
-    private $multiLanguageEnabled;
-
-    /**
      * @var RouteProvider
      */
     private $routeProvider;
@@ -49,13 +44,11 @@ class RouteGenerator
     /**
      * Constructor.
      *
-     * @param bool $multiLanguageEnabled
      * @param RouteProvider $routeProvider
      * @param RouterHelper $routerHelper
      */
-    public function __construct($multiLanguageEnabled, RouteProvider $routeProvider, RouterHelper $routerHelper)
+    public function __construct(RouteProvider $routeProvider, RouterHelper $routerHelper)
     {
-        $this->multiLanguageEnabled = $multiLanguageEnabled;
         $this->routeProvider = $routeProvider;
         $this->routerHelper = $routerHelper;
     }
@@ -75,7 +68,7 @@ class RouteGenerator
         $route->setRoutePattern($this->generateUniqueRoutePattern($node, $route));
 
         $route->setDefault(RouteInterface::CONTROLLER_NAME, $this->routerHelper->getRouteController($node->getType()));
-        if ($this->multiLanguageEnabled) {
+        if ($this->routerHelper->multiLanguageIsEnabled()) {
             $route->addLocale($locale, array($locale));
         }
 
@@ -94,7 +87,7 @@ class RouteGenerator
      */
     private function generateUniqueRoutePattern(NodeInterface $node, RouteInterface $route)
     {
-        if (false === $this->routerHelper->hasRouteController($node->getType())) {
+        if (false === $this->routerHelper->hasController($node->getType())) {
             throw new RouteException('Cannot generate route pattern!');
         }
 

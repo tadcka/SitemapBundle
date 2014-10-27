@@ -52,21 +52,33 @@ class SitemapNodeListener
             'node_menu',
             $event->getRouter()->generate(
                 'tadcka_sitemap_tree_edit_node',
-                array('_format' => 'json', 'id' => $node->getId())
+                array('_format' => 'json', 'nodeId' => $node->getId())
             ),
-            255
+            250
         );
         $event->addTab($menu);
 
-        if ((null !== $node->getParent()) && $this->routerHelper->hasRouteController($node->getType())) {
-            $seo = new Tab(
-                $event->getTranslator()->trans('node.seo', array(), 'TadckaSitemapBundle'),
-                'node_content',
+        if ((null !== $node->getParent()) && $this->routerHelper->hasController($node->getType())) {
+            $route = new Tab(
+                $event->getTranslator()->trans('node.route', array(), 'TadckaSitemapBundle'),
+                'node_route',
                 $event->getRouter()->generate(
-                    'tadcka_sitemap_seo',
-                    array('_format' => 'json', 'id' => $node->getId())
+                    'tadcka_sitemap_node_route',
+                    array('_format' => 'json', 'nodeId' => $node->getId())
                 ),
                 200
+            );
+
+            $event->addTab($route);
+
+            $seo = new Tab(
+                $event->getTranslator()->trans('node.seo', array(), 'TadckaSitemapBundle'),
+                'node_seo',
+                $event->getRouter()->generate(
+                    'tadcka_sitemap_seo',
+                    array('_format' => 'json', 'nodeId' => $node->getId())
+                ),
+                150
             );
 
             $event->addTab($seo);

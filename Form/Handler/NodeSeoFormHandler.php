@@ -11,21 +11,22 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Form\Handler;
 
+use Silvestra\Component\Seo\Model\Manager\SeoMetadataManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
+use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
-use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
 use Tadcka\Component\Tree\TadckaTreeEvents;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since  5/19/14 11:41 PM
+ * @since 14.6.29 14.47
  */
-class NodeFormHandler
+class NodeSeoFormHandler
 {
     /**
      * @var EventDispatcherInterface
@@ -33,9 +34,9 @@ class NodeFormHandler
     private $eventDispatcher;
 
     /**
-     * @var NodeManagerInterface
+     * @var SeoMetadataManagerInterface
      */
-    private $nodeManager;
+    private $seoMetadataManager;
 
     /**
      * @var TranslatorInterface
@@ -46,21 +47,21 @@ class NodeFormHandler
      * Constructor.
      *
      * @param EventDispatcherInterface $eventDispatcher
-     * @param NodeManagerInterface $nodeManager
+     * @param SeoMetadataManagerInterface $seoMetadataManager
      * @param TranslatorInterface $translator
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        NodeManagerInterface $nodeManager,
+        SeoMetadataManagerInterface $seoMetadataManager,
         TranslatorInterface $translator
     ) {
         $this->eventDispatcher = $eventDispatcher;
-        $this->nodeManager = $nodeManager;
+        $this->seoMetadataManager = $seoMetadataManager;
         $this->translator = $translator;
     }
 
     /**
-     * Process node form.
+     * Process node seo form.
      *
      * @param Request $request
      * @param FormInterface $form
@@ -72,7 +73,12 @@ class NodeFormHandler
         if ($request->isMethod('POST')) {
             $form->submit($request);
             if ($form->isValid()) {
-                $this->nodeManager->add($form->getData());
+                /** @var NodeInterface $node */
+                $node = $form->getData();
+
+                foreach ($node->getSeoMetadata() as $seoMetadata) {
+                    $this->seoMetadataManager->add($seoMetadata);
+                }
 
                 return true;
             }
@@ -82,48 +88,15 @@ class NodeFormHandler
     }
 
     /**
-     * On node create success.
+     * On success.
      *
+     * @param Messages $messages
      * @param NodeInterface $node
-     *
-     * @return string
      */
-    public function onCreateSuccess(NodeInterface $node)
+    public function onSuccess(Messages $messages, NodeInterface $node)
     {
-        $treeNodeEvent = $this->createEvent($node);
-
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_PRE_CREATE, $treeNodeEvent);
-        $this->nodeManager->save();
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_CREATE_SUCCESS, $treeNodeEvent);
-        $this->nodeManager->save();
-
-        return $this->translator->trans('success.create_node', array(), 'TadckaSitemapBundle');
-    }
-
-    /**
-     * On node edit success.
-     *
-     * @param NodeInterface $node
-     *
-     * @return string
-     */
-    public function onEditSuccess(NodeInterface $node)
-    {
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, $this->createEvent($node));
-        $this->nodeManager->save();
-
-        return $this->translator->trans('success.edit_node', array(), 'TadckaSitemapBundle');
-    }
-
-    /**
-     * Create tree node event.
-     *
-     * @param NodeInterface $node
-     *
-     * @return TreeNodeEvent
-     */
-    private function createEvent(NodeInterface $node)
-    {
-        return new TreeNodeEvent($node);
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
+        $this->seoMetadataManager->save();
+        $messages->addSuccess($this->translator->trans('success.node_seo_save', array(), 'TadckaSitemapBundle'));
     }
 }

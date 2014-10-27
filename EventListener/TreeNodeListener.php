@@ -94,7 +94,7 @@ class TreeNodeListener
         if (TadckaSitemapBundle::SITEMAP_TREE === $event->getNode()->getTree()->getSlug()) {
             $node = $event->getNode();
 
-            if ($this->routerHelper->hasRouteController($node->getType())) {
+            if ($this->routerHelper->hasController($node->getType())) {
                 $this->createSeo($node);
             }
 
@@ -111,13 +111,17 @@ class TreeNodeListener
      */
     public function onSitemapNodeDelete(TreeNodeEvent $event)
     {
-        $translations = $this->translationManager->findManyTranslationsByNode($event->getNode());
-        if (0 < count($translations)) {
-            foreach ($translations as $translation) {
-                if (null !== $route = $translation->getRoute()) {
-                    $this->routeManager->remove($route);
-                }
+        /** @var NodeInterface $node */
+        $node = $event->getNode();
+
+        foreach ($node->getTranslations() as $translation) {
+            if (null !== $route = $translation->getRoute()) {
+                $this->routeManager->remove($route);
             }
+        }
+
+        foreach ($node->getSeoMetadata() as $seoMetadata) {
+            $this->seoMetadataManager->remove($seoMetadata);
         }
     }
 

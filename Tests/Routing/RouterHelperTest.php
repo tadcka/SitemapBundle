@@ -32,7 +32,12 @@ class RouterHelperTest extends AbstractRoutingTest
      */
     protected function setUp()
     {
-        $this->routerHelper = new RouterHelper(array('test' => 'test_controller'), RouteGenerator::STRATEGY_FULL_PATH);
+        $this->routerHelper = new RouterHelper(
+            array('test' => 'test_controller'),
+            false,
+            array(),
+            RouteGenerator::STRATEGY_FULL_PATH
+        );
     }
 
     /**
@@ -105,10 +110,10 @@ class RouterHelperTest extends AbstractRoutingTest
         );
     }
 
-    public function testHasRouteController()
+    public function testHasController()
     {
-        $this->assertFalse($this->routerHelper->hasRouteController('fake'));
-        $this->assertTrue($this->routerHelper->hasRouteController('test'));
+        $this->assertFalse($this->routerHelper->hasController('fake'));
+        $this->assertTrue($this->routerHelper->hasController('test'));
     }
 
     public function testNormalizeRoutePattern()

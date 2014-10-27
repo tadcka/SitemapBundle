@@ -14,14 +14,38 @@ namespace Tadcka\Bundle\SitemapBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tadcka\Bundle\SitemapBundle\Form\DataTransformer\NodeI18nRouteTransformer;
+use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
  * @since  14.6.29 14.05
  */
-class SeoRouteType extends AbstractType
+class NodeI18nRouteType extends AbstractType
 {
+    /**
+     * @var NodeI18nRouteTransformer
+     */
+    private $i18nRouteTransformer;
+
+    /**
+     * @var string
+     */
+    private $nodeTranslationClass;
+
+    /**
+     * Constructor.
+     *
+     * @param NodeI18nRouteTransformer $i18nRouteTransformer
+     * @param string $nodeTranslationClass
+     */
+    public function __construct(NodeI18nRouteTransformer $i18nRouteTransformer, $nodeTranslationClass)
+    {
+        $this->i18nRouteTransformer = $i18nRouteTransformer;
+        $this->nodeTranslationClass = $nodeTranslationClass;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -29,7 +53,9 @@ class SeoRouteType extends AbstractType
     {
         $builder->add('online', 'checkbox', array('label' => 'form.seo_route.publish_category', 'required' => false));
 
-        $builder->add('route', 'tadcka_route', array('label' => false));
+        $builder->add('route', 'tadcka_route', array('label' => false, 'translation_domain' => 'TadckaSitemapBundle'));
+
+        $builder->addModelTransformer($this->i18nRouteTransformer);
     }
 
     /**
@@ -39,7 +65,9 @@ class SeoRouteType extends AbstractType
     {
         $resolver->setDefaults(
             array(
+                'data_class' => $this->nodeTranslationClass,
                 'translation_domain' => 'TadckaSitemapBundle',
+                'constraints' => array(new NodeParentIsOnline()),
             )
         );
     }
@@ -49,6 +77,6 @@ class SeoRouteType extends AbstractType
      */
     public function getName()
     {
-        return 'tadcka_sitemap_seo_route';
+        return 'tadcka_sitemap_node_i18n_route';
     }
 }

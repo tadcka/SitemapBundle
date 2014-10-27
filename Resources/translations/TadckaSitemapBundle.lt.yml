@@ -9,6 +9,7 @@ sitemap:
 node:
   menu: Meniu
   seo: Optimizavimas paieškos sistemoms
+  route: Universalusis adresas
 
 form:
   seo_route:
@@ -19,6 +20,8 @@ form:
   node:
     type: Tipas
     priority: Prioritetas
+  route:
+    uniform_resource_locator: Publikavimo adresas
   select: Pasirinkite
   button:
     save: Išsaugoti
@@ -27,7 +30,8 @@ success:
   create_node: Sėkmingai sukurta nauja kategorija.
   edit_node: Sėkmingai redaguota kategorija.
   delete_node: Sėkmingai pašalinta kategorija: %title%.
-  seo_save: Sėkmingai išsaugota kategorijos optimizavimo paieškos sistemoms informacija.
+  node_seo_save: Sėkmingai išsaugota kategorijos optimizavimo paieškos sistemoms informacija.
+  node_route_save: Sėkmingai išsaugta kategorijos publikavimo informacija.
   online_save: Sėkmingai išsaugta kategorijos publikavimo informacija lokalėje [%locale%].
 
 not_found_title: Pavadinimas nerastas

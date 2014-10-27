@@ -14,7 +14,6 @@
 
         <!--Sitemap node route generator-->
         <service id="tadcka_sitemap.routing.generator" class="%tadcka_sitemap.routing.generator.class%">
-            <argument>%tadcka_sitemap.multi_language.enabled%</argument>
             <argument type="service" id="tadcka_sitemap.routing.provider" />
             <argument type="service" id="tadcka_sitemap.routing.helper" />
         </service>
@@ -27,6 +26,8 @@
         <!--Sitemap route helper-->
         <service id="tadcka_sitemap.routing.helper" class="%tadcka_sitemap.routing.helper.class%">
             <argument>%tadcka_sitemap.node_type.controllers%</argument>
+            <argument>%tadcka_sitemap.multi_language.enabled%</argument>
+            <argument>%tadcka_sitemap.multi_language.locales%</argument>
             <argument>%tadcka_sitemap.routing.route_strategy%</argument>
         </service>
 

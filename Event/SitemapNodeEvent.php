@@ -118,7 +118,7 @@ class SitemapNodeEvent extends Event
         uasort(
             $this->tabs,
             function (Tab $first, Tab $second) {
-                if ($first->getPriority() < $second->getPriority()) {
+                if ($first->getPriority() <= $second->getPriority()) {
                     return 1;
                 }
 

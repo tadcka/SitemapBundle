@@ -18,7 +18,7 @@ function SitemapTree() {
                     'url': function ($node) {
                         return $node.id === '#'
                             ? Routing.generate('tadcka_sitemap_tree_node_root', {_format: 'json'})
-                            : Routing.generate('tadcka_sitemap_tree_node_children', {_format: 'json', id: $node.id});
+                            : Routing.generate('tadcka_sitemap_tree_node_children', {_format: 'json', nodeId: $node.id});
                     }
                 }
             }
@@ -98,7 +98,7 @@ function SitemapTree() {
     var getNode = function ($node, $callback) {
         if ($node && $node.id) {
             $.ajax({
-                url: Routing.generate('tadcka_sitemap_tree_node', {_format: 'json', id: $node.id}),
+                url: Routing.generate('tadcka_sitemap_tree_node', {_format: 'json', nodeId: $node.id}),
                 type: 'GET',
                 success: function ($response) {
                     $callback($response);
