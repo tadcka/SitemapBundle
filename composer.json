@@ -24,7 +24,7 @@
         "silvestra/seo": "0.1.*@dev",
 
         "tadcka/tree": "0.1.*@dev",
-        "tadcka/jstree-bundle": "0.1.*@dev",
+        "tadcka/jstree-bundle": "~0.2",
         "tadcka/routing-bundle": "0.1.*@dev"
     },
     "require-dev": {
