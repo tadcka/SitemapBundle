@@ -11,7 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Tests\Mock\Model\Manager;
 
-use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
+use Tadcka\Component\Routing\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManager;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 

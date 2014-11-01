@@ -127,7 +127,7 @@ class PageNodeProviderTest extends \PHPUnit_Framework_TestCase
         $request->query->replace(
             array(
                 '_route_params' => array(
-                    '_route_object' => $this->getMock('Tadcka\\Bundle\\RoutingBundle\\Model\\Route')
+                    '_route_object' => $this->getMock('Tadcka\\Component\\Routing\\Model\\Route')
                 )
             )
         );

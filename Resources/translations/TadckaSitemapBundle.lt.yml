@@ -21,7 +21,7 @@ form:
     type: Tipas
     priority: Prioritetas
   route:
-    uniform_resource_locator: Publikavimo adresas
+    pattern: Publikavimo adresas
   select: Pasirinkite
   button:
     save: Išsaugoti

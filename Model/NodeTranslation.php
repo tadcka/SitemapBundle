@@ -12,7 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\Model;
 
 use Tadcka\Component\Tree\Model\NodeTranslation as BaseNodeTranslation;
-use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
+use Tadcka\Component\Routing\Model\RouteInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

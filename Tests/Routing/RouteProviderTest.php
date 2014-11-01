@@ -11,7 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Tests\Routing;
 
-use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
+use Tadcka\Component\Routing\Model\Manager\RouteManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouteProvider;
 use \PHPUnit_Framework_MockObject_MockObject as MockObject;
 
@@ -37,7 +37,7 @@ class RouteProviderTest extends AbstractRoutingTest
      */
     protected function setUp()
     {
-        $this->routeManager = $this->getMock('Tadcka\\Bundle\\RoutingBundle\\Model\\Manager\\RouteManagerInterface');
+        $this->routeManager = $this->getMock('Tadcka\\Component\\Routing\\Model\\Manager\\RouteManagerInterface');
 
         $this->routeProvider = new RouteProvider($this->routeManager);
     }

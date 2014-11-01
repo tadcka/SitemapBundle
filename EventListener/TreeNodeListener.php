@@ -12,7 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\EventListener;
 
 use Silvestra\Component\Seo\Model\Manager\SeoMetadataManagerInterface;
-use Tadcka\Bundle\RoutingBundle\Model\Manager\RouteManagerInterface;
+use Tadcka\Component\Routing\Model\Manager\RouteManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;

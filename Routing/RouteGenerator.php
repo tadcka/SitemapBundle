@@ -11,7 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Routing;
 
-use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
+use Tadcka\Component\Routing\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Exception\RouteException;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 

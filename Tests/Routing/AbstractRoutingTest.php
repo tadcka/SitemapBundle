@@ -11,7 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Tests\Routing;
 
-use Tadcka\Bundle\RoutingBundle\Model\RouteInterface;
+use Tadcka\Component\Routing\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use \PHPUnit_Framework_MockObject_MockObject as MockObject;
@@ -44,7 +44,7 @@ abstract class AbstractRoutingTest extends \PHPUnit_Framework_TestCase
      */
     protected function getMockRoute()
     {
-        return $this->getMock('Tadcka\Bundle\RoutingBundle\Model\RouteInterface');
+        return $this->getMock('Tadcka\\Component\\Routing\\Model\\RouteInterface');
     }
 
     /**
