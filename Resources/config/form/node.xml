@@ -12,7 +12,7 @@
     <services>
 
         <!--Sitemap node form factory-->
-        <service id="tadcka_sitemap.form_factory.node" class="%tadcka_sitemap.form_factory.node.class%">
+        <service id="tadcka_sitemap.form_factory.node" class="%tadcka_sitemap.form_factory.node.class%" public="false">
             <argument type="service" id="form.factory" />
             <argument type="service" id="router" />
             <argument type="service" id="translator" />
@@ -22,7 +22,7 @@
         </service>
 
         <!--Sitemap node form handler-->
-        <service id="tadcka_sitemap.form_handler.node" class="%tadcka_sitemap.form_handler.node.class%">
+        <service id="tadcka_sitemap.form_handler.node" class="%tadcka_sitemap.form_handler.node.class%" public="false">
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="tadcka_sitemap.manager.node" />
             <argument type="service" id="translator" />

@@ -8,6 +8,7 @@
         <parameter key="tadcka_sitemap.controller.node.class">Tadcka\Bundle\SitemapBundle\Controller\NodeController</parameter>
         <parameter key="tadcka_sitemap.controller.node_content.class">Tadcka\Bundle\SitemapBundle\Controller\NodeContentController</parameter>
         <parameter key="tadcka_sitemap.controller.node_online.class">Tadcka\Bundle\SitemapBundle\Controller\NodeOnlineController</parameter>
+        <parameter key="tadcka_sitemap.controller.node_redirect_route.class">Tadcka\Bundle\SitemapBundle\Controller\NodeRedirectRouteController</parameter>
         <parameter key="tadcka_sitemap.controller.node_route.class">Tadcka\Bundle\SitemapBundle\Controller\NodeRouteController</parameter>
         <parameter key="tadcka_sitemap.controller.node_seo.class">Tadcka\Bundle\SitemapBundle\Controller\NodeSeoController</parameter>
         <parameter key="tadcka_sitemap.controller.preview.class">Tadcka\Bundle\SitemapBundle\Controller\PreviewController</parameter>
@@ -40,6 +41,14 @@
             <argument type="service" id="tadcka_sitemap.handler.node_online" />
             <argument type="service" id="tadcka_sitemap.helper.response" />
             <argument type="service" id="tadcka_sitemap.routing.helper" />
+        </service>
+
+        <!--Sitemap node redirect controller-->
+        <service id="tadcka_sitemap.controller.node_redirect_route" class="%tadcka_sitemap.controller.node_redirect_route.class%">
+            <argument type="service" id="tadcka_sitemap.form_factory.node_redirect_route" />
+            <argument type="service" id="tadcka_sitemap.form_handler.node_redirect_route" />
+            <argument type="service" id="tadcka_sitemap.helper.response" />
+            <argument type="service" id="service_container" />
         </service>
 
         <!--Sitemap node route controller-->

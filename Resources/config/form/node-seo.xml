@@ -13,13 +13,13 @@
     <services>
 
         <!--Sitemap node seo form factory-->
-        <service id="tadcka_sitemap.form_factory.node_seo" class="%tadcka_sitemap.form_factory.node_seo.class%">
+        <service id="tadcka_sitemap.form_factory.node_seo" class="%tadcka_sitemap.form_factory.node_seo.class%" public="false">
             <argument type="service" id="form.factory" />
             <argument type="service" id="router" />
         </service>
 
         <!--Sitemap node seo form handler-->
-        <service id="tadcka_sitemap.form_handler.node_seo" class="%tadcka_sitemap.form_handler.node_seo.class%">
+        <service id="tadcka_sitemap.form_handler.node_seo" class="%tadcka_sitemap.form_handler.node_seo.class%" public="false">
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="silvestra_seo.manager.seo_metadata" />
             <argument type="service" id="translator" />

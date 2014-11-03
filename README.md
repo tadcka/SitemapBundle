@@ -9,9 +9,9 @@ Simple web page list manager.
 
 ## Installation
 
-### Step 1: Download TadckaSitemapBundle using composer
+### Step 1: Download SitemapBundle using composer
 
-Add TadckaSitemapBundle in your composer.json:
+Add SitemapBundle in your composer.json:
 
 ```js
 {

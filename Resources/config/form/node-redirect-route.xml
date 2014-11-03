@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="tadcka_sitemap.form_factory.node_redirect_route.class">Tadcka\Bundle\SitemapBundle\Form\Factory\NodeRedirectRouteFormFactory</parameter>
+        <parameter key="tadcka_sitemap.form_handler.node_redirect_route.class">Tadcka\Bundle\SitemapBundle\Form\Handler\NodeRedirectRouteFormHandler</parameter>
+        <parameter key="tadcka_sitemap.form_type.node_redirect_route.class">Tadcka\Bundle\SitemapBundle\Form\Type\NodeRedirectRouteType</parameter>
+    </parameters>
+
+    <services>
+
+        <!--Sitemap node redirect route form factory-->
+        <service id="tadcka_sitemap.form_factory.node_redirect_route" class="%tadcka_sitemap.form_factory.node_redirect_route.class%" public="false">
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="router" />
+        </service>
+
+        <!--Sitemap node redirect route form handler-->
+        <service id="tadcka_sitemap.form_handler.node_redirect_route" class="%tadcka_sitemap.form_handler.node_redirect_route.class%" public="false">
+            <!--<argument type="service" id="event_dispatcher" />-->
+            <!--<argument type="service" id="tadcka_sitemap.manager.node_translation" />-->
+            <!--<argument type="service" id="translator" />-->
+        </service>
+
+        <!--Sitemap node redirect route form type-->
+        <service id="tadcka_sitemap.form_type.node_redirect_route" class="%tadcka_sitemap.form_type.node_redirect_route.class%">
+            <tag name="form.type" alias="tadcka_sitemap_node_redirect_route" />
+            <argument>%tadcka_sitemap.model.node.class%</argument>
+        </service>
+
+    </services>
+</container>

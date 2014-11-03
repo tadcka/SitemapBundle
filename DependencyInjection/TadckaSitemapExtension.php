@@ -34,6 +34,7 @@ class TadckaSitemapExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('controllers.xml');
         $loader->load('form/node.xml');
+        $loader->load('form/node-redirect-route.xml');
         $loader->load('form/node-route.xml');
         $loader->load('form/node-seo.xml');
         $loader->load('frontend.xml');
@@ -48,21 +49,25 @@ class TadckaSitemapExtension extends Extension
         }
         $loader->load('db_driver/' . sprintf('%s.xml', $config['db_driver']));
 
-        $container->setParameter('tadcka_sitemap.model.tree.class', $config['class']['model']['tree']);
-        $container->setParameter('tadcka_sitemap.model.node.class', $config['class']['model']['node']);
+        if ($config['node_type']['use_redirect_type']) {
+            $loader->load('node_type/redirect.xml');
+        }
+
+        $container->setParameter($this->getAlias() . '.model.tree.class', $config['class']['model']['tree']);
+        $container->setParameter($this->getAlias() . '.model.node.class', $config['class']['model']['node']);
         $container->setParameter(
-            'tadcka_sitemap.model.node_translation.class',
+            $this->getAlias() . '.model.node_translation.class',
             $config['class']['model']['node_translation']
         );
 
-        $container->setAlias('tadcka_sitemap.manager.tree', $config['tree_manager']);
-        $container->setAlias('tadcka_sitemap.manager.node', $config['node_manager']);
-        $container->setAlias('tadcka_sitemap.manager.node_translation', $config['node_translation_manager']);
+        $container->setAlias($this->getAlias() . '.manager.tree', $config['tree_manager']);
+        $container->setAlias($this->getAlias() . '.manager.node', $config['node_manager']);
+        $container->setAlias($this->getAlias() . '.manager.node_translation', $config['node_translation_manager']);
 
-        $container->setParameter('tadcka_sitemap.node_type.controllers', $config['node_type']['controllers']);
-        $container->setParameter('tadcka_sitemap.multi_language.enabled', $config['multi_language']['enabled']);
-        $container->setParameter('tadcka_sitemap.multi_language.locales', $config['multi_language']['locales']);
-        $container->setParameter('tadcka_sitemap.routing.route_strategy', $config['route_strategy']);
-        $container->setParameter('tadcka_sitemap.node.incremental_priority', $config['incremental_priority']);
+        $container->setParameter($this->getAlias() . '.node_type.controllers', $config['node_type']['controllers']);
+        $container->setParameter($this->getAlias() . '.multi_language.enabled', $config['multi_language']['enabled']);
+        $container->setParameter($this->getAlias() . '.multi_language.locales', $config['multi_language']['locales']);
+        $container->setParameter($this->getAlias() . '.routing.route_strategy', $config['route_strategy']);
+        $container->setParameter($this->getAlias() . '.node.incremental_priority', $config['incremental_priority']);
     }
 }

@@ -60,6 +60,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('controllers')
                             ->useAttributeAsKey('type')->prototype('scalar')->end()
                         ->end()
+                        ->booleanNode('use_redirect_type')->defaultTrue()->end()
                     ->end()
                 ->end()
 

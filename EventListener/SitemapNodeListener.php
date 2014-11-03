@@ -83,5 +83,19 @@ class SitemapNodeListener
 
             $event->addTab($seo);
         }
+
+        if ('redirect' === $node->getType()) {
+            $redirect = new Tab(
+                $event->getTranslator()->trans('redirect', array(), 'TadckaSitemapBundle'),
+                'node_route',
+                $event->getRouter()->generate(
+                    'tadcka_sitemap_node_redirect_route',
+                    array('_format' => 'json', 'nodeId' => $node->getId())
+                ),
+                200
+            );
+
+            $event->addTab($redirect);
+        }
     }
 }

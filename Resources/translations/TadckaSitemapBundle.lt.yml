@@ -44,3 +44,5 @@ tadcka_sitemap: Tadcka svetainės medis
 node_translation_not_found: Nepavyko rasti kategorijos lokalėje [%locale%].
 node_parent_is_not_online: Tėvinė kategorija nepublikuojama lokalėje [%locale%].
 node_route_missing: Neįvestas kategorijos universalusis adresas lokalėje [%locale%].
+
+redirect: Peradresavimas

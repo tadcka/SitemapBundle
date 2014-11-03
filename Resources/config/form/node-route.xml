@@ -15,20 +15,20 @@
     <services>
 
         <!--Sitemap node i18n route data transformer-->
-        <service id="tadcka_sitemap.data_transformer.node_i18n_route" class="%tadcka_sitemap.data_transformer.node_i18n_route.class%">
+        <service id="tadcka_sitemap.data_transformer.node_i18n_route" class="%tadcka_sitemap.data_transformer.node_i18n_route.class%" public="false">
             <argument type="service" id="tadcka_sitemap.routing.generator" />
             <argument type="service" id="tadcka_routing.manager.route.in_memory" />
             <argument type="service" id="tadcka_sitemap.routing.helper" />
         </service>
 
         <!--Sitemap node route form factory-->
-        <service id="tadcka_sitemap.form_factory.node_route" class="%tadcka_sitemap.form_factory.node_route.class%">
+        <service id="tadcka_sitemap.form_factory.node_route" class="%tadcka_sitemap.form_factory.node_route.class%" public="false">
             <argument type="service" id="form.factory" />
             <argument type="service" id="router" />
         </service>
 
         <!--Sitemap node route form handler-->
-        <service id="tadcka_sitemap.form_handler.node_route" class="%tadcka_sitemap.form_handler.node_route.class%">
+        <service id="tadcka_sitemap.form_handler.node_route" class="%tadcka_sitemap.form_handler.node_route.class%" public="false">
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
             <argument type="service" id="translator" />
