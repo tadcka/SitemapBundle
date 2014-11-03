@@ -194,10 +194,8 @@ class RouterHelper
             $path = $this->getRouteFullPath($parent, $locale);
         }
 
-        /** @var NodeTranslationInterface $translation */
-        $translation = $node->getTranslation($locale);
-        if ((null !== $translation) && (null !== $translation->getRoute())) {
-            $path .= $this->normalizeRoutePattern($translation->getRoute()->getRoutePattern());
+        if (null !== $translation = $node->getTranslation($locale)) {
+            $path .= $this->normalizeRoutePattern($translation->getTitle());
         }
 
         return $path;

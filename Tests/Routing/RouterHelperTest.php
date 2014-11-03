@@ -95,14 +95,15 @@ class RouterHelperTest extends AbstractRoutingTest
 
         $this->assertEquals('/test', $this->routerHelper->getRoutePattern('test', $node, 'en'));
 
-        $this->addRoutePattern('/parent-test', $parent->getTranslation('en')->getRoute());
+        $parentTranslation = $parent->getTranslation('en');
+        $this->addNodeTranslationTitle('Parent test', $parentTranslation);
 
         $this->assertEquals('/parent-test/test', $this->routerHelper->getRoutePattern('test', $node, 'en'));
 
         $parentParent = $this->getMockNode();
 
         $this->addNodeParent($parentParent, $parent);
-        $this->fillParent($parentParent, '/parent-parent-test/');
+        $this->fillParent($parentParent, 'Parent parent test');
 
         $this->assertEquals(
             '/parent-parent-test/parent-test/test',
@@ -126,7 +127,7 @@ class RouterHelperTest extends AbstractRoutingTest
         $this->assertEquals('/bump-test/bump', $this->routerHelper->normalizeRoutePattern('/bump test/bump'));
     }
 
-    private function fillParent(NodeInterface $parent, $pattern)
+    private function fillParent(NodeInterface $parent, $title)
     {
         $nodeTranslation = $this->getMockNodeTranslation();
         $route = $this->getMockRoute();
@@ -135,8 +136,8 @@ class RouterHelperTest extends AbstractRoutingTest
         $this->addNodeTranslationRoute($route, $nodeTranslation);
         $this->addNodeTranslation($nodeTranslation, $parent);
 
-        if ($pattern) {
-            $this->addRoutePattern($pattern, $route);
+        if ($title) {
+            $this->addNodeTranslationTitle($title, $nodeTranslation);
         }
     }
 }

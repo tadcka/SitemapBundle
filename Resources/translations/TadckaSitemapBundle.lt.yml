@@ -12,8 +12,6 @@ node:
   route: Universalusis adresas
 
 form:
-  seo_route:
-    publish_category: Publikuoti kategoriją
   node_translation:
     title: Pavadinimas
     description: Aprašymas
@@ -21,6 +19,7 @@ form:
     type: Tipas
     priority: Prioritetas
   route:
+    online: Publikuoti kategoriją
     pattern: Publikavimo adresas
   select: Pasirinkite
   button:

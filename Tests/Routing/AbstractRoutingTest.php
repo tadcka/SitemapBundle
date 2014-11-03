@@ -103,6 +103,17 @@ abstract class AbstractRoutingTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $title
+     * @param MockObject|NodeTranslationInterface $nodeTranslation
+     */
+    protected function addNodeTranslationTitle($title, MockObject $nodeTranslation)
+    {
+        $nodeTranslation->expects($this->any())
+            ->method('getTitle')
+            ->willReturn($title);
+    }
+
+    /**
      * @param string $pattern
      * @param MockObject|RouteInterface $route
      */
