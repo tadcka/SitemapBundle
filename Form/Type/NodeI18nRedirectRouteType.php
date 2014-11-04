@@ -13,8 +13,12 @@ namespace Tadcka\Bundle\SitemapBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Tadcka\Bundle\SitemapBundle\Form\DataTransformer\NodeI18nRedirectRouteTransformer;
+use Tadcka\Component\Routing\Model\RouteInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -24,59 +28,55 @@ use Symfony\Component\Validator\Constraints as Assert;
 class NodeI18nRedirectRouteType extends AbstractType
 {
     /**
+     * @var NodeI18nRedirectRouteTransformer
+     */
+    private $transformer;
+
+    /**
+     * @var string
+     */
+    private $nodeTranslationClass;
+
+    /**
+     * Constructor.
+     *
+     * @param NodeI18nRedirectRouteTransformer $transformer
+     * @param string $nodeTranslationClass
+     */
+    public function __construct(NodeI18nRedirectRouteTransformer $transformer, $nodeTranslationClass)
+    {
+        $this->transformer = $transformer;
+        $this->nodeTranslationClass = $nodeTranslationClass;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
-            'online',
-            'checkbox',
-            array(
-                'label' => 'form.route.online',
-                'required' => false
-            )
-        );
+        $builder->add('route', 'tadcka_route', array('label' => false, 'translation_domain' => 'TadckaSitemapBundle'));
 
-        $builder->add(
-            'routePattern',
-            'text',
-            array(
-                'label' => 'form.route.pattern',
-                'constraints' => array(new Assert\NotBlank()),
-                'required' => false,
-            )
-        );
+        $builder->add('routeRedirect', 'tadcka_redirect_route', array('label' => false, 'mapped' => false));
 
-        $builder->add(
-            'uri',
-            'text',
-            array(
-                'label' => 'form.redirect_route.uri',
-                'constraints' => array(new Assert\Url()),
-                'required' => false,
-                'translation_domain' => 'TadckaRouting',
-            )
-        );
+        $postSetDataListener = function (FormEvent $event) {
+            $form = $event->getForm();
+            /** @var RouteInterface $route */
+            $route = $form->get('route')->getData();
 
-        $builder->add(
-            'routeName',
-            'text',
-            array(
-                'label' => 'form.redirect_route.route_name',
-                'required' => false,
-                'translation_domain' => 'TadckaRouting',
-            )
-        );
+            if ((null !== $route) && (null !== $redirectRouteName = $route->getDefault('redirectRouteName'))) {
+                $form->get('routeRedirect')->setData($this->transformer->getRedirectRoute($redirectRouteName));
+            }
+        };
+        $builder->addEventListener(FormEvents::POST_SET_DATA, $postSetDataListener);
 
-        $builder->add(
-            'routeTarget',
-            'text',
-            array(
-                'label' => 'form.redirect_route.route_target',
-                'required' => false,
-                'translation_domain' => 'TadckaRouting',
-            )
-        );
+        $submitListener = function (FormEvent $event) {
+            $form = $event->getForm();
+
+            $this->transformer->setRedirectRoute($form->get('routeRedirect')->getData());
+        };
+        $builder->addEventListener(FormEvents::SUBMIT, $submitListener);
+
+        $builder->addModelTransformer($this->transformer);
     }
 
     /**
@@ -86,6 +86,7 @@ class NodeI18nRedirectRouteType extends AbstractType
     {
         $resolver->setDefaults(
             array(
+                'data_class' => $this->nodeTranslationClass,
                 'translation_domain' => 'TadckaSitemapBundle',
 //                'constraints' => array(new NodeParentIsOnline()),
             )

@@ -64,10 +64,16 @@ class RouterHelper
      *
      * @param string $nodeType
      *
+     * @return string
+     *
      * @throws RouteException
      */
     public function getRouteController($nodeType)
     {
+        if ('redirect' === $nodeType) {
+            return 'tadcka_routing.redirect_controller:redirectAction';
+        }
+
         if ($this->hasController($nodeType)) {
             return $this->controllers[$nodeType];
         }
@@ -88,7 +94,7 @@ class RouterHelper
      */
     public function getRoutePattern($pattern, NodeInterface $node, $locale)
     {
-        if (false === $this->hasController($node->getType())) {
+        if ((false === $this->hasController($node->getType())) && ('redirect' !== $node->getType())) {
             throw new RouteException(sprintf('Node type %s don\'t have controller!', $node->getType()));
         }
 

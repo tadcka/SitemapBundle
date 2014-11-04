@@ -83,7 +83,8 @@ class NodeRouteController
         $messages = new Messages();
 
         if ($this->formHandler->process($request, $form)) {
-            $this->formHandler->onSuccess($messages, $node);
+            $message = $this->formHandler->onSuccess($node);
+            $messages->addSuccess($message);
             if ('json' === $request->getRequestFormat()) {
                 $jsonContent->setToolbar($this->renderToolbar($node));
             }

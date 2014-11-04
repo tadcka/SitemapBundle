@@ -87,7 +87,7 @@ class RouteGenerator
      */
     private function generateUniqueRoutePattern(NodeInterface $node, RouteInterface $route)
     {
-        if (false === $this->routerHelper->hasController($node->getType())) {
+        if ((false === $this->routerHelper->hasController($node->getType())) && ('redirect' !== $node->getType())) {
             throw new RouteException('Cannot generate route pattern!');
         }
 

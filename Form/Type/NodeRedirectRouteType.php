@@ -46,7 +46,7 @@ class NodeRedirectRouteType extends AbstractType
             'translations',
             'translations',
             array(
-                'type' => new NodeI18nRedirectRouteType()
+                'type' => 'tadcka_sitemap_node_i18n_redirect_route'
             )
         );
 
@@ -60,7 +60,7 @@ class NodeRedirectRouteType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-//                'data_class' => $this->nodeClass,
+                'data_class' => $this->nodeClass,
                 'translation_domain' => 'TadckaSitemapBundle',
             )
         );

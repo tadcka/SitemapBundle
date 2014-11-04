@@ -30,6 +30,7 @@ success:
   edit_node: Sėkmingai redaguota kategorija.
   delete_node: Sėkmingai pašalinta kategorija: %title%.
   node_seo_save: Sėkmingai išsaugota kategorijos optimizavimo paieškos sistemoms informacija.
+  node_redirect_route_save: Sėkmingai išsaugta kategorijos peradresavimo informacija.
   node_route_save: Sėkmingai išsaugta kategorijos publikavimo informacija.
   online_save: Sėkmingai išsaugta kategorijos publikavimo informacija lokalėje [%locale%].
 

@@ -27,7 +27,7 @@ class NodeI18nRouteType extends AbstractType
     /**
      * @var NodeI18nRouteTransformer
      */
-    private $i18nRouteTransformer;
+    private $transformer;
 
     /**
      * @var string
@@ -37,12 +37,12 @@ class NodeI18nRouteType extends AbstractType
     /**
      * Constructor.
      *
-     * @param NodeI18nRouteTransformer $i18nRouteTransformer
+     * @param NodeI18nRouteTransformer $transformer
      * @param string $nodeTranslationClass
      */
-    public function __construct(NodeI18nRouteTransformer $i18nRouteTransformer, $nodeTranslationClass)
+    public function __construct(NodeI18nRouteTransformer $transformer, $nodeTranslationClass)
     {
-        $this->i18nRouteTransformer = $i18nRouteTransformer;
+        $this->transformer = $transformer;
         $this->nodeTranslationClass = $nodeTranslationClass;
     }
 
@@ -55,7 +55,7 @@ class NodeI18nRouteType extends AbstractType
 
         $builder->add('route', 'tadcka_route', array('label' => false, 'translation_domain' => 'TadckaSitemapBundle'));
 
-        $builder->addModelTransformer($this->i18nRouteTransformer);
+        $builder->addModelTransformer($this->transformer);
     }
 
     /**

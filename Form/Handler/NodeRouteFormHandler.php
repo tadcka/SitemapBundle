@@ -15,7 +15,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
-use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
@@ -91,13 +90,15 @@ class NodeRouteFormHandler
     /**
      * On success.
      *
-     * @param Messages $messages
      * @param NodeInterface $node
+     *
+     * @return string
      */
-    public function onSuccess(Messages $messages, NodeInterface $node)
+    public function onSuccess(NodeInterface $node)
     {
         $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
         $this->nodeTranslationManager->save();
-        $messages->addSuccess($this->translator->trans('success.node_route_save', array(), 'TadckaSitemapBundle'));
+
+        return $this->translator->trans('success.node_route_save', array(), 'TadckaSitemapBundle');
     }
 }

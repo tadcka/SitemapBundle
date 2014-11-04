@@ -48,15 +48,15 @@ class NodeRedirectRouteFormFactory
     /**
      * Create node redirect route form.
      *
-     * @param array $data
+     * @param NodeInterface $node
      *
      * @return FormInterface
      */
-    public function create(array $data)
+    public function create(NodeInterface $node)
     {
         return $this->formFactory->create(
             'tadcka_sitemap_node_redirect_route',
-            $data,
+            $node,
             array(
                 'action' => $this->router->getContext()->getPathInfo()
             )
