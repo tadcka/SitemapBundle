@@ -47,6 +47,7 @@
         <service id="tadcka_sitemap.controller.node_redirect_route" class="%tadcka_sitemap.controller.node_redirect_route.class%">
             <argument type="service" id="tadcka_sitemap.form_factory.node_redirect_route" />
             <argument type="service" id="tadcka_sitemap.form_handler.node_redirect_route" />
+            <argument type="service" id="tadcka_routing.manager.redirect_route" />
             <argument type="service" id="tadcka_sitemap.helper.response" />
             <argument type="service" id="service_container" />
         </service>

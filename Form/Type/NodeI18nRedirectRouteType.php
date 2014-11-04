@@ -28,7 +28,14 @@ class NodeI18nRedirectRouteType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('online', 'checkbox', array('label' => 'form.seo_route.publish_category', 'required' => false));
+        $builder->add(
+            'online',
+            'checkbox',
+            array(
+                'label' => 'form.route.online',
+                'required' => false
+            )
+        );
 
         $builder->add(
             'routePattern',
