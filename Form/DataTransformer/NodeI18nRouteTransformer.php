@@ -76,7 +76,7 @@ class NodeI18nRouteTransformer implements DataTransformerInterface
     {
         $route = $nodeTranslation->getRoute();
 
-        if (null !== $route) {
+        if (null !== $route && $route->getRoutePattern()) {
             $node = $nodeTranslation->getNode();
 
             if ($this->routerHelper->hasController($node->getType())) {

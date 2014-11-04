@@ -111,7 +111,7 @@ class NodeI18nRedirectRouteTransformer implements DataTransformerInterface
     {
         $route = $nodeTranslation->getRoute();
 
-        if (null !== $route) {
+        if (null !== $route && $route->getRoutePattern()) {
             $node = $nodeTranslation->getNode();
 
             if ('redirect' === $node->getType()) {
