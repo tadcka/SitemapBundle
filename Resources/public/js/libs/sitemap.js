@@ -9,6 +9,7 @@
 
 $.fn.sitemap = function () {
     var $currentNode = null;
+    var $currentNodeId = null;
 
     var $content = new SitemapContent();
     var $tree = new SitemapTree();
@@ -17,9 +18,11 @@ $.fn.sitemap = function () {
      * Triggered when an node is clicked or intercated with by the user. Load content.
      */
     $tree.getJsTree().on('activate_node.jstree', function ($event, $data) {
-        if (!$currentNode || $data.node && (($currentNode.id !== $data.node.id))) {
+        if (!$currentNode || $data.node && (($currentNodeId !== $data.node.id))) {
             $currentNode = $data.node;
-            loadContent($currentNode.id, function () {});
+            $currentNodeId = $currentNode.id;
+
+            loadContent($currentNodeId, function () {});
         }
     });
 
@@ -69,17 +72,14 @@ $.fn.sitemap = function () {
             });
         } else {
             $content.submit($form.attr('action'), $form.serialize(), $content.getContent(), function ($response) {
-                var $nodeId = $response.node_id;
-
-                if ($nodeId) {
-                    var $url = Routing.generate('tadcka_sitemap_node_content', {_format: 'json', nodeId: $nodeId});
+                if ($response.node_id) {
+                    $currentNodeId = $response.node_id;
+                    var $url = Routing.generate('tadcka_sitemap_node_content', {_format: 'json', nodeId: $currentNodeId});
 
                     $tree.refreshNode($currentNode);
                     $content.load($url, $content.getContent(), function () {
                         $tree.openNode($currentNode);
                         $tree.deselectNode($currentNode);
-                        $tree.selectNode($nodeId);
-                        $currentNode.id = $nodeId;
 
                         $content.loadFirstTab(function () {
                             if ($response.messages) {
@@ -110,7 +110,7 @@ $.fn.sitemap = function () {
      * Cancel delete.
      */
     $content.getContent().on('click', 'a#tadcka-tree-node-delete-cancel', function() {
-        loadContent($currentNode.id, function () {
+        loadContent($currentNodeId, function () {
             $tree.selectNode($currentNode);
         });
     });
@@ -119,7 +119,7 @@ $.fn.sitemap = function () {
      * Triggered when a node is refreshed. Select current node.
      */
     $tree.getJsTree().on('refresh_node.jstree', function ($event, $data) {
-        $tree.selectNode($currentNode);
+        $tree.selectNode($currentNodeId);
     });
 
     /**
