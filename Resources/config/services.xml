@@ -31,6 +31,7 @@
         <service id="tadcka_sitemap.listener.tree_node" class="%tadcka_sitemap.listener.tree_node.class%">
             <tag name="kernel.event_listener" event="tadcka_tree.node.create.success" method="onSitemapNodeCreate" />
             <tag name="kernel.event_listener" event="tadcka_tree.node.pre_delete" method="onSitemapNodeDelete" />
+            <argument type="service" id="tadcka_routing.manager.redirect_route" />
             <argument type="service" id="tadcka_sitemap.routing.generator" />
             <argument type="service" id="tadcka_routing.manager.route.in_memory" />
             <argument type="service" id="tadcka_sitemap.routing.helper" />

@@ -12,6 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\EventListener;
 
 use Silvestra\Component\Seo\Model\Manager\SeoMetadataManagerInterface;
+use Tadcka\Component\Routing\Model\Manager\RedirectRouteManagerInterface;
 use Tadcka\Component\Routing\Model\Manager\RouteManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
@@ -19,6 +20,7 @@ use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
+use Tadcka\Component\Routing\Model\RouteInterface;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 
 /**
@@ -28,6 +30,11 @@ use Tadcka\Component\Tree\Event\TreeNodeEvent;
  */
 class TreeNodeListener
 {
+    /**
+     * @var RedirectRouteManagerInterface
+     */
+    private $redirectRouteManager;
+
     /**
      * @var RouteGenerator
      */
@@ -61,6 +68,7 @@ class TreeNodeListener
     /**
      * Constructor.
      *
+     * @param RedirectRouteManagerInterface $redirectRouteManager
      * @param RouteGenerator $routeGenerator
      * @param RouteManagerInterface $routeManager
      * @param RouterHelper $routerHelper
@@ -69,6 +77,7 @@ class TreeNodeListener
      * @param bool $incrementalPriority
      */
     public function __construct(
+        RedirectRouteManagerInterface $redirectRouteManager,
         RouteGenerator $routeGenerator,
         RouteManagerInterface $routeManager,
         RouterHelper $routerHelper,
@@ -76,6 +85,7 @@ class TreeNodeListener
         NodeTranslationManagerInterface $translationManager,
         $incrementalPriority
     ) {
+        $this->redirectRouteManager = $redirectRouteManager;
         $this->routeGenerator = $routeGenerator;
         $this->routeManager = $routeManager;
         $this->routerHelper = $routerHelper;
@@ -115,8 +125,17 @@ class TreeNodeListener
         $node = $event->getNode();
 
         foreach ($node->getTranslations() as $translation) {
+            /** @var RouteInterface $route */
             if (null !== $route = $translation->getRoute()) {
                 $this->routeManager->remove($route);
+
+                $redirectRouteName = $route->getDefault('redirectRouteName');
+                if ('redirect' === $node->getType() && (null !== $redirectRouteName)) {
+                    $redirectRoute = $this->redirectRouteManager->findByName($redirectRouteName);
+                    if (null !== $redirectRoute) {
+                        $this->redirectRouteManager->remove($redirectRoute);
+                    }
+                }
             }
         }
 
