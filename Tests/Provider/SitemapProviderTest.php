@@ -12,7 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\Tests\Provider;
 
 use \PHPUnit_Framework_MockObject_MockObject as MockObject;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
+use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Provider\SitemapProvider;
 use Tadcka\Component\Tree\Provider\TreeProviderInterface;
 
@@ -41,14 +41,14 @@ class SitemapProviderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->nodeManager = $this
-            ->getMockBuilder('Tadcka\\Bundle\\SitemapBundle\\Model\\Manager\\NodeManagerInterface')
+            ->getMockBuilder('Tadcka\\Component\\Tree\\Model\\Manager\\NodeManagerInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->nodeManager
             ->expects($this->any())
             ->method('create')
-            ->willReturn($this->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\NodeInterface'));
+            ->willReturn($this->getMock('Tadcka\\Component\\Tree\\Model\\NodeInterface'));
 
         $this->treeProvider = $this->getMockBuilder('Tadcka\\Component\\Tree\\Provider\\TreeProviderInterface')
             ->disableOriginalConstructor()

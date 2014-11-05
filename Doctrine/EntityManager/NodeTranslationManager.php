@@ -14,9 +14,9 @@ namespace Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Tadcka\Component\Routing\Model\RouteInterface;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManager as BaseNodeTranslationManager;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\Manager\NodeTranslationManager as BaseNodeTranslationManager;
+use Tadcka\Component\Tree\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -116,7 +116,7 @@ class NodeTranslationManager extends BaseNodeTranslationManager
     /**
      * {@inheritdoc}
      */
-    public function delete(NodeTranslationInterface $translation, $save = false)
+    public function remove(NodeTranslationInterface $translation, $save = false)
     {
         $this->em->remove($translation);
         if (true === $save) {

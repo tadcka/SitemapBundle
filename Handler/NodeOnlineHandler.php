@@ -14,8 +14,8 @@ namespace Tadcka\Bundle\SitemapBundle\Handler;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\ValidatorInterface;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
 use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeRouteNotEmpty;
 
@@ -59,7 +59,6 @@ class NodeOnlineHandler
      */
     public function process($locale, Messages $messages, NodeInterface $node)
     {
-        /** @var NodeTranslationInterface $nodeTranslation */
         $nodeTranslation = $node->getTranslation($locale);
 
         $nodeTranslation->setOnline(!$nodeTranslation->isOnline());

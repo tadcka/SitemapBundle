@@ -14,7 +14,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                   http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <mapped-superclass name="Tadcka\Bundle\SitemapBundle\Model\NodeTranslation">
+    <mapped-superclass name="Tadcka\Component\Tree\Model\NodeTranslation">
 
         <field name="lang" column="lang" type="string" length="31" nullable="false" />
 

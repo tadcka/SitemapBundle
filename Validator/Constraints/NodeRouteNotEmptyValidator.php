@@ -13,7 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 
 /**

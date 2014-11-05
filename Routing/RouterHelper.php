@@ -13,8 +13,8 @@ namespace Tadcka\Bundle\SitemapBundle\Routing;
 
 use Ferrandini\Urlizer;
 use Tadcka\Bundle\SitemapBundle\Exception\RouteException;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -102,7 +102,6 @@ class RouterHelper
             throw new RouteException('Pattern cannot be empty!');
         }
 
-        /** @var NodeInterface $parent */
         $parent = $node->getParent();
         $routePattern = $this->normalizeRoutePattern($pattern);
         if ((RouteGenerator::STRATEGY_FULL_PATH === $this->strategy) && (null !== $parent)) {
@@ -193,7 +192,6 @@ class RouterHelper
     private function getRouteFullPath(NodeInterface $node, $locale)
     {
         $path = '';
-        /** @var NodeInterface $parent */
         $parent = $node->getParent();
 
         if ((null !== $parent) && $this->hasController($parent->getType())) {

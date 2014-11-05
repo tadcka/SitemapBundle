@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Tadcka\Bundle\SitemapBundle\Frontend\Model\Tab;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

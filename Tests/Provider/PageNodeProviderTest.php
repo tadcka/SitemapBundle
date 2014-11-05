@@ -12,8 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\Tests\Provider;
 
 use Symfony\Component\HttpFoundation\Request;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Provider\PageNodeProvider;
 use Tadcka\Bundle\SitemapBundle\Security\PageSecurityManager;
 
@@ -40,7 +39,7 @@ class PageNodeProviderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->nodeTranslationManager = $this
-            ->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\Manager\\NodeTranslationManagerInterface');
+            ->getMock('Tadcka\\Component\\Tree\\Model\\Manager\\NodeTranslationManagerInterface');
 
         $this->pageNodeProvider = new PageNodeProvider(
             $this->nodeTranslationManager,
@@ -72,14 +71,14 @@ class PageNodeProviderTest extends \PHPUnit_Framework_TestCase
         $this->nodeTranslationManager
             ->expects($this->any())
             ->method('findTranslationByRoute')
-            ->willReturn($this->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\NodeTranslation'));
+            ->willReturn($this->getMock('Tadcka\\Component\\Tree\\Model\\NodeTranslation'));
 
         $this->pageNodeProvider->getNodeTranslationOr404($this->createRequest());
     }
 
     public function testGetNodeTranslationOr404()
     {
-        $nodeTranslation = $this->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\NodeTranslation');
+        $nodeTranslation = $this->getMock('Tadcka\\Component\\Tree\\Model\\NodeTranslation');
         $nodeTranslation->expects($this->any())->method('isOnline')->willReturn(true);
 
         $this->nodeTranslationManager
@@ -95,7 +94,7 @@ class PageNodeProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetNodeOr404WithoutNode()
     {
-        $nodeTranslation = $this->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\NodeTranslation');
+        $nodeTranslation = $this->getMock('Tadcka\\Component\\Tree\\Model\\NodeTranslation');
         $nodeTranslation->expects($this->any())->method('isOnline')->willReturn(true);
 
         $this->nodeTranslationManager
@@ -108,8 +107,8 @@ class PageNodeProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetNodeOr404()
     {
-        $node = $this->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\Node');
-        $nodeTranslation = $this->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\NodeTranslation');
+        $node = $this->getMock('Tadcka\\Component\\Tree\\Model\\Node');
+        $nodeTranslation = $this->getMock('Tadcka\\Component\\Tree\\Model\\NodeTranslation');
         $nodeTranslation->expects($this->any())->method('isOnline')->willReturn(true);
         $nodeTranslation->expects($this->any())->method('getNode')->willReturn($node);
 

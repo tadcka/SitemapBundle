@@ -14,8 +14,8 @@ namespace Tadcka\Bundle\SitemapBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Handler\NodeOnlineHandler;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Frontend\ResponseHelper;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 

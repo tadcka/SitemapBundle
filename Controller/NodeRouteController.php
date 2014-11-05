@@ -19,7 +19,7 @@ use Tadcka\Bundle\SitemapBundle\Form\Factory\NodeRouteFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\NodeRouteFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Frontend\ResponseHelper;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 
 /**

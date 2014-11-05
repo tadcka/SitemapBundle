@@ -13,7 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\Routing;
 
 use Tadcka\Component\Routing\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Exception\RouteException;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

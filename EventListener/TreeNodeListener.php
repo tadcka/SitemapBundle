@@ -14,9 +14,9 @@ namespace Tadcka\Bundle\SitemapBundle\EventListener;
 use Silvestra\Component\Seo\Model\Manager\SeoMetadataManagerInterface;
 use Tadcka\Component\Routing\Model\Manager\RedirectRouteManagerInterface;
 use Tadcka\Component\Routing\Model\Manager\RouteManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\Manager\NodeTranslationManagerInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
@@ -121,7 +121,6 @@ class TreeNodeListener
      */
     public function onSitemapNodeDelete(TreeNodeEvent $event)
     {
-        /** @var NodeInterface $node */
         $node = $event->getNode();
 
         foreach ($node->getTranslations() as $translation) {
@@ -151,7 +150,6 @@ class TreeNodeListener
      */
     private function createSeo(NodeInterface $node)
     {
-        /** @var NodeTranslationInterface $translation */
         foreach ($node->getTranslations() as $translation) {
             $locale = $translation->getLang();
             $route = $this->routeManager->create();

@@ -12,7 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\Provider;
 
 use Tadcka\Bundle\SitemapBundle\Exception\ResourceNotFoundException;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

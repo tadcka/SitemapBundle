@@ -11,7 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Tests\Routing;
 
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 

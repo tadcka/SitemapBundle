@@ -2,7 +2,7 @@
     "name":         "tadcka/sitemap-bundle",
     "homepage":     "https://github.com/tadcka/SitemapBundle",
     "description":  "Sitemap bundle on Symfony2",
-    "keywords":     ["sitemap", "content management system"],
+    "keywords":     ["sitemap", "site page management system"],
     "type":         "symfony-bundle",
     "license":      "MIT",
     "authors": [
@@ -21,8 +21,7 @@
         "jms/serializer-bundle": "~0.13",
         "aferrandini/urlizer": "1.0.*",
 
-        "silvestra/seo": "0.1.*@dev",
-
+        "silvestra/seo-bundle": "0.2.*@dev",
         "tadcka/tree": "0.1.*@dev",
         "tadcka/jstree-bundle": "~0.2",
         "tadcka/routing-bundle": "0.2.*@dev"
@@ -41,7 +40,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.2.x-dev"
+            "dev-master": "0.3.x-dev"
         }
     }
 }

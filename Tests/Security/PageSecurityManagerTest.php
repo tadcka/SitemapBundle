@@ -41,7 +41,7 @@ class PageSecurityManagerTest extends \PHPUnit_Framework_TestCase
     public function testCanViewWithNodeNotOnline()
     {
         $securityManager = new PageSecurityManager($this->securityContext);
-        $translation = $this->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\NodeTranslation');
+        $translation = $this->getMock('Tadcka\\Component\\Tree\\Model\\NodeTranslation');
         $translation->expects($this->any())->method('isOnline')->willReturn(false);
 
         $this->assertFalse($securityManager->canView($translation));
@@ -53,7 +53,7 @@ class PageSecurityManagerTest extends \PHPUnit_Framework_TestCase
     public function testCanViewWithNodeOnline()
     {
         $securityManager = new PageSecurityManager($this->securityContext);
-        $translation = $this->getMock('Tadcka\\Bundle\\SitemapBundle\\Model\\NodeTranslation');
+        $translation = $this->getMock('Tadcka\\Component\\Tree\\Model\\NodeTranslation');
         $translation->expects($this->any())->method('isOnline')->willReturn(true);
 
         $this->assertTrue($securityManager->canView($translation));

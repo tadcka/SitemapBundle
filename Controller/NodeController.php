@@ -18,8 +18,8 @@ use Tadcka\Bundle\SitemapBundle\Form\Factory\NodeFormFactory;
 use Tadcka\Bundle\SitemapBundle\Form\Handler\NodeFormHandler;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Bundle\SitemapBundle\Handler\NodeDeleteHandler;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Frontend\ResponseHelper;
 use Tadcka\Component\Tree\Model\TreeInterface;
 

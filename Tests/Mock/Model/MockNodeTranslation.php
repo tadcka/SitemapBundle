@@ -11,8 +11,8 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Tests\Mock\Model;
 
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslation;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\NodeTranslation;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

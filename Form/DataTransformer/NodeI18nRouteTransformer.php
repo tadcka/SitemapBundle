@@ -13,7 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
 use Tadcka\Component\Routing\Model\Manager\RouteManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 

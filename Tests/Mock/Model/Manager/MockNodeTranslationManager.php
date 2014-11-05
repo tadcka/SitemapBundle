@@ -12,8 +12,8 @@
 namespace Tadcka\Bundle\SitemapBundle\Tests\Mock\Model\Manager;
 
 use Tadcka\Component\Routing\Model\RouteInterface;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManager;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\Manager\NodeTranslationManager;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -68,7 +68,7 @@ class MockNodeTranslationManager extends NodeTranslationManager
     /**
      * {@inheritdoc}
      */
-    public function delete(NodeTranslationInterface $translation, $save = false)
+    public function remove(NodeTranslationInterface $translation, $save = false)
     {
         // TODO: Implement delete() method.
     }

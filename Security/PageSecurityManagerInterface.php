@@ -11,7 +11,7 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Security;
 
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

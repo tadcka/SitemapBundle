@@ -14,7 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle\Provider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tadcka\Component\Routing\Model\RouteInterface;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
+use Tadcka\Component\Tree\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Security\PageSecurityManagerInterface;
 
 /**

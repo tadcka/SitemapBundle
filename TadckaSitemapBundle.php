@@ -56,7 +56,7 @@ class TadckaSitemapBundle extends Bundle
     private function addRegisterMappingsPass(ContainerBuilder $container)
     {
         $mappings = array(
-            realpath(__DIR__ . '/Resources/config/doctrine/model') => 'Tadcka\Bundle\SitemapBundle\Model',
+            realpath(__DIR__ . '/Resources/config/doctrine/model') => 'Tadcka\Component\Tree\Model',
         );
 
         $ormCompilerClass = 'Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass';

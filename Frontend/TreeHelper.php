@@ -12,14 +12,14 @@
 namespace Tadcka\Bundle\SitemapBundle\Frontend;
 
 use Symfony\Component\Translation\TranslatorInterface;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeTranslationManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\Manager\NodeTranslationManagerInterface;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Provider\SitemapProviderInterface;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
 use Tadcka\Component\Tree\Provider\NodeProviderInterface;
 use Tadcka\Component\Tree\Provider\TreeProviderInterface;
 use Tadcka\JsTreeBundle\Model\Node;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

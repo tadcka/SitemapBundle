@@ -14,8 +14,8 @@ namespace Tadcka\Bundle\SitemapBundle\Routing;
 use Tadcka\Component\Routing\Model\Manager\RouteManagerInterface;
 use Tadcka\Component\Routing\Model\RouteInterface;
 use Tadcka\Bundle\SitemapBundle\Exception\RouteException;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\NodeTranslationInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityRepository;
 use Tadcka\Component\Tree\Model\Manager\NodeManager as BaseNodeManager;
 use Tadcka\Component\Tree\Model\NodeInterface as TreeNodeInterface;
 use Tadcka\Component\Tree\Model\TreeInterface;
-use Tadcka\Bundle\SitemapBundle\Model\Manager\NodeManagerInterface;
+use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

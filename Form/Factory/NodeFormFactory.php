@@ -18,7 +18,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Tadcka\Component\Tree\Provider\NodeProviderInterface;
 use Tadcka\Component\Tree\Registry\NodeType\NodeTypeConfig;
 use Tadcka\Bundle\SitemapBundle\Form\Type\NodeType;
-use Tadcka\Bundle\SitemapBundle\Model\NodeInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>

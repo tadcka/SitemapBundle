@@ -15,7 +15,7 @@
                   http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
 
-    <mapped-superclass name="Tadcka\Bundle\SitemapBundle\Model\Node">
+    <mapped-superclass name="Tadcka\Component\Tree\Model\Node">
 
         <field name="type" column="type" type="string" length="255" nullable="true" />
 
