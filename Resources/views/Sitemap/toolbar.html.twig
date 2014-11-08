@@ -5,7 +5,7 @@
         {{ 'sitemap.add_subpage'|trans }}
     </a>
     {% if node.parent is not empty %}
-        {% if has_controller or node.type == 'redirect' %}
+        {% if has_controller %}
             {% if multi_language_enabled %}
                 <div class="btn-group">
                     <button type="button" class="btn btn-outline btn-primary dropdown-toggle" data-toggle="dropdown">
