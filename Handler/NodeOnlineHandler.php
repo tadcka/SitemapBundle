@@ -15,7 +15,6 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\ValidatorInterface;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Component\Tree\Model\NodeInterface;
-use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
 use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeRouteNotEmpty;
 

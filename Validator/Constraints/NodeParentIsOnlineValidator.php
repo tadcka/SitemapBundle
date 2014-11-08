@@ -59,7 +59,7 @@ class NodeParentIsOnlineValidator extends ConstraintValidator
      * Check if node parent is online.
      *
      * @param NodeInterface $node
-     * @param $locale
+     * @param string $locale
      *
      * @return bool
      */

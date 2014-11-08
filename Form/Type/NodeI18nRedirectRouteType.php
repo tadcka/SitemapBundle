@@ -16,8 +16,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 use Tadcka\Bundle\SitemapBundle\Form\DataTransformer\NodeI18nRedirectRouteTransformer;
+use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
 use Tadcka\Component\Routing\Model\RouteInterface;
 
 /**
@@ -88,7 +88,7 @@ class NodeI18nRedirectRouteType extends AbstractType
             array(
                 'data_class' => $this->nodeTranslationClass,
                 'translation_domain' => 'TadckaSitemapBundle',
-//                'constraints' => array(new NodeParentIsOnline()),
+                'constraints' => array(new NodeParentIsOnline()),
             )
         );
     }

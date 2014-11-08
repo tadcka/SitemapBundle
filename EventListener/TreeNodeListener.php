@@ -16,7 +16,6 @@ use Tadcka\Component\Routing\Model\Manager\RedirectRouteManagerInterface;
 use Tadcka\Component\Routing\Model\Manager\RouteManagerInterface;
 use Tadcka\Component\Tree\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Component\Tree\Model\NodeInterface;
-use Tadcka\Component\Tree\Model\NodeTranslationInterface;
 use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
