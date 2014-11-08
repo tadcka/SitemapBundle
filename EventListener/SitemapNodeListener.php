@@ -58,7 +58,8 @@ class SitemapNodeListener
         );
         $event->addTab($menu);
 
-        if ((null !== $node->getParent()) && $this->routerHelper->hasController($node->getType()) && ('redirect' !== $node->getType())) {
+        $hasController = $this->routerHelper->hasController($node->getType());
+        if ((null !== $node->getParent()) && ('redirect' !== $node->getType()) && $hasController) {
             $route = new Tab(
                 $event->getTranslator()->trans('node.route', array(), 'TadckaSitemapBundle'),
                 'node_route',
