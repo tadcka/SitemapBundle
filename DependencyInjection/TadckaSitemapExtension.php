@@ -64,7 +64,10 @@ class TadckaSitemapExtension extends Extension
         $container->setAlias($this->getAlias() . '.manager.node', $config['node_manager']);
         $container->setAlias($this->getAlias() . '.manager.node_translation', $config['node_translation_manager']);
 
-        $container->setParameter($this->getAlias() . '.node_type.controllers', $config['node_type']['controllers']);
+        $controllers = array('redirect' => 'tadcka_routing.redirect_controller:redirectAction');
+        $controllers = array_merge($config['node_type']['controllers'], $controllers);
+
+        $container->setParameter($this->getAlias() . '.node_type.controllers', $controllers);
         $container->setParameter($this->getAlias() . '.multi_language.enabled', $config['multi_language']['enabled']);
         $container->setParameter($this->getAlias() . '.multi_language.locales', $config['multi_language']['locales']);
         $container->setParameter($this->getAlias() . '.routing.route_strategy', $config['route_strategy']);

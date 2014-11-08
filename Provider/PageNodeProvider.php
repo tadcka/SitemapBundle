@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tadcka\Component\Routing\Model\RouteInterface;
 use Tadcka\Component\Tree\Model\Manager\NodeTranslationManagerInterface;
-use Tadcka\Bundle\SitemapBundle\Security\PageSecurityManagerInterface;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -30,22 +29,13 @@ class PageNodeProvider implements PageNodeProviderInterface
     private $nodeTranslationManager;
 
     /**
-     * @var PageSecurityManagerInterface
-     */
-    private $pageSecurityManager;
-
-    /**
      * Constructor.
      *
      * @param NodeTranslationManagerInterface $nodeTranslationManager
-     * @param PageSecurityManagerInterface $pageSecurityManager
      */
-    public function __construct(
-        NodeTranslationManagerInterface $nodeTranslationManager,
-        PageSecurityManagerInterface $pageSecurityManager
-    ) {
+    public function __construct(NodeTranslationManagerInterface $nodeTranslationManager)
+    {
         $this->nodeTranslationManager = $nodeTranslationManager;
-        $this->pageSecurityManager = $pageSecurityManager;
     }
 
     /**
@@ -66,8 +56,7 @@ class PageNodeProvider implements PageNodeProviderInterface
     public function getNodeTranslationOr404(Request $request)
     {
         if (null !== $route = $this->getRoute($request)) {
-            $translation = $this->nodeTranslationManager->findTranslationByRoute($route);
-            if ((null !== $translation) && $this->pageSecurityManager->canView($translation)) {
+            if (null !== $translation = $this->nodeTranslationManager->findTranslationByRoute($route)) {
                 return $translation;
             }
         }

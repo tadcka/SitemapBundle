@@ -22,8 +22,6 @@
 
         <field name="description" column="description" type="text" nullable="true" />
 
-        <field name="online" column="online" type="boolean" nullable="false" />
-
     </mapped-superclass>
 
 </doctrine-mapping>

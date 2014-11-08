@@ -14,7 +14,6 @@ namespace Tadcka\Bundle\SitemapBundle\Tests\Provider;
 use Symfony\Component\HttpFoundation\Request;
 use Tadcka\Component\Tree\Model\Manager\NodeTranslationManagerInterface;
 use Tadcka\Bundle\SitemapBundle\Provider\PageNodeProvider;
-use Tadcka\Bundle\SitemapBundle\Security\PageSecurityManager;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -41,10 +40,7 @@ class PageNodeProviderTest extends \PHPUnit_Framework_TestCase
         $this->nodeTranslationManager = $this
             ->getMock('Tadcka\\Component\\Tree\\Model\\Manager\\NodeTranslationManagerInterface');
 
-        $this->pageNodeProvider = new PageNodeProvider(
-            $this->nodeTranslationManager,
-            new PageSecurityManager($this->getMock('Symfony\\Component\\Security\\Core\\SecurityContextInterface'))
-        );
+        $this->pageNodeProvider = new PageNodeProvider($this->nodeTranslationManager);
     }
 
     /**
@@ -63,18 +59,18 @@ class PageNodeProviderTest extends \PHPUnit_Framework_TestCase
         $this->pageNodeProvider->getNodeTranslationOr404($this->createRequest());
     }
 
-    /**
-     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
-    public function testGetNodeTranslationOr404WithCanNotView()
-    {
-        $this->nodeTranslationManager
-            ->expects($this->any())
-            ->method('findTranslationByRoute')
-            ->willReturn($this->getMock('Tadcka\\Component\\Tree\\Model\\NodeTranslation'));
-
-        $this->pageNodeProvider->getNodeTranslationOr404($this->createRequest());
-    }
+//    /**
+//     * @expectedException \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+//     */
+//    public function testGetNodeTranslationOr404WithCanNotView()
+//    {
+//        $this->nodeTranslationManager
+//            ->expects($this->any())
+//            ->method('findTranslationByRoute')
+//            ->willReturn($this->getMock('Tadcka\\Component\\Tree\\Model\\NodeTranslation'));
+//
+//        $this->pageNodeProvider->getNodeTranslationOr404($this->createRequest());
+//    }
 
     public function testGetNodeTranslationOr404()
     {

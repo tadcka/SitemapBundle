@@ -47,9 +47,10 @@ class NodeParentIsOnlineValidator extends ConstraintValidator
      */
     public function validate($nodeTranslation, Constraint $constraint)
     {
-        $node = $nodeTranslation->getNode();
+        $route = $nodeTranslation->getRoute();
+        $parentIsOnline = $this->parentIsOnline($nodeTranslation->getNode(), $nodeTranslation->getLang());
 
-        if ($nodeTranslation->isOnline() && (false === $this->nodeParentIsOnline($node, $nodeTranslation->getLang()))) {
+        if ((null !== $route) && $route->isVisible() && (false === $parentIsOnline)) {
             $this->context->addViolation($constraint->message, array('%locale%' => $nodeTranslation->getLang()));
         }
     }
@@ -62,19 +63,24 @@ class NodeParentIsOnlineValidator extends ConstraintValidator
      *
      * @return bool
      */
-    private function nodeParentIsOnline(NodeInterface $node, $locale)
+    private function parentIsOnline(NodeInterface $node, $locale)
     {
         $parent = $node->getParent();
-        $hasController = $this->routeHelper->hasController($parent->getType());
 
-        if ((null !== $parent) && $hasController) {
-            /** @var NodeTranslationInterface $translation */
-            $translation = $parent->getTranslation($locale);
-            if ((null === $translation) || !$translation->isOnline()
-                || (false === $this->routeHelper->hasRoute($locale, $node))
-            ) {
+        if ((null !== $parent) && $this->routeHelper->hasController($parent->getType())) {
+            if (false === $this->routeHelper->hasRoute($locale, $node)) {
                 return false;
             }
+
+            if (null === $translation = $parent->getTranslation($locale)) {
+                return false;
+            }
+
+            if (null === $route = $translation->getRoute()) {
+                return false;
+            }
+
+            return $route->isVisible();
         }
 
         return true;

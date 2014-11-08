@@ -70,10 +70,6 @@ class RouterHelper
      */
     public function getRouteController($nodeType)
     {
-        if ('redirect' === $nodeType) {
-            return 'tadcka_routing.redirect_controller:redirectAction';
-        }
-
         if ($this->hasController($nodeType)) {
             return $this->controllers[$nodeType];
         }
@@ -94,7 +90,7 @@ class RouterHelper
      */
     public function getRoutePattern($pattern, NodeInterface $node, $locale)
     {
-        if ((false === $this->hasController($node->getType())) && ('redirect' !== $node->getType())) {
+        if (false === $this->hasController($node->getType())) {
             throw new RouteException(sprintf('Node type %s don\'t have controller!', $node->getType()));
         }
 
@@ -192,14 +188,17 @@ class RouterHelper
     private function getRouteFullPath(NodeInterface $node, $locale)
     {
         $path = '';
-        $parent = $node->getParent();
 
-        if ((null !== $parent) && $this->hasController($parent->getType())) {
-            $path = $this->getRouteFullPath($parent, $locale);
-        }
+        if ($this->hasController($node->getType())) {
+            $parent = $node->getParent();
 
-        if (null !== $translation = $node->getTranslation($locale)) {
-            $path .= $this->normalizeRoutePattern($translation->getTitle());
+            if ((null !== $parent) && $this->hasController($parent->getType())) {
+                $path = $this->getRouteFullPath($parent, $locale);
+            }
+
+            if (null !== $translation = $node->getTranslation($locale)) {
+                $path .= $this->normalizeRoutePattern($translation->getTitle());
+            }
         }
 
         return $path;

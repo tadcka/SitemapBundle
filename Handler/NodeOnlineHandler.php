@@ -59,11 +59,7 @@ class NodeOnlineHandler
      */
     public function process($locale, Messages $messages, NodeInterface $node)
     {
-        $nodeTranslation = $node->getTranslation($locale);
-
-        $nodeTranslation->setOnline(!$nodeTranslation->isOnline());
-
-        if (null === $nodeTranslation) {
+        if (null === $nodeTranslation = $node->getTranslation($locale)) {
             $messages->addError(
                 $this->translator->trans(
                     'node_translation_not_found',
@@ -73,6 +69,10 @@ class NodeOnlineHandler
             );
 
             return false;
+        }
+
+        if (null !== $route = $nodeTranslation->getRoute()) {
+            $route->setVisible(!$route->isVisible());
         }
 
         $constraints = array(new NodeRouteNotEmpty(), new NodeParentIsOnline());

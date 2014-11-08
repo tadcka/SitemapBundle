@@ -19,8 +19,8 @@ form:
     type: Tipas
     priority: Prioritetas
   route:
-    online: Publikuoti kategoriją
     pattern: Publikavimo adresas
+    visible: Publikuoti kategoriją
   select: Pasirinkite
   button:
     save: Išsaugoti
