@@ -9,4 +9,4 @@ v0.3.0
  * [BC BREAK] Changed routing bundle namespace to routing component;
  * Add redirect node type;
  * [BC BREAK] Removed node translation online, use route visibility;
- * Remove page security manager.
+ * Removed page security manager.
