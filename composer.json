@@ -17,7 +17,7 @@
 
         "symfony/framework-bundle" : ">=2.3",
         "friendsofsymfony/jsrouting-bundle": "~1.5",
-        "nercury/translation-editor-bundle": "0.1.x-dev",
+        "nercury/translation-editor-bundle": "~0.1",
         "jms/serializer-bundle": "~0.13",
         "aferrandini/urlizer": "1.0.*",
 
