@@ -42,7 +42,9 @@ $.fn.sitemap = function () {
         var $tabContent = $($currentTabTarget.attr('href'));
 
         if ($tabContent.is(':empty')) {
-            $content.load($currentTabTarget.data('href'), $tabContent, function () {});
+            $content.load($currentTabTarget.data('href'), $tabContent, function () {
+                $tabContent.find('.silvestra-tag').tagging();
+            });
         }
 
         $content.cleanMessages();
@@ -59,8 +61,9 @@ $.fn.sitemap = function () {
 
         $button.attr('disabled', 'disabled');
         if ($content.getContent().find('.tab-content:first').length) {
+            var $tabContent = $content.getActiveTab();
 
-            $content.submit($form.attr('action'), $form.serialize(), $content.getActiveTab(), function () {
+            $content.submit($form.attr('action'), $form.serialize(), $tabContent, function () {
                 var $parent = $tree.getParent($currentNode);
 
                 if ('#' !== $parent) {
@@ -69,6 +72,7 @@ $.fn.sitemap = function () {
                     $tree.renameNode($currentNode);
                 }
                 $button.attr('disabled', '');
+                $tabContent.find('.silvestra-tag').tagging();
             });
         } else {
             $content.submit($form.attr('action'), $form.serialize(), $content.getContent(), function ($response) {
