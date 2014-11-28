@@ -51,3 +51,8 @@ This bundle is under the MIT license. See the complete license in the bundle:
 
 Code License:
 [Resources/meta/LICENSE](https://github.com/tadcka/SitemapBundle/blob/master/Resources/meta/LICENSE)
+
+Authors
+---------
+
+The bundle was originally created by Tadas Gliaubicas. See the list of [contributors](https://github.com/tadcka/SitemapBundle/contributors).
