@@ -3,7 +3,7 @@ SitemapBundle
 
 [![Build Status](https://scrutinizer-ci.com/g/tadcka/SitemapBundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/tadcka/SitemapBundle/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/tadcka/SitemapBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/tadcka/SitemapBundle/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/tadcka/SitemapBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/tadcka/SitemapBundle/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/tadcka/sitemap-bundle/v/stable.svg)](https://packagist.org/packages/tadcka/sitemap-bundle) [![Total Downloads](https://poser.pugx.org/tadcka/sitemap-bundle/downloads.svg)](https://packagist.org/packages/tadcka/sitemap-bundle) [![Latest Unstable Version](https://poser.pugx.org/tadcka/sitemap-bundle/v/unstable.svg)](https://packagist.org/packages/tadcka/sitemap-bundle) [![License](https://poser.pugx.org/tadcka/sitemap-bundle/license.svg)](https://packagist.org/packages/tadcka/sitemap-bundle)
 
 Simple web page list manager.
 
