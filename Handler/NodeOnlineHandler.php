@@ -11,12 +11,16 @@
 
 namespace Tadcka\Bundle\SitemapBundle\Handler;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\ValidatorInterface;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
+use Tadcka\Component\Tree\Event\TreeNodeEvent;
+use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
 use Tadcka\Component\Tree\Model\NodeInterface;
 use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeParentIsOnline;
 use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeRouteNotEmpty;
+use Tadcka\Component\Tree\TadckaTreeEvents;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -25,6 +29,16 @@ use Tadcka\Bundle\SitemapBundle\Validator\Constraints\NodeRouteNotEmpty;
  */
 class NodeOnlineHandler
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var NodeManagerInterface
+     */
+    private $nodeManager;
+
     /**
      * @var TranslatorInterface
      */
@@ -38,11 +52,19 @@ class NodeOnlineHandler
     /**
      * Constructor.
      *
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param NodeManagerInterface $nodeManager
      * @param TranslatorInterface $translator
      * @param ValidatorInterface $validator
      */
-    public function __construct(TranslatorInterface $translator, ValidatorInterface $validator)
-    {
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher,
+        NodeManagerInterface $nodeManager,
+        TranslatorInterface $translator,
+        ValidatorInterface $validator
+    ) {
+        $this->nodeManager = $nodeManager;
+        $this->eventDispatcher = $eventDispatcher;
         $this->translator = $translator;
         $this->validator = $validator;
     }
@@ -92,11 +114,20 @@ class NodeOnlineHandler
      * On success.
      *
      * @param string $locale
-     * @param Messages $messages
+     * @param NodeInterface $node
+     *
+     * @return Messages
      */
-    public function onSuccess($locale, Messages $messages)
+    public function onSuccess($locale, NodeInterface $node)
     {
-        $success = $this->translator->trans('success.online_save', array('%locale%' => $locale), 'TadckaSitemapBundle');
-        $messages->addSuccess($success);
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
+        $this->nodeManager->save();
+
+        $messages = new Messages();
+        $messages->addSuccess(
+            $this->translator->trans('success.online_save', array('%locale%' => $locale), 'TadckaSitemapBundle')
+        );
+
+        return $messages;
     }
 }
