@@ -73,7 +73,7 @@ class NodeRedirectRouteController
         $messages = new Messages();
 
         if ($this->formHandler->process($request, $form)) {
-            $message = $this->formHandler->onSuccess($node);
+            $message = $this->formHandler->onSuccess($request->getLocale(), $node);
             $messages->addSuccess($message);
 
             // Hack... Form with new data.

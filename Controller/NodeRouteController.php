@@ -83,7 +83,7 @@ class NodeRouteController
         $messages = new Messages();
 
         if ($this->formHandler->process($request, $form)) {
-            $message = $this->formHandler->onSuccess($node);
+            $message = $this->formHandler->onSuccess($request->getLocale(), $node);
             $messages->addSuccess($message);
             if ('json' === $request->getRequestFormat()) {
                 $jsonContent->setToolbar($this->renderToolbar($node));

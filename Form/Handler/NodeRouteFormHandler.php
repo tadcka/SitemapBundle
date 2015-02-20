@@ -90,13 +90,14 @@ class NodeRouteFormHandler
     /**
      * On success.
      *
+     * @param string $locale
      * @param NodeInterface $node
      *
      * @return string
      */
-    public function onSuccess(NodeInterface $node)
+    public function onSuccess($locale, NodeInterface $node)
     {
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($locale, $node));
         $this->nodeTranslationManager->save();
 
         return $this->translator->trans('success.node_route_save', array(), 'TadckaSitemapBundle');

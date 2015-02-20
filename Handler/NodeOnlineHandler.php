@@ -116,18 +116,13 @@ class NodeOnlineHandler
      * @param string $locale
      * @param NodeInterface $node
      *
-     * @return Messages
+     * @return string
      */
     public function onSuccess($locale, NodeInterface $node)
     {
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($locale, $node));
         $this->nodeManager->save();
 
-        $messages = new Messages();
-        $messages->addSuccess(
-            $this->translator->trans('success.online_save', array('%locale%' => $locale), 'TadckaSitemapBundle')
-        );
-
-        return $messages;
+        return $this->translator->trans('success.online_save', array('%locale%' => $locale), 'TadckaSitemapBundle');
     }
 }

@@ -84,17 +84,18 @@ class NodeFormHandler
     /**
      * On node create success.
      *
+     * @param string $locale
      * @param NodeInterface $node
      *
      * @return string
      */
-    public function onCreateSuccess(NodeInterface $node)
+    public function onCreateSuccess($locale, NodeInterface $node)
     {
-        $treeNodeEvent = $this->createEvent($node);
+        $event = $this->createTreeNodeEvent($locale, $node);
 
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_PRE_CREATE, $treeNodeEvent);
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_PRE_CREATE, $event);
         $this->nodeManager->save();
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_CREATE_SUCCESS, $treeNodeEvent);
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_CREATE_SUCCESS, $event);
         $this->nodeManager->save();
 
         return $this->translator->trans('success.create_node', array(), 'TadckaSitemapBundle');
@@ -103,13 +104,16 @@ class NodeFormHandler
     /**
      * On node edit success.
      *
+     * @param string $locale
      * @param NodeInterface $node
      *
      * @return string
      */
-    public function onEditSuccess(NodeInterface $node)
+    public function onEditSuccess($locale, NodeInterface $node)
     {
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, $this->createEvent($node));
+        $event = $this->createTreeNodeEvent($locale, $node);
+
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, $event);
         $this->nodeManager->save();
 
         return $this->translator->trans('success.edit_node', array(), 'TadckaSitemapBundle');
@@ -118,12 +122,13 @@ class NodeFormHandler
     /**
      * Create tree node event.
      *
+     * @param string $locale
      * @param NodeInterface $node
      *
      * @return TreeNodeEvent
      */
-    private function createEvent(NodeInterface $node)
+    private function createTreeNodeEvent($locale, NodeInterface $node)
     {
-        return new TreeNodeEvent($node);
+        return new TreeNodeEvent($locale, $node);
     }
 }

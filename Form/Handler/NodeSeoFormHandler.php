@@ -16,7 +16,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
-use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Component\Tree\Model\NodeInterface;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\TadckaTreeEvents;
@@ -90,13 +89,16 @@ class NodeSeoFormHandler
     /**
      * On success.
      *
-     * @param Messages $messages
+     * @param string $locale
      * @param NodeInterface $node
+     *
+     * @return string
      */
-    public function onSuccess(Messages $messages, NodeInterface $node)
+    public function onSuccess($locale, NodeInterface $node)
     {
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($node));
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_EDIT_SUCCESS, new TreeNodeEvent($locale, $node));
         $this->seoMetadataManager->save();
-        $messages->addSuccess($this->translator->trans('success.node_seo_save', array(), 'TadckaSitemapBundle'));
+
+        return $this->translator->trans('success.node_seo_save', array(), 'TadckaSitemapBundle');
     }
 }

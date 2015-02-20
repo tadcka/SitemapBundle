@@ -66,7 +66,7 @@ class NodeSeoController
         $form = $this->formFactory->create($node);
 
         if ($this->formHandler->process($request, $form)) {
-            $this->formHandler->onSuccess($messages, $node);
+            $messages->addSuccess($this->formHandler->onSuccess($request->getLocale(), $node));
         }
 
         if ('json' === $request->getRequestFormat()) {

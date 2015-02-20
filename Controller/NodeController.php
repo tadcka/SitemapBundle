@@ -95,7 +95,7 @@ class NodeController
 
         if ($this->nodeFormHandler->process($request, $form)) {
             $messages = new Messages();
-            $messages->addSuccess($this->nodeFormHandler->onCreateSuccess($node));
+            $messages->addSuccess($this->nodeFormHandler->onCreateSuccess($request->getLocale(), $node));
 
             if ('json' === $request->getRequestFormat()) {
                 $jsonContent = $this->responseHelper->createJsonContent($node);
@@ -133,7 +133,7 @@ class NodeController
         $messages = new Messages();
 
         if ($this->nodeFormHandler->process($request, $form)) {
-            $messages->addSuccess($this->nodeFormHandler->onEditSuccess($node));
+            $messages->addSuccess($this->nodeFormHandler->onEditSuccess($request->getLocale(), $node));
             $jsonContent->setMessages($this->responseHelper->renderMessages($messages));
         }
 
@@ -160,7 +160,8 @@ class NodeController
         $jsonContent = $this->responseHelper->createJsonContent($node);
 
         if ($this->nodeDeleteHandler->process($node, $request)) {
-            $messages = $this->nodeDeleteHandler->onSuccess($request->getLocale(), $node);
+            $messages = new Messages();
+            $messages->addSuccess($this->nodeDeleteHandler->onSuccess($request->getLocale(), $node));
 
             if ('json' === $request->getRequestFormat()) {
                 $jsonContent->setMessages($this->responseHelper->renderMessages($messages));

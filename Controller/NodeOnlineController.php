@@ -81,7 +81,7 @@ class NodeOnlineController
         $messages = new Messages();
 
         if ($this->nodeOnlineHandler->process($locale, $messages, $node)) {
-            $messages = $this->nodeOnlineHandler->onSuccess($locale, $node);
+            $messages->addSuccess($this->nodeOnlineHandler->onSuccess($locale, $node));
             $jsonContent->setToolbar($this->renderToolbar($node));
 
             $this->nodeManager->save();

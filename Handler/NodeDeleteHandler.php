@@ -14,7 +14,6 @@ namespace Tadcka\Bundle\SitemapBundle\Handler;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
-use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
 use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
 use Tadcka\Component\Tree\Model\NodeInterface;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
@@ -53,7 +52,8 @@ class NodeDeleteHandler
         EventDispatcherInterface $eventDispatcher,
         NodeManagerInterface $nodeManager,
         TranslatorInterface $translator
-    ) {
+    )
+    {
         $this->eventDispatcher = $eventDispatcher;
         $this->nodeManager = $nodeManager;
         $this->translator = $translator;
@@ -70,7 +70,9 @@ class NodeDeleteHandler
     public function process(NodeInterface $node, Request $request)
     {
         if ((null !== $node->getParent()) && $request->isMethod('DELETE')) {
-            $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_PRE_DELETE, $this->createEvent($node));
+            $event = $this->createTreeNodeEvent($request->getLocale(), $node);
+
+            $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_PRE_DELETE, $event);
             $this->nodeManager->remove($node, true);
 
             return true;
@@ -85,36 +87,49 @@ class NodeDeleteHandler
      * @param string $locale
      * @param NodeInterface $node
      *
-     * @return Messages
+     * @return string
      */
     public function onSuccess($locale, NodeInterface $node)
     {
-        $messages = new Messages();
-        $title = $this->translator->trans('not_found_title', array(), 'TadckaSitemapBundle');
+        $event = $this->createTreeNodeEvent($locale, $node);
 
-        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_DELETE_SUCCESS, $this->createEvent($node));
+        $this->eventDispatcher->dispatch(TadckaTreeEvents::NODE_DELETE_SUCCESS, $event);
         $this->nodeManager->save();
 
-        if (null !== $translation = $node->getTranslation($locale)) {
-            $title = $translation->getTitle();
-        }
-
-        $messages->addSuccess(
-            $this->translator->trans('success.delete_node', array('%title%' => $title), 'TadckaSitemapBundle')
+        return $this->translator->trans(
+            'success.delete_node',
+            array('%title%' => $this->getNodeTitle($locale, $node)),
+            'TadckaSitemapBundle'
         );
-
-        return $messages;
     }
 
     /**
      * Create tree node event.
      *
+     * @param string $locale
      * @param NodeInterface $node
      *
      * @return TreeNodeEvent
      */
-    private function createEvent(NodeInterface $node)
+    private function createTreeNodeEvent($locale, NodeInterface $node)
     {
-        return new TreeNodeEvent($node);
+        return new TreeNodeEvent($locale, $node);
+    }
+
+    /**
+     * Get node title.
+     *
+     * @param string $locale
+     * @param NodeInterface $node
+     *
+     * @return string
+     */
+    private function getNodeTitle($locale, NodeInterface $node)
+    {
+        if (null !== $translation = $node->getTranslation($locale)) {
+            return $translation->getTitle();
+        }
+
+        return $this->translator->trans('not_found_title', array(), 'TadckaSitemapBundle');
     }
 }
