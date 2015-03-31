@@ -15,6 +15,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\ValidatorInterface;
 use Tadcka\Bundle\SitemapBundle\Frontend\Message\Messages;
+use Tadcka\Bundle\SitemapBundle\Routing\RouteVisibilityManager;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
 use Tadcka\Component\Tree\Model\NodeInterface;
@@ -40,6 +41,11 @@ class NodeOnlineHandler
     private $nodeManager;
 
     /**
+     * @var RouteVisibilityManager
+     */
+    private $visibilityManager;
+
+    /**
      * @var TranslatorInterface
      */
     private $translator;
@@ -54,17 +60,20 @@ class NodeOnlineHandler
      *
      * @param EventDispatcherInterface $eventDispatcher
      * @param NodeManagerInterface $nodeManager
+     * @param RouteVisibilityManager $visibilityManager
      * @param TranslatorInterface $translator
      * @param ValidatorInterface $validator
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         NodeManagerInterface $nodeManager,
+        RouteVisibilityManager $visibilityManager,
         TranslatorInterface $translator,
         ValidatorInterface $validator
     ) {
         $this->nodeManager = $nodeManager;
         $this->eventDispatcher = $eventDispatcher;
+        $this->visibilityManager = $visibilityManager;
         $this->translator = $translator;
         $this->validator = $validator;
     }
@@ -92,9 +101,6 @@ class NodeOnlineHandler
             return false;
         }
 
-        if (null !== $route = $nodeTranslation->getRoute()) {
-            $route->setVisible(!$route->isVisible());
-        }
 
         $constraints = array(new NodeRouteNotEmpty(), new NodeParentIsOnline());
         $violation = $this->validator->validateValue($nodeTranslation, $constraints);
@@ -105,6 +111,14 @@ class NodeOnlineHandler
             }
 
             return false;
+        }
+
+        if (null !== $route = $nodeTranslation->getRoute()) {
+            if ($route->isVisible()) {
+                $this->visibilityManager->setInvisible($locale, $node);
+            } else {
+                $this->visibilityManager->setVisible($locale, $node);
+            }
         }
 
         return true;

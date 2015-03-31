@@ -1,71 +1,66 @@
 <?xml version="1.0" ?>
 
 <container xmlns="http://symfony.com/schema/dic/services"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
         <!--Override nercury translation form-->
         <parameter key="form.type.translations.class">Tadcka\Bundle\SitemapBundle\Form\Type\NercuryTranslationsEditorType</parameter>
-
-        <parameter key="tadcka_sitemap.listener.sitemap_node.class">Tadcka\Bundle\SitemapBundle\EventListener\SitemapNodeListener</parameter>
-        <parameter key="tadcka_sitemap.listener.tree_node.class">Tadcka\Bundle\SitemapBundle\EventListener\TreeNodeListener</parameter>
-        <parameter key="tadcka_sitemap.provider.page_node.class">Tadcka\Bundle\SitemapBundle\Provider\PageNodeProvider</parameter>
-        <parameter key="tadcka_sitemap.provider.class">Tadcka\Bundle\SitemapBundle\Provider\SitemapProvider</parameter>
-        <parameter key="tadcka_sitemap.handler.node_delete.class">Tadcka\Bundle\SitemapBundle\Handler\NodeDeleteHandler</parameter>
-        <parameter key="tadcka_sitemap.handler.node_online.class">Tadcka\Bundle\SitemapBundle\Handler\NodeOnlineHandler</parameter>
-        <parameter key="tadcka_sitemap.factory.node_event.class">Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEventFactory</parameter>
     </parameters>
 
     <services>
 
         <!--Sitemap node event listener-->
-        <service id="tadcka_sitemap.listener.sitemap_node" class="%tadcka_sitemap.listener.sitemap_node.class%">
-            <tag name="kernel.event_listener" event="tadcka_sitemap.node_edit" method="onSitemapNodeEdit" />
-            <argument type="service" id="tadcka_sitemap.routing.helper" />
+        <service id="tadcka_sitemap.listener.sitemap_node" class="Tadcka\Bundle\SitemapBundle\EventListener\SitemapNodeListener">
+            <tag name="kernel.event_listener" event="tadcka_sitemap.node_edit" method="onSitemapNodeEdit"/>
+
+            <argument type="service" id="tadcka_sitemap.routing.helper"/>
         </service>
 
         <!--Tree node create success event listener-->
         <!--Tree node pre delete event listener-->
-        <service id="tadcka_sitemap.listener.tree_node" class="%tadcka_sitemap.listener.tree_node.class%">
-            <tag name="kernel.event_listener" event="tadcka_tree.node.create.success" method="onSitemapNodeCreate" />
-            <tag name="kernel.event_listener" event="tadcka_tree.node.pre_delete" method="onSitemapNodeDelete" />
-            <argument type="service" id="tadcka_routing.manager.redirect_route" />
-            <argument type="service" id="tadcka_sitemap.routing.generator" />
-            <argument type="service" id="tadcka_routing.manager.route.in_memory" />
-            <argument type="service" id="tadcka_sitemap.routing.helper" />
-            <argument type="service" id="silvestra_seo.manager.seo_metadata" />
-            <argument type="service" id="tadcka_sitemap.manager.node_translation" />
+        <service id="tadcka_sitemap.listener.tree_node" class="Tadcka\Bundle\SitemapBundle\EventListener\TreeNodeListener">
+            <tag name="kernel.event_listener" event="tadcka_tree.node.create.success" method="onSitemapNodeCreate"/>
+            <tag name="kernel.event_listener" event="tadcka_tree.node.pre_delete" method="onSitemapNodeDelete"/>
+
+            <argument type="service" id="tadcka_routing.manager.redirect_route"/>
+            <argument type="service" id="tadcka_sitemap.routing.generator"/>
+            <argument type="service" id="tadcka_routing.manager.route.in_memory"/>
+            <argument type="service" id="tadcka_sitemap.routing.helper"/>
+            <argument type="service" id="silvestra_seo.manager.seo_metadata"/>
+            <argument type="service" id="tadcka_sitemap.manager.node_translation"/>
             <argument>%tadcka_sitemap.node.incremental_priority%</argument>
         </service>
 
         <!--Sitemap page node provider-->
-        <service id="tadcka_sitemap.provider.page_node" class="%tadcka_sitemap.provider.page_node.class%">
-            <argument type="service" id="tadcka_sitemap.manager.node_translation" />
+        <service id="tadcka_sitemap.provider.page_node" class="Tadcka\Bundle\SitemapBundle\Provider\PageNodeProvider">
+            <argument type="service" id="tadcka_sitemap.manager.node_translation"/>
         </service>
 
         <!--Sitemap provider-->
-        <service id="tadcka_sitemap.provider" class="%tadcka_sitemap.provider.class%">
-            <argument type="service" id="tadcka_sitemap.manager.node" />
-            <argument type="service" id="tadcka_sitemap.tree.provider" />
+        <service id="tadcka_sitemap.provider" class="Tadcka\Bundle\SitemapBundle\Provider\SitemapProvider">
+            <argument type="service" id="tadcka_sitemap.manager.node"/>
+            <argument type="service" id="tadcka_sitemap.tree.provider"/>
         </service>
 
-        <service id="tadcka_sitemap.handler.node_delete" class="%tadcka_sitemap.handler.node_delete.class%">
-            <argument type="service" id="event_dispatcher" />
-            <argument type="service" id="tadcka_sitemap.manager.node" />
-            <argument type="service" id="translator" />
+        <service id="tadcka_sitemap.handler.node_delete" class="Tadcka\Bundle\SitemapBundle\Handler\NodeDeleteHandler">
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="tadcka_sitemap.manager.node"/>
+            <argument type="service" id="translator"/>
         </service>
 
-        <service id="tadcka_sitemap.handler.node_online" class="%tadcka_sitemap.handler.node_online.class%">
-            <argument type="service" id="event_dispatcher" />
-            <argument type="service" id="tadcka_sitemap.manager.node" />
-            <argument type="service" id="translator" />
-            <argument type="service" id="validator" />
+        <service id="tadcka_sitemap.handler.node_online" class="Tadcka\Bundle\SitemapBundle\Handler\NodeOnlineHandler">
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="tadcka_sitemap.manager.node"/>
+            <argument type="service" id="tadcka_sitemap.routing.manager.visibility"/>
+            <argument type="service" id="translator"/>
+            <argument type="service" id="validator"/>
         </service>
 
-        <service id="tadcka_sitemap.factory.node_event" class="%tadcka_sitemap.factory.node_event.class%">
-            <argument type="service" id="router" />
-            <argument type="service" id="translator" />
+        <service id="tadcka_sitemap.factory.node_event" class="Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEventFactory">
+            <argument type="service" id="router"/>
+            <argument type="service" id="translator"/>
         </service>
 
     </services>

@@ -4,29 +4,23 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="tadcka_sitemap.form_factory.node_seo.class">Tadcka\Bundle\SitemapBundle\Form\Factory\NodeSeoFormFactory</parameter>
-        <parameter key="tadcka_sitemap.form_handler.node_seo.class">Tadcka\Bundle\SitemapBundle\Form\Handler\NodeSeoFormHandler</parameter>
-        <parameter key="tadcka_sitemap.form_type.node_seo.class">Tadcka\Bundle\SitemapBundle\Form\Type\NodeSeoType</parameter>
-    </parameters>
-
     <services>
 
         <!--Sitemap node seo form factory-->
-        <service id="tadcka_sitemap.form_factory.node_seo" class="%tadcka_sitemap.form_factory.node_seo.class%" public="false">
+        <service id="tadcka_sitemap.form_factory.node_seo" class="Tadcka\Bundle\SitemapBundle\Form\Factory\NodeSeoFormFactory" public="false">
             <argument type="service" id="form.factory" />
             <argument type="service" id="router" />
         </service>
 
         <!--Sitemap node seo form handler-->
-        <service id="tadcka_sitemap.form_handler.node_seo" class="%tadcka_sitemap.form_handler.node_seo.class%" public="false">
+        <service id="tadcka_sitemap.form_handler.node_seo" class="Tadcka\Bundle\SitemapBundle\Form\Handler\NodeSeoFormHandler" public="false">
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="silvestra_seo.manager.seo_metadata" />
             <argument type="service" id="translator" />
         </service>
 
         <!--Sitemap node seo form type-->
-        <service id="tadcka_sitemap.form_type.node_seo" class="%tadcka_sitemap.form_type.node_seo.class%">
+        <service id="tadcka_sitemap.form_type.node_seo" class="Tadcka\Bundle\SitemapBundle\Form\Type\NodeSeoType">
             <tag name="form.type" alias="tadcka_sitemap_node_seo" />
             <argument>%tadcka_sitemap.model.node.class%</argument>
         </service>

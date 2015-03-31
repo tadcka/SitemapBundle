@@ -4,22 +4,17 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="tadcka_sitemap.helper.response.class">Tadcka\Bundle\SitemapBundle\Frontend\ResponseHelper</parameter>
-        <parameter key="tadcka_sitemap.helper.tree.class">Tadcka\Bundle\SitemapBundle\Frontend\TreeHelper</parameter>
-    </parameters>
-
     <services>
 
         <!--Sitemap response helper-->
-        <service id="tadcka_sitemap.helper.response" class="%tadcka_sitemap.helper.response.class%">
+        <service id="tadcka_sitemap.helper.response" class="Tadcka\Bundle\SitemapBundle\Frontend\ResponseHelper">
             <argument type="service" id="tadcka_sitemap.manager.node" />
             <argument type="service" id="serializer" />
             <argument type="service" id="templating" />
         </service>
 
         <!--Sitemap tree helper-->
-        <service id="tadcka_sitemap.helper.tree" class="%tadcka_sitemap.helper.tree.class%">
+        <service id="tadcka_sitemap.helper.tree" class="Tadcka\Bundle\SitemapBundle\Frontend\TreeHelper">
             <argument type="service" id="tadcka_sitemap.node.provider" />
             <argument type="service" id="tadcka_sitemap.manager.node_translation" />
             <argument type="service" id="tadcka_sitemap.provider" />

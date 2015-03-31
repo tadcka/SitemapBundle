@@ -83,8 +83,13 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
-                ->scalarNode('route_strategy')->defaultValue(RouteGenerator::STRATEGY_SIMPLE)
-                    ->cannotBeEmpty()->end()
+                ->arrayNode('route')->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('strategy')->defaultValue(RouteGenerator::STRATEGY_SIMPLE)
+                            ->cannotBeEmpty()->end()
+                        ->booleanNode('recursive_invisible')->defaultTrue()->cannotBeEmpty()->end()
+                    ->end()
+                ->end()
 
             ->end();
 

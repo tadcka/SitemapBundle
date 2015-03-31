@@ -4,29 +4,22 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter key="tadcka_sitemap.manager.tree.default.class">Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\TreeManager</parameter>
-        <parameter key="tadcka_sitemap.manager.node.default.class">Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\NodeManager</parameter>
-        <parameter key="tadcka_sitemap.manager.node_translation.default.class">Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\NodeTranslationManager</parameter>
-        <parameter key="tadcka_sitemap.manager.node_seo_metadata.class">Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\NodeSeoMetadataManager</parameter>
-    </parameters>
-
     <services>
 
         <!--Sitemap tree manager-->
-        <service id="tadcka_sitemap.manager.tree.default" class="%tadcka_sitemap.manager.tree.default.class%">
+        <service id="tadcka_sitemap.manager.tree.default" class="Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\TreeManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%tadcka_sitemap.model.tree.class%</argument>
         </service>
 
         <!--Sitemap default node manager-->
-        <service id="tadcka_sitemap.manager.node.default" class="%tadcka_sitemap.manager.node.default.class%">
+        <service id="tadcka_sitemap.manager.node.default" class="Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\NodeManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%tadcka_sitemap.model.node.class%</argument>
         </service>
 
         <!--Sitemap default node translation manager-->
-        <service id="tadcka_sitemap.manager.node_translation.default" class="%tadcka_sitemap.manager.node_translation.default.class%">
+        <service id="tadcka_sitemap.manager.node_translation.default" class="Tadcka\Bundle\SitemapBundle\Doctrine\EntityManager\NodeTranslationManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%tadcka_sitemap.model.node_translation.class%</argument>
         </service>

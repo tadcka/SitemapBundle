@@ -5,16 +5,13 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="tadcka_sitemap.tree.registry.class">Tadcka\Component\Tree\Registry\Tree\TreeRegistry</parameter>
         <parameter key="tadcka_sitemap.tree.config.class">Tadcka\Component\Tree\Registry\Tree\TreeConfig</parameter>
-
-        <parameter key="tadcka_sitemap.tree.provider.class">Tadcka\Component\Tree\Provider\TreeProvider</parameter>
     </parameters>
 
     <services>
 
         <!--Tree registry-->
-        <service id="tadcka_sitemap.tree.registry" class="%tadcka_sitemap.tree.registry.class%" public="false" />
+        <service id="tadcka_sitemap.tree.registry" class="Tadcka\Component\Tree\Registry\Tree\TreeRegistry" public="false" />
 
         <!--Register sitemap tree-->
         <service class="%tadcka_sitemap.tree.config.class%" public="false">
@@ -28,7 +25,7 @@
         </service>
 
         <!--Tree provider-->
-        <service id="tadcka_sitemap.tree.provider" class="%tadcka_sitemap.tree.provider.class%" public="true">
+        <service id="tadcka_sitemap.tree.provider" class="Tadcka\Component\Tree\Provider\TreeProvider" public="true">
             <argument type="service" id="tadcka_sitemap.manager.tree" />
             <argument type="service" id="tadcka_sitemap.tree.registry" />
         </service>

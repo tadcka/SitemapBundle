@@ -52,8 +52,7 @@ class NodeDeleteHandler
         EventDispatcherInterface $eventDispatcher,
         NodeManagerInterface $nodeManager,
         TranslatorInterface $translator
-    )
-    {
+    ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->nodeManager = $nodeManager;
         $this->translator = $translator;
