@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Tadcka\Component\Tree\Model\Manager\NodeManager as BaseNodeManager;
 use Tadcka\Component\Tree\Model\NodeInterface as TreeNodeInterface;
+use Tadcka\Component\Tree\Model\NodeInterface;
 use Tadcka\Component\Tree\Model\TreeInterface;
 use Tadcka\Component\Tree\Model\Manager\NodeManagerInterface;
 
@@ -59,6 +60,29 @@ class NodeManager extends BaseNodeManager implements NodeManagerInterface
     public function findNodeById($id)
     {
         return $this->repository->find($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findNodeParents(NodeInterface $node)
+    {
+        $qb = $this->repository->createQueryBuilder('n');
+
+        $qb->andWhere($qb->expr()->eq('n.root', ':root'))
+            ->setParameter('root', $node->getRoot());
+
+        $qb->andWhere($qb->expr()->lt('n.left', ':left'))
+            ->setParameter('left', $node->getLeft());
+
+        $qb->andWhere($qb->expr()->gt('n.right', ':right'))
+            ->setParameter('right', $node->getRight());
+
+        $qb->addOrderBy('n.left');
+
+        $qb->select('n');
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
