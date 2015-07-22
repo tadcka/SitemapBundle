@@ -12,7 +12,7 @@
 namespace Tadcka\Bundle\SitemapBundle\EventListener;
 
 use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEvent;
-use Tadcka\Bundle\SitemapBundle\Frontend\Model\Tab;
+use Tadcka\Bundle\SitemapBundle\Frontend\TabFactory;
 use Tadcka\Bundle\SitemapBundle\Routing\RedirectRoute;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 
@@ -29,15 +29,21 @@ class SitemapNodeListener
     private $routerHelper;
 
     /**
+     * @var TabFactory
+     */
+    private $tabFactory;
+
+    /**
      * Constructor.
      *
      * @param RouterHelper $routerHelper
+     * @param TabFactory $tabFactory
      */
-    public function __construct(RouterHelper $routerHelper)
+    public function __construct(RouterHelper $routerHelper, TabFactory $tabFactory)
     {
         $this->routerHelper = $routerHelper;
+        $this->tabFactory = $tabFactory;
     }
-
 
     /**
      * On sitemap node edit.
@@ -48,56 +54,22 @@ class SitemapNodeListener
     {
         $node = $event->getNode();
 
-        $menu = new Tab(
-            $event->getTranslator()->trans('node.menu', array(), 'TadckaSitemapBundle'),
-            'node_menu',
-            $event->getRouter()->generate(
-                'tadcka_sitemap_tree_edit_node',
-                array('_format' => 'json', 'nodeId' => $node->getId())
-            ),
-            250
-        );
-        $event->addTab($menu);
+        $menuTab = $this->tabFactory->createMenuTab($node);
+        $event->addTab($menuTab);
 
-        $hasController = $this->routerHelper->hasController($node->getType());
-        if ((null !== $node->getParent()) && ('redirect' !== $node->getType()) && $hasController) {
-            $route = new Tab(
-                $event->getTranslator()->trans('node.route', array(), 'TadckaSitemapBundle'),
-                'node_route',
-                $event->getRouter()->generate(
-                    'tadcka_sitemap_node_route',
-                    array('_format' => 'json', 'nodeId' => $node->getId())
-                ),
-                200
-            );
-
-            $event->addTab($route);
-
-            $seo = new Tab(
-                $event->getTranslator()->trans('node.seo', array(), 'TadckaSitemapBundle'),
-                'node_seo',
-                $event->getRouter()->generate(
-                    'tadcka_sitemap_seo',
-                    array('_format' => 'json', 'nodeId' => $node->getId())
-                ),
-                150
-            );
-
-            $event->addTab($seo);
+        if (null === $node->getParent()) {
+            return;
         }
 
         if (RedirectRoute::NODE_TYPE === $node->getType()) {
-            $redirect = new Tab(
-                $event->getTranslator()->trans('redirect', array(), 'TadckaSitemapBundle'),
-                'node_route',
-                $event->getRouter()->generate(
-                    'tadcka_sitemap_node_redirect_route',
-                    array('_format' => 'json', 'nodeId' => $node->getId())
-                ),
-                200
-            );
+            $redirectRouteTab = $this->tabFactory->createRedirectRouteTab($node);
+            $event->addTab($redirectRouteTab);
+        } elseif ($this->routerHelper->hasController($node->getType())) {
+            $routeTab = $this->tabFactory->createRouteTab($node);
+            $event->addTab($routeTab);
 
-            $event->addTab($redirect);
+            $seoTab = $this->tabFactory->createSeoTab($node);
+            $event->addTab($seoTab);
         }
     }
 }

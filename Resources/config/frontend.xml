@@ -22,5 +22,10 @@
             <argument type="service" id="tadcka_sitemap.tree.provider" />
         </service>
 
+        <service id="tadcka_sitemap.factory.tab" class="Tadcka\Bundle\SitemapBundle\Frontend\TabFactory" lazy="true">
+            <argument type="service" id="router" />
+            <argument type="service" id="translator" />
+        </service>
+
     </services>
 </container>

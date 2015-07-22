@@ -56,7 +56,7 @@ class NodeI18nRedirectRouteType extends AbstractType
     {
         $builder->add('route', 'tadcka_route', array('label' => false, 'translation_domain' => 'TadckaSitemapBundle'));
 
-        $builder->add('routeRedirect', 'tadcka_redirect_route', array('label' => false, 'mapped' => false));
+        $builder->add('routeRedirect', 'tadcka_redirect_route', array('label' => false, 'mapped' => false, 'use_route_target' => false));
 
         $postSetDataListener = function (FormEvent $event) {
             $form = $event->getForm();

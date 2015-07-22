@@ -72,6 +72,8 @@ class SitemapNodeEvent extends Event
      * Get router.
      *
      * @return RouterInterface
+     *
+     * @deprecated
      */
     public function getRouter()
     {
@@ -104,6 +106,8 @@ class SitemapNodeEvent extends Event
      * Get translator.
      *
      * @return TranslatorInterface
+     *
+     * @deprecated
      */
     public function getTranslator()
     {

@@ -16,6 +16,7 @@
             <tag name="kernel.event_listener" event="tadcka_sitemap.node_edit" method="onSitemapNodeEdit"/>
 
             <argument type="service" id="tadcka_sitemap.routing.helper"/>
+            <argument type="service" id="tadcka_sitemap.factory.tab"/>
         </service>
 
         <!--Tree node create success event listener-->
