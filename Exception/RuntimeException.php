@@ -14,8 +14,8 @@ namespace Tadcka\Bundle\SitemapBundle\Exception;
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
  *
- * @since 9/29/14 10:31 PM
+ * @since 7/21/15 12:19 AM
  */
-class RouteException extends \RuntimeException
+class RuntimeException extends \RuntimeException
 {
 }

@@ -11,15 +11,8 @@
 
 namespace Tadcka\Bundle\SitemapBundle\EventListener;
 
-use Silvestra\Component\Seo\Model\Manager\SeoMetadataManagerInterface;
-use Tadcka\Component\Routing\Model\Manager\RedirectRouteManagerInterface;
-use Tadcka\Component\Routing\Model\Manager\RouteManagerInterface;
-use Tadcka\Component\Tree\Model\Manager\NodeTranslationManagerInterface;
-use Tadcka\Component\Tree\Model\NodeInterface;
-use Tadcka\Bundle\SitemapBundle\Routing\RouteGenerator;
-use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
+use Tadcka\Bundle\SitemapBundle\Manager\SitemapManager;
 use Tadcka\Bundle\SitemapBundle\TadckaSitemapBundle;
-use Tadcka\Component\Routing\Model\RouteInterface;
 use Tadcka\Component\Tree\Event\TreeNodeEvent;
 
 /**
@@ -29,68 +22,20 @@ use Tadcka\Component\Tree\Event\TreeNodeEvent;
  */
 class TreeNodeListener
 {
-    /**
-     * @var RedirectRouteManagerInterface
-     */
-    private $redirectRouteManager;
 
     /**
-     * @var RouteGenerator
+     * @var SitemapManager
      */
-    private $routeGenerator;
-
-    /**
-     * @var RouteManagerInterface
-     */
-    private $routeManager;
-
-    /**
-     * @var RouterHelper
-     */
-    private $routerHelper;
-
-    /**
-     * @var SeoMetadataManagerInterface
-     */
-    private $seoMetadataManager;
-
-    /**
-     * @var NodeTranslationManagerInterface
-     */
-    private $translationManager;
-
-    /**
-     * @var bool
-     */
-    private $incrementalPriority;
+    private $sitemapManager;
 
     /**
      * Constructor.
      *
-     * @param RedirectRouteManagerInterface $redirectRouteManager
-     * @param RouteGenerator $routeGenerator
-     * @param RouteManagerInterface $routeManager
-     * @param RouterHelper $routerHelper
-     * @param SeoMetadataManagerInterface $seoMetadataManager
-     * @param NodeTranslationManagerInterface $translationManager
-     * @param bool $incrementalPriority
+     * @param SitemapManager $sitemapManager
      */
-    public function __construct(
-        RedirectRouteManagerInterface $redirectRouteManager,
-        RouteGenerator $routeGenerator,
-        RouteManagerInterface $routeManager,
-        RouterHelper $routerHelper,
-        SeoMetadataManagerInterface $seoMetadataManager,
-        NodeTranslationManagerInterface $translationManager,
-        $incrementalPriority
-    ) {
-        $this->redirectRouteManager = $redirectRouteManager;
-        $this->routeGenerator = $routeGenerator;
-        $this->routeManager = $routeManager;
-        $this->routerHelper = $routerHelper;
-        $this->seoMetadataManager = $seoMetadataManager;
-        $this->translationManager = $translationManager;
-        $this->incrementalPriority = $incrementalPriority;
+    public function __construct(SitemapManager $sitemapManager)
+    {
+        $this->sitemapManager = $sitemapManager;
     }
 
     /**
@@ -100,16 +45,9 @@ class TreeNodeListener
      */
     public function onSitemapNodeCreate(TreeNodeEvent $event)
     {
-        if (TadckaSitemapBundle::SITEMAP_TREE === $event->getNode()->getTree()->getSlug()) {
-            $node = $event->getNode();
-
-            if ($this->routerHelper->hasController($node->getType())) {
-                $this->createSeo($node);
-            }
-
-            if ($this->incrementalPriority) {
-                $this->incrementPriority($node);
-            }
+        $node = $event->getNode();
+        if (TadckaSitemapBundle::SITEMAP_TREE === $node->getTree()->getSlug()) {
+            $this->sitemapManager->onCreateNode($node);
         }
     }
 
@@ -121,77 +59,8 @@ class TreeNodeListener
     public function onSitemapNodeDelete(TreeNodeEvent $event)
     {
         $node = $event->getNode();
-
-        foreach ($node->getTranslations() as $translation) {
-            /** @var RouteInterface $route */
-            if (null !== $route = $translation->getRoute()) {
-                $this->routeManager->remove($route);
-
-                $redirectRouteName = $route->getDefault('redirectRouteName');
-                if ('redirect' === $node->getType() && (null !== $redirectRouteName)) {
-                    $redirectRoute = $this->redirectRouteManager->findByName($redirectRouteName);
-                    if (null !== $redirectRoute) {
-                        $this->redirectRouteManager->remove($redirectRoute);
-                    }
-                }
-            }
+        if (TadckaSitemapBundle::SITEMAP_TREE === $node->getTree()->getSlug()) {
+            $this->sitemapManager->onDeleteNode($node);
         }
-
-        foreach ($node->getSeoMetadata() as $seoMetadata) {
-            $this->seoMetadataManager->remove($seoMetadata);
-        }
-    }
-
-    /**
-     * Create seo.
-     *
-     * @param NodeInterface $node
-     */
-    private function createSeo(NodeInterface $node)
-    {
-        foreach ($node->getTranslations() as $translation) {
-            $locale = $translation->getLang();
-            $route = $this->routeManager->create();
-
-            $route->setRoutePattern($this->routerHelper->getRoutePattern($translation->getTitle(), $node, $locale));
-            $translation->setRoute($this->routeGenerator->generateRoute($route, $node, $locale));
-
-            $seoMetadata = $this->seoMetadataManager->create();
-            $seoMetadata->setLang($translation->getLang());
-            $seoMetadata->setTitle($translation->getTitle());
-            $node->addSeoMetadata($seoMetadata);
-            $this->seoMetadataManager->add($seoMetadata);
-
-            $this->routeManager->add($route);
-        }
-    }
-
-    /**
-     * Increment node priority.
-     *
-     * @param NodeInterface $node
-     */
-    private function incrementPriority(NodeInterface $node)
-    {
-        if (0 === $node->getPriority()) {
-            $node->setPriority(1 + $this->getMaxPriority($node->getParent()));
-        }
-    }
-
-    /**
-     * Get max priority.
-     *
-     * @param NodeInterface $parent
-     *
-     * @return int
-     */
-    private function getMaxPriority(NodeInterface $parent)
-    {
-        $priority = 0;
-        foreach ($parent->getChildren() as $child) {
-            $priority = max($priority, $child->getPriority());
-        }
-
-        return $priority;
     }
 }

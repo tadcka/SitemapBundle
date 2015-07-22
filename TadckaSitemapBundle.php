@@ -14,6 +14,7 @@ namespace Tadcka\Bundle\SitemapBundle;
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Tadcka\Bundle\SitemapBundle\DependencyInjection\Compiler\PriorityStrategyPass;
 use Tadcka\Component\Tree\DependencyInjection\AddNodeTypeConfigPass;
 use Tadcka\Component\Tree\DependencyInjection\AddTreeConfigPass;
 use Tadcka\Component\Tree\DependencyInjection\RegisterNodeTypeConfigPass;
@@ -43,6 +44,8 @@ class TadckaSitemapBundle extends Bundle
         $container->addCompilerPass(
             new RegisterNodeTypeConfigPass('tadcka_sitemap.node_type.registry', 'tadcka_sitemap.node_type')
         );
+
+        $container->addCompilerPass(new PriorityStrategyPass());
 
         $this->addRegisterMappingsPass($container);
         $this->enabledTreeExtension($container);

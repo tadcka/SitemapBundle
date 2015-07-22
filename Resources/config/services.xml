@@ -24,13 +24,7 @@
             <tag name="kernel.event_listener" event="tadcka_tree.node.create.success" method="onSitemapNodeCreate"/>
             <tag name="kernel.event_listener" event="tadcka_tree.node.pre_delete" method="onSitemapNodeDelete"/>
 
-            <argument type="service" id="tadcka_routing.manager.redirect_route"/>
-            <argument type="service" id="tadcka_sitemap.routing.generator"/>
-            <argument type="service" id="tadcka_routing.manager.route.in_memory"/>
-            <argument type="service" id="tadcka_sitemap.routing.helper"/>
-            <argument type="service" id="silvestra_seo.manager.seo_metadata"/>
-            <argument type="service" id="tadcka_sitemap.manager.node_translation"/>
-            <argument>%tadcka_sitemap.node.incremental_priority%</argument>
+            <argument type="service" id="tadcka_sitemap.manager"/>
         </service>
 
         <!--Sitemap page node provider-->
@@ -61,6 +55,17 @@
         <service id="tadcka_sitemap.factory.node_event" class="Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEventFactory">
             <argument type="service" id="router"/>
             <argument type="service" id="translator"/>
+        </service>
+
+        <service id="tadcka_sitemap.manager" class="Tadcka\Bundle\SitemapBundle\Manager\SitemapManager" lazy="true" public="false">
+            <argument>%tadcka_sitemap.priority.strategy%</argument>
+            <argument type="service" id="tadcka_sitemap.priority.registry.strategy" />
+            <argument type="service" id="tadcka_routing.manager.redirect_route" />
+            <argument type="service" id="tadcka_sitemap.factory.route" />
+            <argument type="service" id="tadcka_routing.manager.route" />
+            <argument type="service" id="tadcka_sitemap.routing.helper" />
+            <argument type="service" id="tadcka_sitemap.factory.seo" />
+            <argument type="service" id="silvestra_seo.manager.seo_metadata" />
         </service>
 
     </services>

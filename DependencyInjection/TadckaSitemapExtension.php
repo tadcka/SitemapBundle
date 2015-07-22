@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
+use Tadcka\Bundle\SitemapBundle\Routing\RedirectRoute;
 
 /**
  * @author Tadas Gliaubicas <tadcka89@gmail.com>
@@ -33,12 +34,14 @@ class TadckaSitemapExtension extends Extension
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('controllers.xml');
+        $loader->load('factories.xml');
         $loader->load('form/node.xml');
         $loader->load('form/node-redirect-route.xml');
         $loader->load('form/node-route.xml');
         $loader->load('form/node-seo.xml');
         $loader->load('frontend.xml');
         $loader->load('node.xml');
+        $loader->load('priority-strategies.xml');
         $loader->load('routing.xml');
         $loader->load('services.xml');
         $loader->load('tree.xml');
@@ -64,7 +67,7 @@ class TadckaSitemapExtension extends Extension
         $container->setAlias($this->getAlias() . '.manager.node', $config['node_manager']);
         $container->setAlias($this->getAlias() . '.manager.node_translation', $config['node_translation_manager']);
 
-        $controllers = array('redirect' => 'tadcka_routing.redirect_controller:redirectAction');
+        $controllers = array(RedirectRoute::NODE_TYPE => RedirectRoute::CONTROLLER);
         $controllers = array_merge($config['node_type']['controllers'], $controllers);
 
         $container->setParameter($this->getAlias() . '.node_type.controllers', $controllers);
@@ -72,6 +75,6 @@ class TadckaSitemapExtension extends Extension
         $container->setParameter($this->getAlias() . '.multi_language.locales', $config['multi_language']['locales']);
         $container->setParameter($this->getAlias() . '.route.strategy', $config['route']['strategy']);
         $container->setParameter($this->getAlias() . '.route.recursive_invisible', $config['route']['recursive_invisible']);
-        $container->setParameter($this->getAlias() . '.node.incremental_priority', $config['incremental_priority']);
+        $container->setParameter($this->getAlias() . '.priority.strategy', $config['priority']['strategy']);
     }
 }

@@ -13,6 +13,7 @@ namespace Tadcka\Bundle\SitemapBundle\EventListener;
 
 use Tadcka\Bundle\SitemapBundle\Event\SitemapNodeEvent;
 use Tadcka\Bundle\SitemapBundle\Frontend\Model\Tab;
+use Tadcka\Bundle\SitemapBundle\Routing\RedirectRoute;
 use Tadcka\Bundle\SitemapBundle\Routing\RouterHelper;
 
 /**
@@ -85,7 +86,7 @@ class SitemapNodeListener
             $event->addTab($seo);
         }
 
-        if ('redirect' === $node->getType()) {
+        if (RedirectRoute::NODE_TYPE === $node->getType()) {
             $redirect = new Tab(
                 $event->getTranslator()->trans('redirect', array(), 'TadckaSitemapBundle'),
                 'node_route',

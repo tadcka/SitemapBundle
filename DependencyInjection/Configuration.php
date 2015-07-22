@@ -64,7 +64,11 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
-                ->booleanNode('incremental_priority')->defaultFalse()->end()
+                ->arrayNode('priority')->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('strategy')->defaultNull()->end()
+                    ->end()
+                ->end()
 
                 ->arrayNode('multi_language')->addDefaultsIfNotSet()
                     ->children()
