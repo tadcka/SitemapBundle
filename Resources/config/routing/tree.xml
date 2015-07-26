@@ -4,21 +4,21 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="tadcka_sitemap_tree_node_children" pattern="/sitemap-tree/node-children/{nodeId}.{_format}">
+    <route id="tadcka_sitemap_tree_node_children" path="/sitemap-tree/node-children/{nodeId}.{_format}">
         <default key="_controller">tadcka_sitemap.controller.tree:getChildrenAction</default>
         <requirement key="_format">json</requirement>
         <requirement key="nodeId">\d+</requirement>
         <option key="expose">true</option>
     </route>
 
-    <route id="tadcka_sitemap_tree_node" pattern="/sitemap-tree/node/{nodeId}.{_format}">
+    <route id="tadcka_sitemap_tree_node" path="/sitemap-tree/node/{nodeId}.{_format}">
         <default key="_controller">tadcka_sitemap.controller.tree:getNodeAction</default>
         <requirement key="_format">json</requirement>
         <requirement key="nodeId">\d+</requirement>
         <option key="expose">true</option>
     </route>
 
-    <route id="tadcka_sitemap_tree_node_root" pattern="/sitemap-tree/root-node.{_format}">
+    <route id="tadcka_sitemap_tree_node_root" path="/sitemap-tree/root-node.{_format}">
         <default key="_controller">tadcka_sitemap.controller.tree:getRootAction</default>
         <requirement key="_format">json</requirement>
         <option key="expose">true</option>

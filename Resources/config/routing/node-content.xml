@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
 
-    <route id="tadcka_sitemap_node_content" pattern="/sitemap/node-content/{nodeId}.{_format}">
+    <route id="tadcka_sitemap_node_content" path="/sitemap/node-content/{nodeId}.{_format}">
         <default key="_controller">tadcka_sitemap.controller.node_content:indexAction</default>
         <default key="_format">html</default>
         <requirement key="_format">html|json</requirement>

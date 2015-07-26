@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="tadcka_sitemap_tree_create_node" pattern="/sitemap-tree/create-node/{parentId}.{_format}">
+    <route id="tadcka_sitemap_tree_create_node" path="/sitemap-tree/create-node/{parentId}.{_format}">
         <default key="_controller">tadcka_sitemap.controller.node:createAction</default>
         <default key="_format">html</default>
         <requirement key="_format">html|json</requirement>
@@ -12,7 +12,7 @@
         <option key="expose">true</option>
     </route>
 
-    <route id="tadcka_sitemap_tree_edit_node" pattern="/sitemap-tree/edit-node/{nodeId}.{_format}">
+    <route id="tadcka_sitemap_tree_edit_node" path="/sitemap-tree/edit-node/{nodeId}.{_format}">
         <default key="_controller">tadcka_sitemap.controller.node:editAction</default>
         <default key="_format">html</default>
         <requirement key="_format">html|json</requirement>
@@ -20,7 +20,7 @@
         <option key="expose">true</option>
     </route>
 
-    <route id="tadcka_sitemap_tree_delete_node" pattern="sitemap-tree/delete-node/{nodeId}.{_format}">
+    <route id="tadcka_sitemap_tree_delete_node" path="sitemap-tree/delete-node/{nodeId}.{_format}">
         <default key="_controller">tadcka_sitemap.controller.node:deleteAction</default>
         <default key="_format">html</default>
         <requirement key="_format">html|json</requirement>
