@@ -75,8 +75,10 @@ class NodeSeoFormHandler
                 /** @var NodeInterface $node */
                 $node = $form->getData();
 
-                foreach ($node->getSeoMetadata() as $seoMetadata) {
-                    $this->seoMetadataManager->add($seoMetadata);
+                foreach ($node->getTranslations() as $translation) {
+                    if (null !== $seoMetadata = $translation->getSeoMetadata()) {
+                        $this->seoMetadataManager->add($seoMetadata);
+                    }
                 }
 
                 return true;

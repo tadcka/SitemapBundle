@@ -115,7 +115,7 @@ class SitemapManager
                 $seoMetadata = $this->seoFactory->create($translation);
 
                 $translation->setRoute($route);
-                $node->addSeoMetadata($seoMetadata);
+                $translation->setSeoMetadata($seoMetadata);
             }
         }
 
@@ -135,10 +135,10 @@ class SitemapManager
             if (null !== $route = $translation->getRoute()) {
                 $this->deleteNodeRoute($node, $route);
             }
-        }
 
-        foreach ($node->getSeoMetadata() as $seoMetadata) {
-            $this->seoMetadataManager->remove($seoMetadata);
+            if (null !== $seoMetadata = $translation->getSeoMetadata()) {
+                $this->seoMetadataManager->remove($seoMetadata);
+            }
         }
     }
 

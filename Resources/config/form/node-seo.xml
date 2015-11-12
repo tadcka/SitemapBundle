@@ -25,5 +25,10 @@
             <argument>%tadcka_sitemap.model.node.class%</argument>
         </service>
 
+        <service id="tadcka_sitemap.form_type.node_i18n_seo" class="Tadcka\Bundle\SitemapBundle\Form\Type\NodeI18nSeoType">
+            <tag name="form.type" alias="tadcka_sitemap_node_i18n_seo" />
+            <argument>%tadcka_sitemap.model.node_translation.class%</argument>
+        </service>
+
     </services>
 </container>
