@@ -15,26 +15,22 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-/**
- * @author Tadas Gliaubicas <tadcka89@gmail.com>
- *
- * @since 14.6.29 14.03
- */
-class NodeSeoType extends AbstractType
+class NodeI18nSeoType extends AbstractType
 {
+
     /**
      * @var string
      */
-    private $nodeClass;
+    private $nodeTranslationClass;
 
     /**
      * Constructor.
      *
-     * @param string $nodeClass
+     * @param string $nodeTranslationClass
      */
-    public function __construct($nodeClass)
+    public function __construct($nodeTranslationClass)
     {
-        $this->nodeClass = $nodeClass;
+        $this->nodeTranslationClass = $nodeTranslationClass;
     }
 
     /**
@@ -43,15 +39,12 @@ class NodeSeoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'translations',
-            'translations',
+            'seoMetadata',
+            'silvestra_seo_metadata',
             array(
-                'type' => 'tadcka_sitemap_node_i18n_seo',
                 'label' => false,
             )
         );
-
-        $builder->add('submit', 'submit', array('label' => 'form.button.save'));
     }
 
     /**
@@ -61,7 +54,7 @@ class NodeSeoType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => $this->nodeClass,
+                'data_class' => $this->nodeTranslationClass,
                 'translation_domain' => 'TadckaSitemapBundle',
             )
         );
@@ -72,6 +65,6 @@ class NodeSeoType extends AbstractType
      */
     public function getName()
     {
-        return 'tadcka_sitemap_node_seo';
+        return 'tadcka_sitemap_node_i18n_seo';
     }
 }

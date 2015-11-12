@@ -58,7 +58,6 @@ class NodeSeoController
         $this->responseHelper = $responseHelper;
     }
 
-
     public function indexAction(Request $request, $nodeId)
     {
         $node = $this->responseHelper->getNodeOr404($nodeId);
