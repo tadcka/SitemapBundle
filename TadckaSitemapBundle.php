@@ -33,8 +33,6 @@ class TadckaSitemapBundle extends Bundle
      */
     public function build(ContainerBuilder $container)
     {
-        parent::build($container);
-
         $container->addCompilerPass(
             new AddTreeConfigPass('tadcka_sitemap.tree.registry', 'tadcka_sitemap.tree.config')
         );
