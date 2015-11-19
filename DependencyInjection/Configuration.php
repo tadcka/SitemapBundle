@@ -96,10 +96,8 @@ class Configuration implements ConfigurationInterface
                 ->end()
 
                 ->arrayNode('link_attributes')->addDefaultsIfNotSet()
-                ->addDefaultsIfNotSet()
                     ->children()
                         ->arrayNode('available')
-                            ->defaultValue(array('rel', 'target'))
                             ->prototype('scalar')->end()
                         ->end()
                     ->end()
