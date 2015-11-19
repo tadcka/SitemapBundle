@@ -24,8 +24,7 @@
         "silvestra/seo-bundle": "0.1.*@dev",
         "tadcka/tree": "0.2.*@dev",
         "tadcka/jstree-bundle": "~0.2",
-        "tadcka/routing-bundle": "0.2.*@dev",
-        "silvestra/form": "0.1.*@dev"
+        "tadcka/routing-bundle": "0.2.*@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.2",
@@ -33,7 +32,8 @@
     },
     "suggest": {
         "doctrine/doctrine-bundle": "For doctrine mapping.",
-        "stof/doctrine-extensions-bundle": "For doctrine mapping."
+        "stof/doctrine-extensions-bundle": "For doctrine mapping.",
+        "silvestra/form": "For extra form types."
     },
     "autoload": {
         "psr-4": {
