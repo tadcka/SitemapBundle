@@ -16,6 +16,7 @@ form:
   node_translation:
     title: Title
     description: Description
+    link_attributes: Extra attributes for link
   node:
     type: Type
     priority: Priority

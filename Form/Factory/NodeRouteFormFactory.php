@@ -34,15 +34,25 @@ class NodeRouteFormFactory
     private $router;
 
     /**
+     * @var array
+     */
+    private $allowedLinkAttributes;
+
+    /**
      * Constructor.
      *
      * @param FormFactoryInterface $formFactory
      * @param RouterInterface $router
+     * @param array $allowedLinkAttributes
      */
-    public function __construct(FormFactoryInterface $formFactory, RouterInterface $router)
-    {
+    public function __construct(
+        FormFactoryInterface $formFactory,
+        RouterInterface $router,
+        array $allowedLinkAttributes
+    ) {
         $this->formFactory = $formFactory;
         $this->router = $router;
+        $this->allowedLinkAttributes = $allowedLinkAttributes;
     }
 
     /**
@@ -57,7 +67,10 @@ class NodeRouteFormFactory
         return $this->formFactory->create(
             'tadcka_sitemap_node_route',
             $node,
-            array('action' => $this->router->getContext()->getPathInfo())
+            array(
+                'action' => $this->router->getContext()->getPathInfo(),
+                'allowed_link_attributes' => $this->allowedLinkAttributes,
+            )
         );
     }
 }
