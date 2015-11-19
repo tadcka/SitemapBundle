@@ -22,6 +22,8 @@
 
         <field name="description" column="description" type="text" nullable="true" />
 
+        <field name="linkAttributes" column="link_attributes" type="array" nullable="true" />
+
     </mapped-superclass>
 
 </doctrine-mapping>

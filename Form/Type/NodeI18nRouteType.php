@@ -53,6 +53,19 @@ class NodeI18nRouteType extends AbstractType
     {
         $builder->add('route', 'tadcka_route', array('label' => false, 'translation_domain' => 'TadckaSitemapBundle'));
 
+        if (false === empty($options['allowed_link_attributes'])) {
+            $builder->add(
+                'linkAttributes',
+                'silvestra_key_value',
+                array(
+                    'value_type' => 'text',
+                    'allowed_keys' => $options['allowed_link_attributes'],
+                    'required' => false,
+                    'label' => 'form.node_translation.link_attributes',
+                )
+            );
+        }
+
         $builder->addModelTransformer($this->transformer);
     }
 
@@ -66,6 +79,7 @@ class NodeI18nRouteType extends AbstractType
                 'data_class' => $this->nodeTranslationClass,
                 'translation_domain' => 'TadckaSitemapBundle',
                 'constraints' => array(new NodeParentIsOnline()),
+                'allowed_link_attributes' => array(),
             )
         );
     }

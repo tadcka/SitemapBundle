@@ -76,5 +76,6 @@ class TadckaSitemapExtension extends Extension
         $container->setParameter($this->getAlias() . '.route.strategy', $config['route']['strategy']);
         $container->setParameter($this->getAlias() . '.route.recursive_invisible', $config['route']['recursive_invisible']);
         $container->setParameter($this->getAlias() . '.priority.strategy', $config['priority']['strategy']);
+        $container->setParameter($this->getAlias() . '.link_attributes.available', $config['link_attributes']['available']);
     }
 }

@@ -32,7 +32,8 @@
     },
     "suggest": {
         "doctrine/doctrine-bundle": "For doctrine mapping.",
-        "stof/doctrine-extensions-bundle": "For doctrine mapping."
+        "stof/doctrine-extensions-bundle": "For doctrine mapping.",
+        "silvestra/form": "For extra form types."
     },
     "autoload": {
         "psr-4": {

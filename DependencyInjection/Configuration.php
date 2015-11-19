@@ -95,6 +95,14 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
 
+                ->arrayNode('link_attributes')->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('available')
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
+
             ->end();
 
         return $treeBuilder;

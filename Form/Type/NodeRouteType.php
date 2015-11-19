@@ -49,6 +49,9 @@ class NodeRouteType extends AbstractType
             array(
                 'type' => 'tadcka_sitemap_node_i18n_route',
                 'label' => false,
+                'options' => array(
+                    'allowed_link_attributes' => $options['allowed_link_attributes'],
+                ),
             )
         );
 
@@ -64,6 +67,7 @@ class NodeRouteType extends AbstractType
             array(
                 'data_class' => $this->nodeClass,
                 'translation_domain' => 'TadckaSitemapBundle',
+                'allowed_link_attributes' => array(),
             )
         );
     }

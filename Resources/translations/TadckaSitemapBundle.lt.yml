@@ -15,6 +15,7 @@ form:
   node_translation:
     title: Pavadinimas
     description: Aprašymas
+    link_attributes: Papildomi nuorodos attributai
   node:
     type: Tipas
     priority: Prioritetas

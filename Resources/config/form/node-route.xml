@@ -17,6 +17,7 @@
         <service id="tadcka_sitemap.form_factory.node_route" class="Tadcka\Bundle\SitemapBundle\Form\Factory\NodeRouteFormFactory" public="false">
             <argument type="service" id="form.factory" />
             <argument type="service" id="router" />
+            <argument>%tadcka_sitemap.link_attributes.available%</argument>
         </service>
 
         <!--Sitemap node route form handler-->
