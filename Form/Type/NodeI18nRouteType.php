@@ -59,7 +59,10 @@ class NodeI18nRouteType extends AbstractType
                 'silvestra_key_value',
                 array(
                     'value_type' => 'text',
-                    'allowed_keys' => $options['allowed_link_attributes'],
+                    'allowed_keys' => array_combine(
+                        $options['allowed_link_attributes'],
+                        $options['allowed_link_attributes']
+                    ),
                     'required' => false,
                     'label' => 'form.node_translation.link_attributes',
                 )
