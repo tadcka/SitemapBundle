@@ -89,7 +89,9 @@ class NodeOnlineHandler
      */
     public function process($locale, Messages $messages, NodeInterface $node)
     {
-        if (null === $nodeTranslation = $node->getTranslation($locale)) {
+        $nodeTranslation = $node->getTranslation($locale);
+
+        if (null === $nodeTranslation) {
             $messages->addError(
                 $this->translator->trans(
                     'node_translation_not_found',
@@ -101,6 +103,11 @@ class NodeOnlineHandler
             return false;
         }
 
+        $route = $nodeTranslation->getRoute();
+
+        if (null !== $route) {
+            $route->setVisible(!$route->isVisible());
+        }
 
         $constraints = array(new NodeRouteNotEmpty(), new NodeParentIsOnline());
         $violation = $this->validator->validateValue($nodeTranslation, $constraints);
@@ -113,12 +120,8 @@ class NodeOnlineHandler
             return false;
         }
 
-        if (null !== $route = $nodeTranslation->getRoute()) {
-            if ($route->isVisible()) {
-                $this->visibilityManager->setInvisible($locale, $node);
-            } else {
-                $this->visibilityManager->setVisible($locale, $node);
-            }
+        if (false === $route->isVisible()) {
+            $this->visibilityManager->setInvisible($locale, $node);
         }
 
         return true;
