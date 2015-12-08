@@ -63,7 +63,7 @@ $.fn.sitemap = function () {
         if ($content.getContent().find('.tab-content:first').length) {
             var $tabContent = $content.getActiveTab();
 
-            $content.submit($form.attr('action'), $form.serialize(), $tabContent, function () {
+            $content.submit($form.attr('action'), $form, $tabContent, function () {
                 var $parent = $tree.getParent($currentNode);
 
                 if ('#' !== $parent) {
@@ -75,7 +75,7 @@ $.fn.sitemap = function () {
                 $tabContent.find('.silvestra-tag').tagging();
             });
         } else {
-            $content.submit($form.attr('action'), $form.serialize(), $content.getContent(), function ($response) {
+            $content.submit($form.attr('action'), $form, $content.getContent(), function ($response) {
                 if ($response.node_id) {
                     $currentNodeId = $response.node_id;
                     var $url = Routing.generate('tadcka_sitemap_node_content', {_format: 'json', nodeId: $currentNodeId});

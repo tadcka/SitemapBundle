@@ -113,12 +113,16 @@ function SitemapContent() {
      * @param {Function} $callback
      */
     this.submit = function ($url, $data, $content, $callback) {
-        fadeOn();
+        var formData = new FormData($data[0]);
 
+        fadeOn();
         $.ajax({
             url: $url,
             type: 'POST',
-            data: $data,
+            data: formData,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
             success: function ($response) {
                 if (isObject($response)) {
                     refresh($response);
