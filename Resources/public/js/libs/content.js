@@ -120,6 +120,8 @@ function SitemapContent() {
             url: $url,
             type: 'POST',
             data: formData,
+            async: false,
+            cache: false,
             enctype: 'multipart/form-data',
             processData: false,
             contentType: false,
