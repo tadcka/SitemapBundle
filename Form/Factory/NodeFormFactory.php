@@ -17,7 +17,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Tadcka\Component\Tree\Provider\NodeProviderInterface;
 use Tadcka\Component\Tree\Registry\NodeType\NodeTypeConfig;
-use Tadcka\Bundle\SitemapBundle\Form\Type\NodeType;
 use Tadcka\Component\Tree\Model\NodeInterface;
 
 /**
@@ -94,7 +93,7 @@ class NodeFormFactory
     public function create(NodeInterface $node)
     {
         return $this->formFactory->create(
-            new NodeType(),
+            'tadcka_node',
             $node,
             array(
                 'action' => $this->router->getContext()->getPathInfo(),

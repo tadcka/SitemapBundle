@@ -23,5 +23,10 @@
             <argument type="service" id="translator" />
         </service>
 
+        <!--Sitemap node form type-->
+        <service id="tadcka_sitemap.form_type.node" class="Tadcka\Bundle\SitemapBundle\Form\Type\NodeType">
+            <tag name="form.type" alias="tadcka_node" />
+        </service>
+
     </services>
 </container>
