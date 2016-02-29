@@ -113,7 +113,7 @@ class NodeFormFactory
      *
      * @return array
      */
-    private function getNodeTypes(NodeInterface $node)
+    protected function getNodeTypes(NodeInterface $node)
     {
         $nodeTypes = array();
         if (null !== $node->getParent()) {
